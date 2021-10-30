@@ -1,4 +1,3 @@
-import pylatex
 import dash
 import dash_table
 import dash_core_components as dcc
@@ -10,8 +9,9 @@ import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 import numpy as np
+from scipy.stats import variation
 
-from .text.markdown_text import *
+from .text.markdown_stats import *
 
 from .Dashboard import Dashboard
 
@@ -28,10 +28,17 @@ class StatisticsDashboard(Dashboard):
 
     def _generate_table(self, max_rows=10):
         df = self.pp.get_numeric_df(self.settings['data'])
+        init_df = df
         df = df.describe().reset_index()
         df = df[df['index'].isin(self.settings['metrics'])]
         df = df.rename(columns={"index": "metrics"})
         cols = df.columns
+        init_describe_length = len(df)
+        for col in init_df.columns:
+            df.loc[init_describe_length, col] = np.exp(np.log(init_df[col]).mean())
+            df.loc[init_describe_length + 1, col] = variation(init_df[col])
+        df.loc[init_describe_length, 'metrics'] = 'geom_mean'
+        df.loc[init_describe_length+1, 'metrics'] = 'variation'
         len_t = str(len(df.columns)*10)+'%'
         len_text = str(98-len(df.columns)*10)+'%'
         for j in range(1,len(cols)):

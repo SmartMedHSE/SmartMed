@@ -1035,10 +1035,10 @@ class ROC(Dashboard):
                 t_ind = i
         threshold = round(threshold, 3)
         TPR = round(self.tp_list[ind][
-                    t_ind] / (self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind]), 3) #recall or Se
+                    t_ind] / (self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind]), 3)
         PPV = round(self.tp_list[ind][
-                    t_ind] / (self.tp_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3) #precision
-        #print(ind, TPR, PPV)
+                    t_ind] / (self.tp_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3)
+        print(ind, TPR, PPV)
         accuracy = round((self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind]) / (
             self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind] + self.tn_list[ind][t_ind] + self.fp_list[ind][
                 t_ind]), 3)
@@ -1046,8 +1046,8 @@ class ROC(Dashboard):
             2 * self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3)
         auc = 0
         for i in range(len(self.sp_list[ind]) - 1):
-            auc += (self.inv_sp_list[ind][i + 1] + self.inv_sp_list[ind][i]) * 0.5 * (
-                self.se_list[ind][i + 1] - self.se_list[ind][i])
+            auc += (self.se_list[ind][i] + self.se_list[ind][i + 1]) * (
+                self.inv_sp_list[ind][i + 1] - self.inv_sp_list[ind][i]) / 2
         auc = round(abs(auc), 3)
         dov_int = (np.var(self.se_list[ind]) /
                    (len(self.se_list[ind]) * (len(self.se_list[ind]) - 1))) ** 0.5
@@ -1151,7 +1151,7 @@ class ROC(Dashboard):
         for i in range(len(columns_list)):
             df_X = self.predict.df_X[columns_list[i]]
             dx = (max(df_X) - min(df_X)) / (len(df_X) - 1)
-            dx_init = min(df_X) - 0.05 * dx
+            dx_init = 0  # min(df_X) - 0.05 * dx
             y_pred = y_true.copy(deep=True)
 
             dx_list = []
@@ -1163,8 +1163,13 @@ class ROC(Dashboard):
             sp_list = []
             inv_sp_list = []
 
-            while dx_init < max(df_X):
-                dx_init += dx
+            flag = True
+            while True:
+                if flag:
+                    dx_init = min(df_X) - 0.05 * dx
+                    flag = False
+                else:
+                    dx_init += dx
 
                 for j in range(len(y_true)):
                     if df_X[j] < dx_init:
@@ -1186,6 +1191,9 @@ class ROC(Dashboard):
                     se_list.append(round(se, 3))
                     sp_list.append(round(sp, 3))
                     inv_sp_list.append(round((1 - sp), 3))
+
+                if not dx_init < max(df_X):
+                    break
 
             self.dx_list.append(dx_list)
             self.tp_list.append(tp_list)
