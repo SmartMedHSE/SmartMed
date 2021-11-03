@@ -109,7 +109,7 @@ module.exports = (env, options) => {
         // },
 
         plugins: [
-            new CleanWebpackPlugin(),
+            // new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
                 customPath: isWindows ?
                     path.resolve(__dirname, `dist\\js\\bundle.js`) :

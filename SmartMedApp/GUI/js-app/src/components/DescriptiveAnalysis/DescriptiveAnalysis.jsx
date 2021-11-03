@@ -4,6 +4,7 @@ import { DataDownload } from '../DataDownload';
 import { ListButtons } from '../ManageButtons';
 import { DataPreparation } from './DataPreparation.jsx';
 import { Checkbox, FormControlLabel, FormGroup } from '@material-ui/core';
+import { fetchPost } from '../../utils';
 
 const DATA_PREP_OPTIONS = [ 'Средним/модой (численные/категориальные значения)',
     'Введенным значением (требуется ввод для каждого столбца отдельно)',
@@ -48,6 +49,14 @@ export class DescriptiveAnalysis extends React.Component {
         currentPage: 0,
         maxPage: 3,
         dataPrepOptionId: -1,
+        filePath: '',
+    };
+
+    settings = {
+        data: '',
+        dataPrepOption: 0,
+        metrics: [],
+        graphics: [],
     };
 
     paginate = (goNext) => {
@@ -55,6 +64,11 @@ export class DescriptiveAnalysis extends React.Component {
         if (goNext) {
             if (currentPage < maxPage) {
                 this.setState({ currentPage: currentPage + 1 });
+            } else {
+                const { dataPrepOptionId } = this.state;
+                this.settings.dataPrepOption = dataPrepOptionId;
+                void fetchPost('api/descriptive', this.settings);
+                this.props.onExit();
             }
         } else {
             if (currentPage > 0) {
@@ -67,11 +81,36 @@ export class DescriptiveAnalysis extends React.Component {
 
     selectDataPrepType = (id) => this.setState({ dataPrepOptionId: id });
 
+    onDataLoad = (event) => {
+        if (event.target.files && event.target.files[0]) {
+            this.setState({ filePath: event.target.files[0] });
+            this.readDataFromFile(event.target.files[0]);
+        }
+    };
+
+    readDataFromFile = (path) => {
+        const FR = new FileReader();
+        console.log(path);
+        FR.addEventListener('load', (event) => {
+            this.settings.data = event.target.result;
+        });
+        FR.readAsText(path, 'UTF-8');
+    };
+
+    selectUnselect = (item, field = '') => {
+        const index = this.settings[field].indexOf(item);
+        if (index !== -1) {
+            this.settings[field].splice(index, 1);
+        } else {
+            this.settings[field].push(item);
+        }
+    };
+
     openCurrentPage = () => {
         const { currentPage } = this.state;
         switch (currentPage) {
             case 0:
-                return <DataDownload onLoad={() => null}/>;
+                return <DataDownload onLoad={this.onDataLoad}/>;
             case 1:
                 return <DataPreparation onClick={this.selectDataPrepType} options={DATA_PREP_OPTIONS}/>;
             case 2:
@@ -82,7 +121,13 @@ export class DescriptiveAnalysis extends React.Component {
                     >
                         <FormGroup>
                             {METRICS.map((item, idx) => (
-                                <FormControlLabel key={`m-${item}`} control={<Checkbox/>} label={item}/>
+                                <FormControlLabel
+                                    key={`m-${item}`}
+                                    control={<Checkbox onClick={() => {
+                                        this.selectUnselect(idx, 'metrics');
+                                    }}/>}
+                                    label={item}
+                                />
                             ))}
                         </FormGroup>
                     </Page>
@@ -90,12 +135,18 @@ export class DescriptiveAnalysis extends React.Component {
             case 3:
                 return (
                     <Page
-                        title="Визуаизация"
+                        title="Визуализация"
                         description="Выбор графиков для реализации"
                     >
                         <FormGroup>
                             {GRAPH_TYPE.map((item, idx) => (
-                                <FormControlLabel key={`g-${item}`} control={<Checkbox/>} label={item}/>
+                                <FormControlLabel
+                                    key={`g-${item}`}
+                                    control={<Checkbox onClick={() => {
+                                        this.selectUnselect(idx, 'graphics');
+                                    }}/>}
+                                    label={item}
+                                />
                             ))}
                         </FormGroup>
                     </Page>
