@@ -18,7 +18,6 @@ function createWindow() {
     if (isDev) {
         win.webContents.openDevTools({ mode: 'detach' });
     }
-    // void win.loadFile('./src/main-menu.html');
 }
 
 app.whenReady().then(() => {
