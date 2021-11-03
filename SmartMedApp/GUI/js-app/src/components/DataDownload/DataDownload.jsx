@@ -1,9 +1,12 @@
 import * as React from 'react';
+import * as cn from 'classnames';
 
 import { Button, Input } from '@material-ui/core';
 
+import * as s from './DataDownload.scss';
+
 const onLoad = () => {
-}
+};
 
 /**
  * @param props {{onLoad: (data) => void}}
@@ -12,8 +15,8 @@ const onLoad = () => {
  */
 export const DataDownload = (props) => {
     return (
-        <div>
-            <h2>Загрузите данные</h2>
+        <div class={s.dataDownload}>
+            <h2 class={cn(s.dataDownload__title)}>Загрузите данные</h2>
             <div>
                 Для того, чтобы выполнить загрузку данных, кликните на кнопку ниже.
                 В открывающемся окне выберите файл в формате "xlsx", "csv", "tsv"
