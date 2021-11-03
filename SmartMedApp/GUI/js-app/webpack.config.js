@@ -1,12 +1,11 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const os = require('os');
 
 const isWindows = os.platform() === 'win32';
-
 
 module.exports = (env, options) => {
     return {
@@ -38,8 +37,8 @@ module.exports = (env, options) => {
                     use: {
                         loader: 'babel-loader',
                         options: {
-                            presets: ['@babel/preset-env'],
-                            plugins: ['@babel/plugin-proposal-private-methods', '@babel/plugin-proposal-class-properties'],
+                            presets: [ '@babel/preset-env' ],
+                            plugins: [ '@babel/plugin-proposal-private-methods', '@babel/plugin-proposal-class-properties' ],
                         }
                     }
                 },
@@ -113,8 +112,8 @@ module.exports = (env, options) => {
             new CleanWebpackPlugin(),
             new HtmlWebpackPlugin({
                 customPath: isWindows ?
-                    `D:\\Desktop\\HSE\\Projects\\SmartMed2\\SmartMedApp\\GUI\\js-app\\dist\\js\\bundle.js`:
-                    '/home/starman/hse/SmartmMd/SmartMedApp/GUI/js-app/dist/js/bundle.js',
+                    path.resolve(__dirname, `dist\\js\\bundle.js`) :
+                    path.resolve(__dirname, 'dist/js/bundle.js'),
                 template: 'src/index.html',
             }),
             new webpack.DefinePlugin({
