@@ -49,7 +49,7 @@ export class DescriptiveAnalysis extends React.Component {
         currentPage: 0,
         maxPage: 3,
         dataPrepOptionId: -1,
-        filePath: '',
+        file: null,
     };
 
     settings = {
@@ -65,8 +65,10 @@ export class DescriptiveAnalysis extends React.Component {
             if (currentPage < maxPage) {
                 this.setState({ currentPage: currentPage + 1 });
             } else {
-                const { dataPrepOptionId } = this.state;
+                const { dataPrepOptionId, file } = this.state;
                 this.settings.dataPrepOption = dataPrepOptionId;
+                console.log(file);
+                this.settings.data = file.path;
                 void fetchPost('api/descriptive', this.settings);
                 this.props.onExit();
             }
@@ -83,18 +85,18 @@ export class DescriptiveAnalysis extends React.Component {
 
     onDataLoad = (event) => {
         if (event.target.files && event.target.files[0]) {
-            this.setState({ filePath: event.target.files[0] });
+            this.setState({ file: event.target.files[0] });
             this.readDataFromFile(event.target.files[0]);
         }
     };
 
     readDataFromFile = (path) => {
-        const FR = new FileReader();
-        console.log(path);
-        FR.addEventListener('load', (event) => {
-            this.settings.data = event.target.result;
-        });
-        FR.readAsText(path, 'UTF-8');
+        // const FR = new FileReader();
+        // console.log(path);
+        // FR.addEventListener('load', (event) => {
+        //     this.settings.data = event.target.result;
+        // });
+        // FR.readAsText(path, 'UTF-8');
     };
 
     selectUnselect = (item, field = '') => {
