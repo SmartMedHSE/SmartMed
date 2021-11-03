@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import * as s from './Menu.scss';
+
 export const MAIN_MENU = [
     {
         title: 'Описательный анализ',
@@ -25,15 +27,15 @@ export const MAIN_MENU = [
  * @constructor
  */
 export const Menu = ({ onClick }) => (
-    <div className="menu">
-        <div className="menu__title">
-            <h2>Выберете способ анализа</h2>
+    <div className={s.menu}>
+        <div className={s.menu__title}>
+            <h2 className={s.menu__title}>Выберете способ анализа</h2>
         </div>
-        <form className="menu__items" noValidate>
+        <form className={s.menu__items} noValidate>
             <ul>
                 {MAIN_MENU.map((item) => (
                     <li key={item.id}>
-                        <div className="menu__item">
+                        <div className={s.menu__item}>
                             <button
                                 className="menu__button button button_size-xx button_color_grey"
                                 onClick={(e) => {
