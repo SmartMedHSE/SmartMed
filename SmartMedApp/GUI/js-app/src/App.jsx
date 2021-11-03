@@ -5,7 +5,7 @@ import { Container } from '@material-ui/core';
 import { DescriptiveAnalysis } from './components/DescriptiveAnalysis';
 import { Menu } from './components/Menu';
 
-import * as s from './styles/_styles.scss';
+import './styles/_styles.scss';
 
 export const PAGES = {
     DescriptiveAnalysis: 1,
@@ -54,7 +54,7 @@ export class App extends React.Component {
     render() {
         const { openPage } = this.state;
         return (
-            <div className={s.main}>
+            <div className="main">
                 <Container maxWidth="md">
                     {this.detectPage()}
                 </Container>
