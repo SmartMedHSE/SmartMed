@@ -1,0 +1,18 @@
+@import "../../styles/fonts";
+
+.menu {
+  display: block;
+
+  &__title {
+    font-family: $base-font;
+    font-size: 24px;
+  }
+
+  &__items {
+  }
+  &__item {
+    display: flex;
+  }
+  &__button {
+  }
+}

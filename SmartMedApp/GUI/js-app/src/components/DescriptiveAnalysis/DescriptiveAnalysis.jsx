@@ -95,8 +95,8 @@ export class DescriptiveAnalysis extends React.Component {
                     >
                         <FormGroup>
                             {GRAPH_TYPE.map((item, idx) => (
-                                <FormControlLabel key={`g-${item}`} control={<Checkbox/>} label={item} />
-                                ))}
+                                <FormControlLabel key={`g-${item}`} control={<Checkbox/>} label={item}/>
+                            ))}
                         </FormGroup>
                     </Page>
                 );
