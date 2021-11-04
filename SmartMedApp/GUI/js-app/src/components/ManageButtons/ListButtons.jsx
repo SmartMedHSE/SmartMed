@@ -1,5 +1,9 @@
 import * as React from 'react';
+import * as cn from 'classnames';
+
 import { Button } from '@material-ui/core';
+
+import * as s from './ListButtons.scss';
 
 /**
  *
@@ -9,12 +13,12 @@ import { Button } from '@material-ui/core';
  */
 export const ListButtons = ({ onClick }) => {
     return (
-        <div>
+        <div className={s.listButtons}>
             <span>
-                <Button variant="outlined" size="small" onClick={() => onClick(false)}>
+                <Button className={cn(s.listButtons__btn)} variant="outlined" size="small" onClick={() => onClick(false)}>
                     Назад
                 </Button>
-                <Button variant="outlined" size="small" onClick={() => onClick(true)}>
+                <Button className={cn(s.listButtons__btn)} variant="outlined" size="small" onClick={() => onClick(true)}>
                     Продолжить
                 </Button>
             </span>
