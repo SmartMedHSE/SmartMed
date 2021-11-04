@@ -1,7 +1,14 @@
 .dataDownload {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
   &__title {
-    &_main {
-    }
+    font-size: 20px;
   }
 
+  &__download_text {
+      
+    }
 }

@@ -1,4 +1,7 @@
 import * as React from 'react';
+import * as cn from 'classnames';
+
+import * as s from './DescriptiveAnalysis.scss';
 
 import { DataDownload } from '../DataDownload';
 import { ListButtons } from '../ManageButtons';
@@ -140,7 +143,7 @@ export class DescriptiveAnalysis extends React.Component {
                         title="Визуализация"
                         description="Выбор графиков для реализации"
                     >
-                        <FormGroup>
+                        <FormGroup className={s.descriptiveAnalysis}>
                             {GRAPH_TYPE.map((item, idx) => (
                                 <FormControlLabel
                                     key={`g-${item}`}
@@ -160,7 +163,7 @@ export class DescriptiveAnalysis extends React.Component {
 
     render() {
         return (
-            <div className="desc">
+            <div>
                 {this.openCurrentPage()}
                 <ListButtons onClick={this.paginate}/>
             </div>

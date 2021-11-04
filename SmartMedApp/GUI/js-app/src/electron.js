@@ -4,8 +4,8 @@ const isDev = require('electron-is-dev');
 
 function createWindow() {
     const win = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 600,
+        height: 510,
         autoHideMenuBar: true,
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
@@ -15,9 +15,9 @@ function createWindow() {
 
     void win.loadURL(`file://${path.join(__dirname, '../dist/index.html')}`);
     // Open the DevTools.
-    if (isDev) {
-        win.webContents.openDevTools({ mode: 'detach' });
-    }
+    // if (isDev) {
+    //     win.webContents.openDevTools({ mode: 'detach' });
+    // }
 }
 
 app.whenReady().then(() => {
