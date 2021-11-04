@@ -1,4 +1,7 @@
 import * as React from 'react';
+import * as cn from 'classnames';
+
+import * as s from './DataPreparation.scss';
 
 import { InputLabel, MenuItem, Select } from '@material-ui/core';
 
@@ -9,7 +12,7 @@ import { InputLabel, MenuItem, Select } from '@material-ui/core';
  * @constructor
  */
 export const DataPreparation = (props) => (
-    <div>
+    <div className={s.dataPreparation}>
         <h2>Предварительная обработка данных</h2>
         <div>Выберите опции предварительной обработки данных</div>
         <Select

@@ -29,27 +29,25 @@ export const MAIN_MENU = [
 export const Menu = ({ onClick }) => (
     <div className={s.menu}>
         <div className={s.menu__title}>
-            <h2 className={s.menu__title}>Выберете способ анализа</h2>
+            <h3 className={s.menu__title}>Выберете способ анализа</h3>
         </div>
         <form className={s.menu__items} noValidate>
-            <ul>
-                {MAIN_MENU.map((item) => (
-                    <li key={item.id}>
-                        <div className={s.menu__item}>
-                            <button
-                                className="menu__button button button_size-xx button_color_grey"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    onClick(item.id);
-                                }}
-                            >
-                                {item.title}
-                            </button>
-                            <div className="menu__item-helper">{item.description}</div>
-                        </div>
-                    </li>
-                ))}
-            </ul>
+            {MAIN_MENU.map((item) => (
+                <div key={item.id}>
+                    <div className={s.menu__item}>
+                        <button
+                            className="menu__button button button_size-xx button_color_grey"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                onClick(item.id);
+                            }}
+                        >
+                            {item.title}
+                        </button>
+                        <div className="menu__item-helper">{item.description}</div>
+                    </div>
+                </div>
+            ))}
         </form>
     </div>
 );
