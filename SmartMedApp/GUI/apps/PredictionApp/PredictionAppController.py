@@ -6,6 +6,7 @@ from .WrappedRocValueWindow import WrappedRocValueWindow
 from .WrappedLinearGraphWindow import WrappedLinearGraphWindow
 from .WrappedTreeFeaturesWindow import WrappedTreeFeaturesWindow
 from .WrappedTreeVisualWindow import WrappedTreeVisualWindow
+from .WrappedTreeValueWindow import WrappedTreeValueWindow
 from.WrappedRocAnyl import WrappedRocAnyl
 from .WrappedRocCurvesWindow import WrappedRocCurvesWindow
 from .WrappedRocGraphsWindow import WrappedRocGraphsWindow
@@ -33,6 +34,7 @@ class PredictionApp():
         self.linear_graph_window = WrappedLinearGraphWindow()
         self.tree_features_window = WrappedTreeFeaturesWindow()
         self.tree_visual_window = WrappedTreeVisualWindow()
+        self.tree_value_window = WrappedTreeValueWindow()
 
         self.__build_connections(
             [self.menu_window, self.down_window, self.radio_window, self.choice_window])
@@ -64,8 +66,10 @@ class PredictionApp():
         self.roc_graphs_window.parent = self.roc_anyl_window
         self.roc_graphs_window.child = self.menu_window
 
-        self.choice_window.child_tree = self.tree_features_window
-        self.tree_features_window.parent = self.choice_window
+        self.choice_window.child_tree = self.tree_value_window
+        self.tree_value_window.parent = self.choice_window
+        self.tree_value_window.child = self.tree_features_window
+        self.tree_features_window.parent = self.tree_value_window
         self.tree_features_window.child = self.tree_visual_window
         self.tree_visual_window.parent = self.tree_features_window
         self.tree_visual_window.child = self.menu_window
