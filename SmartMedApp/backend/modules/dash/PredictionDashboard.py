@@ -1038,12 +1038,14 @@ class ROC(Dashboard):
                     t_ind] / (self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind]), 3)
         PPV = round(self.tp_list[ind][
                     t_ind] / (self.tp_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3)
-        print(ind, TPR, PPV)
+        #print(ind, TPR, PPV)
         accuracy = round((self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind]) / (
             self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind] + self.tn_list[ind][t_ind] + self.fp_list[ind][
                 t_ind]), 3)
         f_measure = round(2 * self.tp_list[ind][t_ind] / (
             2 * self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3)
+        specificity = round(self.tn_list[ind][t_ind] / (
+            self.tn_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3)
         auc = 0
         for i in range(len(self.sp_list[ind]) - 1):
             auc += (self.se_list[ind][i] + self.se_list[ind][i + 1]) * (
@@ -1054,9 +1056,9 @@ class ROC(Dashboard):
         dov_int_1 = round((self.se_list[ind][t_ind] - 1.96 * dov_int), 3)
         dov_int_2 = round((self.se_list[ind][t_ind] + 1.96 * dov_int), 3)
         df_ost_2 = pd.DataFrame(
-            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота',
+            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота','Специфичность',
                      'Точность', 'Accuracy', 'F-мера', 'Доверительный интервал', 'AUC'])
-        df_ost_2.loc[1] = ['Значение', threshold, round(self.dx_list[ind][t_ind], 3), TPR, PPV, accuracy,
+        df_ost_2.loc[1] = ['Значение', threshold, round(self.dx_list[ind][t_ind], 3), TPR, specificity, PPV, accuracy,
                            f_measure, str(str(dov_int_1) + ';' + str(dov_int_2)), auc]
 
         return df_ost_2
@@ -1225,6 +1227,8 @@ class ROC(Dashboard):
             if item == 'Полнота' and 'recall' not in metric_list:
                 df_metrics.pop(item)
             if item == 'Доверительный интервал' and 'confidence' not in metric_list:
+                df_metrics.pop(item)
+            if item == 'Специфичность' and 'specificity' not in metric_list:
                 df_metrics.pop(item)
 
         # ROC-кривая
@@ -1449,7 +1453,7 @@ class ROC(Dashboard):
         fig_roc_2 = go.Figure()
 
         sum_table = pd.DataFrame(
-            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота', 'Точность',
+            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота','Специфичность', 'Точность',
                      'Accuracy', 'F-мера', 'Доверительный интервал', 'AUC'])
 
         for i in range(len(columns_list)):
