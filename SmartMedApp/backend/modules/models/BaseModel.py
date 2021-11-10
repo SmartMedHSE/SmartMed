@@ -72,7 +72,7 @@ class BaseModel(Model):
         df2_X = def_df_X.copy()
         df2_X.insert(0, '1', np.ones((df2_X.shape[0], 1)))
         df2_X_T = df2_X.values.transpose()
-        return np.linalg.inv(np.dot(df2_X_T, df2_X))
+        return np.linalg.pinv(np.dot(df2_X_T, df2_X))
 
     # обратная ковариационная матрица для расстояний Махалонобиса
     def get_cov_matrix_2(self, df_X):
