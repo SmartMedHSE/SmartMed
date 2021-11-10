@@ -592,7 +592,7 @@ class LogisticRegressionDashboard(Dashboard):
         cov_mat_2 = LinearRegressionModel.get_cov_matrix_2(self.predict.model,
                                                            self.predict.df_X_test)  # ков. матрица без единичного столбца
         for j in range(self.predict.df_X_test.shape[0]):
-            aa = self.predict.df_X_test.iloc[j, :]  # строка с признаками
+            aa = self.predict.df_X_test.iloc[j, :].to_list()  # строка с признаками
             meann = []  # список отличий от среднего
             for i in range(self.predict.df_X_test.shape[1]):
                 meann.append(mean_list[i] - aa[i])
