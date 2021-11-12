@@ -44,6 +44,8 @@ class PredictionDashboard(Dashboard):
             return ROC(self).get_layout()
         elif self.settings['model'] == 'polynomreg':
             return PolynomRegressionDashboard(self).get_layout()
+        elif self.settings['model'] == 'tree':
+            return TreeDashboard(self).get_layout()
         else:
             raise ModelChoiceException
 
@@ -1565,3 +1567,33 @@ class ROC(Dashboard):
         div_2_list = [div_2_title, div_2_markdown, div_2_roc, div_2_metrics]
 
         return html.Div(div_2_list, style={'margin': '50px'})
+
+
+class TreeDashboard(Dashboard):
+    def __init__(self, predict: PredictionDashboard):
+        Dashboard.__init__(self)
+        self.predict = predict
+
+    def get_layout(self):
+        return self._generate_layout()
+
+    def _generate_layout(self):
+        metrics_list = []
+        print(self.predict.settings)
+        # metrics_method = {
+        #     'model_quality': self._generate_quality(),
+        #     'signif': self._generate_signif(),
+        #     'resid': self._generate_resid(),
+        #     'equation': self._generate_equation(),
+        #     'distrib_resid': self._generate_distrib()
+        # }
+        # for metric in metrics_method:
+        #     if metric in self.predict.settings['metrics']:
+        #         metrics_list.append(metrics_method[metric])
+
+        # for metrics in self.predict.settings['metrics']:
+        #    metrics_list.append(metrics_method[metrics])
+
+        return html.Div([
+            html.Div(html.H1(children='Дерево классификации'), style={'text-align': 'center'}),
+            html.Div(metrics_list)])

@@ -14,7 +14,6 @@ from .dataprep import PandasPreprocessor
 class PredictionModule(Module, PredictionDashboard):
 
     def _prepare_data(self):
-
         prep = {'fillna': self.settings['preprocessing'],
                 'encoding': 'label_encoding',
                 'scaling': False}
@@ -112,27 +111,27 @@ class PredictionModule(Module, PredictionDashboard):
 
             #self.df_Y = self.pp.df[self.settings['variable']]
             df_Y = self.pp.df[self.settings['variable']]
-            print('first', type(df_Y), df_Y.dtype, df_Y.nunique())
-            print(df_Y)
+            #print('first', type(df_Y), df_Y.dtype, df_Y.nunique())
+            #print(df_Y)
             if df_Y.nunique() == 2:
-                print('12')
+                #print('12')
                 self.df_Y = df_Y
             else:
                 if df_Y.dtype not in numerics_list:
-                    print('23')
+                    #print('23')
                     labelencoder = sp.LabelEncoder()
                     df_Y = labelencoder.fit_transform(df_Y)
                 mean_Y = df_Y.mean()
                 df_Y1 = df_Y
-                print('type', type(df_Y1))
+                #print('type', type(df_Y1))
                 for i in range(len(df_Y)):
                     if df_Y[i] < mean_Y:
                         df_Y1[i] = 0
                     else:
                         df_Y1[i] = 1
                 self.df_Y = pd.Series(df_Y1)
-                print('second', type(self.df_Y), self.df_Y.dtype, self.df_Y.nunique())
-                print(self.df_Y)
+                #print('second', type(self.df_Y), self.df_Y.dtype, self.df_Y.nunique())
+                #print(self.df_Y)
             settings = self._init_settings('logreg')
         elif self.settings['model'] == 'roc':
             numerics_list = {'int16', 'int32', 'int', 'float', 'bool',
@@ -264,6 +263,65 @@ class PredictionModule(Module, PredictionDashboard):
             }
             settings['data'] = dict_pp
 
+        elif self.settings['model'] == 'tree':
+            self.df_Y = self.pp.df[self.settings['variable']]
+
+            numerics_list = {'int16', 'int32', 'int', 'float', 'bool',
+                             'int64', 'float16', 'float32', 'float64'}
+
+            if self.df_Y.dtype not in numerics_list:
+                labelencoder = sp.LabelEncoder()
+                self.df_Y = labelencoder.fit_transform(self.df_Y)
+
+            dfX_train, dfX_test, dfY_train, dfY_test = sm.train_test_split(self.df_X, self.df_Y, test_size=0.3,
+                                                                           random_state=42)
+            self.df_X_train = dfX_train
+            self.df_X_test = dfX_test
+            self.df_Y_train = dfY_train
+            self.df_Y_test = dfY_test
+            self.model = ModelManipulator(
+                x=self.df_X_train, y=self.df_Y_train, model_type='tree').create()
+            self.model.fit()
+            self.mean = sum(dfY_test) / len(dfY_test)
+
+            settings['path'] = []
+            settings['preprocessing'] = []
+            settings['model'] = []
+            settings['metrics'] = []
+            settings['graphs'] = []
+            settings['tables'] = []
+            settings['y'] = []
+            settings['x'] = self.pp.df.columns.tolist()
+
+            for metric in self.settings.keys():
+                if metric == 'model':
+                    settings['model'] = self.settings['model']
+                elif metric == 'path':
+                    settings['path'] = self.settings['path']
+                elif metric == 'preprocessing':
+                    settings['preprocessing'] = self.settings['preprocessing']
+                elif metric == 'variable':
+                    settings['y'] = self.settings['variable']
+                    settings['x'].remove(self.settings['variable'])
+                elif metric == 'tree':
+                    settings['graphs'].append(metric)
+                elif metric == 'table' or metric == 'indicators':
+                    settings['tables'].append(metric)
+                elif self.settings[metric]:
+                    settings['metrics'].append(metric)
+
+            prep = {'fillna': self.settings['preprocessing'],
+                    'encoding': 'label_encoding',
+                    'scaling': False}
+            dict_pp = {
+                'preprocessing': prep,
+                'path': self.settings['path'],
+                'fillna': self.settings['preprocessing']
+            }
+            settings['data'] = dict_pp
+        print('!!!!!!!!!!!!!!!!!!!!!!')
+        print(settings)
+        print('!!!!!!!!!!!!!!!!!!!!!!')
         return settings
 
     def _prepare_dashboard(self):
