@@ -1,19 +1,14 @@
 import pickle
-import time
-import os
-import sys
 import threading
 
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox)
 from PyQt5.QtCore import QTimer, QEventLoop
 
 from .VisualizationWindow import VisualizationWindow
 from ..WaitingSpinnerWidget import QtWaitingSpinner
 from ..utils import remove_if_exists
 
-from SmartMedApp.backend import ModuleManipulator
+from backend import ModuleManipulator
 
 
 class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
@@ -32,6 +27,7 @@ class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
             'box': True,
             'piechart': True,
             'dotplot': True,
+            'multihist': True,
         }
         self.checkBoxPie.setChecked(True)
         self.checkBoxLinear.setChecked(True)
@@ -43,6 +39,7 @@ class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
         self.checkBoxScatter.setChecked(True)
         self.checkBoxDot.setChecked(True)
         self.checkBoxBar.setChecked(True)
+        self.checkMultiHist.setChecked(True)
         self.__build_buttons()
 
     def __build_buttons(self):
@@ -57,6 +54,7 @@ class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
         self.checkBoxHist.clicked.connect(self.check_hist)
         self.checkBoxBox.clicked.connect(self.check_box)
         self.checkBoxDot.clicked.connect(self.check_dot)
+        self.checkMultiHist.clicked.connect(self.check_multi_hist)
 
     def back(self):
 
@@ -162,3 +160,11 @@ class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
         else:
             self.checkBoxPie.setChecked(False)
             self.settings['piechart'] = False
+
+    def check_multi_hist(self):
+        if self.checkMultiHist.isChecked():
+            self.checkMultiHist.setChecked(True)
+            self.settings['multihist'] = True
+        else:
+            self.checkMultiHist.setChecked(False)
+            self.settings['multihist'] = False
