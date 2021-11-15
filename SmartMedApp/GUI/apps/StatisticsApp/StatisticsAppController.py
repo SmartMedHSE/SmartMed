@@ -2,6 +2,7 @@ from .WrappedPreprocessingWindow import WrappedPreprocessingWindow
 from .WrappedMetricsWindow import WrappedMetricsWindow
 from .WrappedVisualizationWindow import WrappedVisualizationWindow
 from .WrappedPrepWindow import WrappedRadioWindow
+from .WrappedTaskWindow import WrappedTaskWindow
 #from..StartingApp.WrappedStartingWindow import WrappedStartingWindow
 
 # logging decorator
@@ -15,12 +16,14 @@ class StatisticsApp():
         self.settings = {}
         self.menu_window = menu_window
         self.down_window = WrappedPreprocessingWindow()
+        self.task_window = WrappedTaskWindow()
         self.metrics_window = WrappedMetricsWindow()
         self.graphs_window = WrappedVisualizationWindow()
         self.prep_window = WrappedRadioWindow()
 
         self.__build_connections(
             [self.menu_window, self.down_window, self.prep_window, self.metrics_window, self.graphs_window])
+
 
     @debug
     def __build_connections(self, ordered_windows):
