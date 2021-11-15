@@ -6,7 +6,7 @@ from .WrappedTaskWindow import WrappedTaskWindow
 #from..StartingApp.WrappedStartingWindow import WrappedStartingWindow
 
 # logging decorator
-from SmartMedApp.logs.logger import debug
+from logs.logger import debug
 
 
 class StatisticsApp():
