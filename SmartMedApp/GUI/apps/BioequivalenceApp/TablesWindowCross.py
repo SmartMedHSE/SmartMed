@@ -21,7 +21,7 @@ class TablesWindowCross(object):
         self.label_2.setGeometry(QtCore.QRect(70, 20, 461, 71))
         self.label_2.setObjectName("label_2")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(100, 130, 449, 181))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(100, 130, 499, 181))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -49,7 +49,7 @@ class TablesWindowCross(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt;\">Выберите нужные таблицы</span></p></body></html>"))
+        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:13pt;\">Выберите нужные таблицы</span></p></body></html>"))
         self.checkBoxCriteria.setText(_translate("MainWindow", "  Средние площади под графиком по каждому препарату "))
         self.checkBoxFeatures.setText(_translate("MainWindow", "  Результаты двухфакторного дисперсионного анализа"))
         self.checkBox.setText(_translate("MainWindow", "  Результаты оценки биоэквивалентности"))

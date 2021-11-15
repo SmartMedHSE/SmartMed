@@ -36,8 +36,7 @@ class StatisticsDashboard(Dashboard):
             for i in range(len(df)):
                 df.iloc[i, j] = float('{:.3f}'.format(float(df.iloc[i, j])))
         if len(df.columns) <= 5:
-            return html.Div([html.Div(html.H1(children='Описательная таблица'), 
-                style={'text-align':'center'}),
+            return html.Div([html.Div(html.H1(children='Описательная таблица'), style={'text-align':'center'}),
                 html.Div([
                 html.Div([
                     html.Div([dash_table.DataTable(
@@ -46,17 +45,14 @@ class StatisticsDashboard(Dashboard):
                         data=df.to_dict('records'),
                         style_table={'overflowX': 'auto'},
                         export_format='xlsx'
-                    )],style={'border-color': 'rgb(220, 220, 220)',
-                    'border-style': 'solid','padding':'5px','margin':'5px'})],
+                    )],style={'border-color': 'rgb(220, 220, 220)','border-style': 'solid','padding':'5px','margin':'5px'})],
                     style={'width': len_t, 'display': 'inline-block'}),
-                    html.Div(dcc.Markdown(children=markdown_text_table), 
-                        style={'width': len_text, 'float': 'right', 'display': 'inline-block'})
+                    html.Div(dcc.Markdown(children=markdown_text_table), style={'width': len_text, 'float': 'right', 'display': 'inline-block'})
                     ])
                 ], style={'margin':'50px'}
             )
         else:
-            return html.Div([html.Div(html.H1(children='Описательная таблица'), 
-                style={'text-align':'center'}),
+            return html.Div([html.Div(html.H1(children='Описательная таблица'), style={'text-align':'center'}),
                 dcc.Markdown(children=markdown_text_table),
                     html.Div([dash_table.DataTable(
                         id='table',
@@ -64,8 +60,7 @@ class StatisticsDashboard(Dashboard):
                         data=df.to_dict('records'),
                         style_table={'overflowX': 'auto'},
                         export_format='xlsx'
-                )],style={'border-color':'rgb(220, 220, 220)',
-                    'border-style': 'solid','padding':'5px','margin':'5px'})
+                )],style={'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px','margin':'5px'})
                 ], style={'margin':'50px'}
             )
 
@@ -112,16 +107,13 @@ class StatisticsDashboard(Dashboard):
                     )
                 ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
             ], style={'padding': '5px'}),
-            dcc.Graph(id='linear_graph')], 
-            style={'width': '78%', 'display': 'inline-block','border-color': 'rgb(220, 220, 220)',
-            'border-style': 'solid','padding':'5px'}),
-            html.Div(dcc.Markdown(children=markdown_text_lin), 
-                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-            style={'margin':'100px'}
+            dcc.Graph(id='linear_graph')], style={'width': '78%', 'display': 'inline-block','border-color': 'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
+            html.Div(dcc.Markdown(children=markdown_text_lin), style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], style={'margin':'100px'}
         )
 
     def _generate_scatter(self):
         df = self.pp.get_numeric_df(self.settings['data']).copy()
+        #df.rename(columns=lambda x: x[:11], inplace=True)
         fig = px.scatter_matrix(df, height=700)
         fig.update_xaxes(tickangle=90)
         for annotation in fig['layout']['annotations']: 
@@ -131,10 +123,8 @@ class StatisticsDashboard(Dashboard):
                 html.Div(dcc.Graph(
                     id='scatter_matrix',
                     figure=fig
-                ),style={'width': '78%', 'display': 'inline-block',
-                'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
-                html.Div(dcc.Markdown(children=markdown_text_scatter), 
-                    style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
+                ),style={'width': '78%', 'display': 'inline-block','border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
+                html.Div(dcc.Markdown(children=markdown_text_scatter), style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
             ], style={'margin':'100px'})
 
 
@@ -142,6 +132,7 @@ class StatisticsDashboard(Dashboard):
         df = self.pp.get_numeric_df(self.settings['data']).copy()
         numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
         df = df.select_dtypes(include=numerics)
+        #df.rename(columns=lambda x: x[:11], inplace=True)
         fig = px.imshow(df)
         fig.update_yaxes(title='Индекс записи в датасете')
         return html.Div([html.Div(html.H1(children='Хитмап'), style={'text-align':'center'}),
@@ -149,15 +140,15 @@ class StatisticsDashboard(Dashboard):
                 html.Div(dcc.Graph(
                     id='heatmap',
                     figure=fig
-                ),style={'width': '78%', 'display': 'inline-block',
-                'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
-                html.Div(dcc.Markdown(children=markdown_text_heatmap), 
-                    style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
+                ),style={'width': '78%', 'display': 'inline-block','border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
+                html.Div(dcc.Markdown(children=markdown_text_heatmap), style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
             ], style={'margin':'100px'})
 
 
     def _generate_corr(self, max_rows=10):
         df = self.pp.get_numeric_df(self.settings['data'])
+        #df.rename(columns=lambda x: x[:11], inplace=True)
+
         df = df.corr()
         cols = df.columns
         len_t = str(len(df.columns)*10 + 10)+'%'
@@ -166,8 +157,7 @@ class StatisticsDashboard(Dashboard):
             for i in range(len(df)):
                 df.iloc[i, j] = float('{:.3f}'.format(float(df.iloc[i, j])))
         if len(df.columns) <= 5:
-            return html.Div([html.Div(html.H1(children='Таблица корреляций'), 
-                style={'text-align':'center'}),
+            return html.Div([html.Div(html.H1(children='Таблица корреляций'), style={'text-align':'center'}),
                 html.Div([
                 html.Div([
                     html.Div([dash_table.DataTable(
@@ -176,17 +166,14 @@ class StatisticsDashboard(Dashboard):
                         data=df.to_dict('records'),
                         style_table={'overflowX': 'auto'},
                         export_format='xlsx'
-                        )],style={'border-color':'rgb(220, 220, 220)',
-                    'border-style': 'solid','padding':'5px'})],
+                        )],style={'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'})],
                     style={'width': len_t, 'display': 'inline-block'}),
-                    html.Div(dcc.Markdown(children=markdown_text_corr), 
-                        style={'width': len_text, 'float': 'right', 'display': 'inline-block'})
+                    html.Div(dcc.Markdown(children=markdown_text_corr), style={'width': len_text, 'float': 'right', 'display': 'inline-block'})
                     ])
                 ], style={'margin':'50px'}
             )
         else:
-            return html.Div([html.Div(html.H1(children='Таблица корреляций'), 
-                style={'text-align':'center'}),
+            return html.Div([html.Div(html.H1(children='Таблица корреляций'), style={'text-align':'center'}),
                 dcc.Markdown(children=markdown_text_corr),
                     html.Div([dash_table.DataTable(
                         id='corr',
@@ -194,14 +181,14 @@ class StatisticsDashboard(Dashboard):
                         data=df.to_dict('records'),
                         style_table={'overflowX': 'auto'},
                         export_format='xlsx')
-                    ],style={'border-color':'rgb(192, 192, 192)',
-                    'border-style': 'solid','padding':'5px'})  
+                    ],style={'border-color':'rgb(192, 192, 192)','border-style': 'solid','padding':'5px'})  
                 ], style={'margin':'50px'}
             )
 
 
     def _generate_box(self):
         df = self.pp.get_numeric_df(self.settings['data'])
+        #df.rename(columns=lambda x: x[:11], inplace=True)
         fig = px.box(df)
         fig.update_xaxes(title='Переменные')
         fig.update_yaxes(title='Значения квантилей')
@@ -210,10 +197,8 @@ class StatisticsDashboard(Dashboard):
                 html.Div(dcc.Graph(
                     id='box',
                     figure=fig
-                ),style={'width': '78%', 'display': 'inline-block',
-                'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
-                html.Div(dcc.Markdown(children=markdown_text_box), 
-                    style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
+                ),style={'width': '78%', 'display': 'inline-block','border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
+                html.Div(dcc.Markdown(children=markdown_text_box), style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
             ], style={'margin':'100px'})
 
 
@@ -291,11 +276,8 @@ class StatisticsDashboard(Dashboard):
                     )
                 ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
             ], style={'padding': '5px'}),
-            dcc.Graph(id='log_graph')], style={'width': '78%', 'display': 'inline-block',
-            'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
-            html.Div(dcc.Markdown(children=markdown_text_log), 
-                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-            style={'margin':'100px'}
+            dcc.Graph(id='log_graph')], style={'width': '78%', 'display': 'inline-block','border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
+            html.Div(dcc.Markdown(children=markdown_text_log), style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], style={'margin':'100px'}
         )
 
 
@@ -323,8 +305,7 @@ class StatisticsDashboard(Dashboard):
         df = self.pp.get_numeric_df(self.settings['data'])
         available_indicators = df.columns.unique()
 
-        return html.Div([html.Div(html.H1(children='Линейный/логарифмический график'), 
-            style={'text-align':'center'}),
+        return html.Div([html.Div(html.H1(children='Линейный/логарифмический график'), style={'text-align':'center'}),
             html.Div([
             html.Div([
                         html.Div([
@@ -358,11 +339,8 @@ class StatisticsDashboard(Dashboard):
                             )
                         ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
                         ], style={'padding': '5px'}),
-            dcc.Graph(id='linlog_graph')], style={'width': '78%', 'display': 'inline-block',
-            'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
-            html.Div(dcc.Markdown(children=markdown_text_linlog), 
-                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
-            style={'margin':'100px'}
+            dcc.Graph(id='linlog_graph')], style={'width': '78%', 'display': 'inline-block','border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
+            html.Div(dcc.Markdown(children=markdown_text_linlog), style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], style={'margin':'100px'}
 
         )
 
@@ -386,8 +364,7 @@ class StatisticsDashboard(Dashboard):
         
 
         if df.size > 0:
-            return html.Div([html.Div(html.H1(children='Круговая диаграмма'), 
-                style={'text-align': 'center'}),
+            return html.Div([html.Div(html.H1(children='Круговая диаграмма'), style={'text-align': 'center'}),
                          html.Div([
                              html.Div([
                                  html.Div([
@@ -434,6 +411,7 @@ class StatisticsDashboard(Dashboard):
                 df,
                 x=xaxis_column_name_dotplot,
                 y=yaxis_column_name_dotplot,
+                #title=xaxis_column_name_dotplot,
                 labels={"xaxis_column_name_dotplot": "yaxis_column_name_dotplot"}
             )
 
@@ -444,8 +422,7 @@ class StatisticsDashboard(Dashboard):
                               dash.dependencies.Input('yaxis_column_name_dotplot', 'value'))(update_dot)
 
         if df_cat.size > 0:
-            return html.Div([html.Div(html.H1(children='Точечная диаграмма'), 
-                style={'text-align': 'center'}),
+            return html.Div([html.Div(html.H1(children='Точечная диаграмма'), style={'text-align': 'center'}),
                          html.Div([
                             html.Div([
                                 html.Div([

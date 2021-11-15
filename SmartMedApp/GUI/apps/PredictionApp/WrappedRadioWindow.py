@@ -6,18 +6,18 @@ from PyQt5.QtWidgets import (
 from .RadioWindow import RadioWindow
 
 
-class WrappedRadioWindow(RadioWindow, QtWidgets.QMainWindow):
 
+class WrappedRadioWindow(RadioWindow, QtWidgets.QMainWindow):
+   
     def __init__(self):
         super().__init__()
         self.setupUi(self)
         self.__build_buttons()
         self.setWindowTitle('Предобработка данных')
-        self.comboBox.addItems(["Средним/модой (численные/категориальные значения)",
-                                "Введенным значением (требуется ввод для каждого столбца отдельно)",
-                                "Удаление строк с пропущенными значениями",
-                                "Медианной/модой (численные/категориальные значения)"
-                                ])
+        self.comboBox.addItems(["Средним/модой",
+                                 "Удаление строк",
+                                 "Медианной/модой"
+                                 ])
         self.settings = {'preprocessing': {
             'fillna': 'mean',
             'encoding': 'label_encoding',
@@ -37,8 +37,6 @@ class WrappedRadioWindow(RadioWindow, QtWidgets.QMainWindow):
         value_na = self.comboBox.currentText()
         if value_na == 'средним/модой (аналогично)':
             self.settings['preprocessing'] = 'mean'
-        elif value_na == 'заданным значием (требуется ввод для каждого столбца отдельно)':
-            self.settings['preprocessing'] = 'exact_value'
         elif value_na == 'откидывание строк с пропущенными значениями':
             self.settings['preprocessing'] = 'dropna'
         else:
@@ -50,3 +48,4 @@ class WrappedRadioWindow(RadioWindow, QtWidgets.QMainWindow):
             pickle.dump(data, f)
         self.hide()
         self.child.show()
+

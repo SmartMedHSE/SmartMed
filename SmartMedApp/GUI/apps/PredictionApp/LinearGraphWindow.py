@@ -21,7 +21,7 @@ class LinearGraphWindow(object):
         self.label.setGeometry(QtCore.QRect(70, 30, 511, 41))
         self.label.setObjectName("label")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(110, 120, 418, 211))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(110, 120, 488, 211))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
@@ -55,7 +55,7 @@ class LinearGraphWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt;\">Выберите таблицы и графики</span></p></body></html>"))
+        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:13pt;\">Выберите таблицы и графики</span></p></body></html>"))
         self.checkBoxQuality.setText(_translate("MainWindow", "  Таблица с критериями качества построенной модели"))
         self.checkBoxSignif.setText(_translate("MainWindow", "  Таблица с критериями значимости для каждой \n "
 " независимой переменной"))
