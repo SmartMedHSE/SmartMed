@@ -1,6 +1,7 @@
 import numpy as np
 
 from .models import *
+from .models.TreeModel import TreeModel
 
 
 class ModelChooseException(Exception):
@@ -19,6 +20,9 @@ class ModelManipulator():
 
         elif model_type == 'polyreg':
             self.model = PolynomialRegressionModel(x, y)
+
+        elif model_type == 'tree':
+            self.model = TreeModel(x, y)
 
         else:
             raise ModelChooseException
