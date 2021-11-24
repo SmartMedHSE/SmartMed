@@ -14,7 +14,7 @@ def requesting():
         data_json = request.json
         print(data_json)    
         #ModuleManipulator(data_json).start() 
-    return None
+    return 'get'
 
 
 
