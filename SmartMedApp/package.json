@@ -7,7 +7,8 @@
     "test": "echo 0",
     "start-python": "python3 __main__.py",
     "start-electron": "electron .",
-    "dev": "npm-run-all --parallel start-electron start-python",
+    "start-flask-request": "python3 request.py",
+    "dev": "npm-run-all --parallel start-electron start-python start-flask-request",
     "build": "npx webpack --progress --mode=development",
     "build:watch": "npx webpack --progress -w --mode=development"
   },
