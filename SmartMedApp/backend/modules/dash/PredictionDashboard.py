@@ -10,6 +10,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
 import sklearn.metrics as sm
+from sklearn import tree
 import pandas as pd
 import scipy.stats as sps
 from scipy.sparse import issparse
@@ -19,14 +20,21 @@ from sklearn.preprocessing import KBinsDiscretizer
 import plotly.graph_objects as go
 import plotly.express as px
 
+import matplotlib.pyplot as plt
+from graphviz import Source
+from PIL import Image
+from sklearn.utils.validation import check_is_fitted
+
 from .text.linear_text import *
 from .text.roc_text import *
+from .text.tree_text import *
 
 from .DashExceptions import ModelChoiceException
 from .Dashboard import Dashboard
 
 from ..models.LinearRegressionModel import *
 from ..models.LogisticRegressionModel import *
+from ..models.TreeModel import *
 
 
 class PredictionDashboard(Dashboard):
@@ -1579,21 +1587,78 @@ class TreeDashboard(Dashboard):
 
     def _generate_layout(self):
         metrics_list = []
-        print(self.predict.settings)
-        # metrics_method = {
-        #     'model_quality': self._generate_quality(),
-        #     'signif': self._generate_signif(),
-        #     'resid': self._generate_resid(),
-        #     'equation': self._generate_equation(),
-        #     'distrib_resid': self._generate_distrib()
-        # }
-        # for metric in metrics_method:
-        #     if metric in self.predict.settings['metrics']:
-        #         metrics_list.append(metrics_method[metric])
-
-        # for metrics in self.predict.settings['metrics']:
-        #    metrics_list.append(metrics_method[metrics])
+        metrics_method = {
+            'tree': self._generate_tree_graph(),
+            'table': self._generate_table(),
+            'indicators': self._generate_indicators()
+        }
+        for metric in metrics_method:
+            if metric in self.predict.settings['metrics']:
+                metrics_list.append(metrics_method[metric])
 
         return html.Div([
             html.Div(html.H1(children='Дерево классификации'), style={'text-align': 'center'}),
-            html.Div(metrics_list)])
+            html.Div(metrics_list)], style={'margin': '50px'})
+
+    def _generate_tree_graph(self):
+        fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(4, 4), dpi=800)
+        #self.predict.model.fit()
+        #TreeModel.fit(self.predict.model)
+        tree.plot_tree(self.predict.model, filled=True)
+        #graph = Source(tree.export_graphviz(self.predict.model, out_file=None, filled=True))
+        fig.savefig('tree.png')
+        #graph.format = 'png'
+        #path = graph.render('dtree_render', view=True)
+        img = Image.open('tree.png')
+        return html.Div([html.Div(html.H2(children='Графическое представление дерева'), style={'text-align': 'center'}),
+                         html.Div([html.Div(html.Img(src=img,
+                                                     style={'width': '80%', 'display': 'inline-block'})),
+                             html.Div(dcc.Markdown(markdown_tree_graph))],  # style={'margin': '50px'},
+                             style={'width': '78%', 'display': 'inline-block',
+                                    'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
+                         ], style={'margin': '50px'})
+
+    def _generate_table(self):
+        df_Y = self.predict.df_Y_test
+        predict_Y = TreeModel.predict(self.predict.model, self.predict.df_X_test)
+        df = pd.DataFrame(
+            {'Наблюдаемые показатели': df_Y,
+             'Предсказание': predict_Y
+             })
+
+        return html.Div([html.Div([
+                html.Div(html.H4(children='Классификационная таблица'),
+                         style={'text-align': 'center'}),
+                html.Div([
+                    html.Div(dash_table.DataTable(
+                        id='table_results_1',
+                        columns=[{"name": i, "id": i}
+                                 for i in df.columns],
+                        data=df.to_dict('records'),
+                        export_format='csv'
+                    ), style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'text-align': 'center',
+                              'width': str(len(df.columns) * 10 - 10) + '%', 'display': 'inline-block'}),
+                    html.Div(dcc.Markdown(markdown_results_table))])
+            ], style={'width': '78%', 'display': 'inline-block',
+                      'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
+            ], style={'margin': '50px'})
+
+    def _generate_indicators(self):
+        score = round(TreeModel.score(self.predict.model), 3)
+        df = pd.DataFrame(columns=['Accuracy'], data=[score])
+        return html.Div([ html.Div([
+            html.Div(html.H4(children='Показатели качества построенного дерева'),
+                     style={'text-align': 'center'}),
+            html.Div([
+                html.Div(dash_table.DataTable(
+                    id='table_quality',
+                    columns=[{"name": i, "id": i}
+                             for i in df.columns],
+                    data=df.to_dict('records'),
+                    export_format='csv'
+                ), style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'text-align': 'center',
+                          'width': str(len(df.columns) * 10 - 10) + '%', 'display': 'inline-block'}),
+                html.Div(dcc.Markdown(markdown_quality))])
+        ], style={'width': '78%', 'display': 'inline-block',
+                  'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
+            ], style={'margin': '50px'})

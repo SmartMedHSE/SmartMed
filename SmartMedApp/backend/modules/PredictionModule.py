@@ -279,8 +279,10 @@ class PredictionModule(Module, PredictionDashboard):
             self.df_X_test = dfX_test
             self.df_Y_train = dfY_train
             self.df_Y_test = dfY_test
+            extra_param = np.array([self.settings['tree_depth'], self.settings['samples'],
+                                    self.settings['features_count']]).astype(int)
             self.model = ModelManipulator(
-                x=self.df_X_train, y=self.df_Y_train, model_type='tree').create()
+                x=self.df_X_train, y=self.df_Y_train, model_type='tree', extra_param=extra_param).create()
             self.model.fit()
             self.mean = sum(dfY_test) / len(dfY_test)
 
@@ -288,8 +290,7 @@ class PredictionModule(Module, PredictionDashboard):
             settings['preprocessing'] = []
             settings['model'] = []
             settings['metrics'] = []
-            settings['graphs'] = []
-            settings['tables'] = []
+            settings['features'] = []
             settings['y'] = []
             settings['x'] = self.pp.df.columns.tolist()
 
@@ -303,12 +304,10 @@ class PredictionModule(Module, PredictionDashboard):
                 elif metric == 'variable':
                     settings['y'] = self.settings['variable']
                     settings['x'].remove(self.settings['variable'])
-                elif metric == 'tree':
-                    settings['graphs'].append(metric)
-                elif metric == 'table' or metric == 'indicators':
-                    settings['tables'].append(metric)
-                elif self.settings[metric]:
+                elif metric == 'tree' or metric == 'table' or metric == 'indicators':
                     settings['metrics'].append(metric)
+                elif self.settings[metric]:
+                    settings['features'].append(metric)
 
             prep = {'fillna': self.settings['preprocessing'],
                     'encoding': 'label_encoding',
@@ -319,9 +318,7 @@ class PredictionModule(Module, PredictionDashboard):
                 'fillna': self.settings['preprocessing']
             }
             settings['data'] = dict_pp
-        print('!!!!!!!!!!!!!!!!!!!!!!')
         print(settings)
-        print('!!!!!!!!!!!!!!!!!!!!!!')
         return settings
 
     def _prepare_dashboard(self):
