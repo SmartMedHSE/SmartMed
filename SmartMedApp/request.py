@@ -1,7 +1,8 @@
 import requests
 from flask import Flask, request, abort
-
-#from SmartMedApp.backend.ModuleManipulator import ModuleManipulator
+import sys
+sys.path.append('C:\\Users\\egorl\\Desktop\\SmartMed-1')
+from SmartMedApp.backend.ModuleManipulator import ModuleManipulator
 
 app = Flask(__name__)
 
@@ -13,7 +14,7 @@ def requesting():
     if request.method == 'POST':
         data_json = request.json
         print(data_json)    
-        #ModuleManipulator(data_json).start() 
+        ModuleManipulator(data_json).start() 
     return 'get'
 
 
