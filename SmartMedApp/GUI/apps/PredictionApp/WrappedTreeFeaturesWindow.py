@@ -41,6 +41,9 @@ class WrappedTreeFeaturesWindow(TreeFeaturesWindow, QtWidgets.QMainWindow):
         features_count = self.lineEdit_3.text()
         with open('settings.py', 'rb') as f:
             data = pickle.load(f)
+            col = data['MODULE_SETTINGS']['columns'].to_list()
+            if int(features_count) > len(col) - 1:
+                features_count = str(len(col) - 1)
             data['MODULE_SETTINGS'].update({'tree_depth': depth,
                                             'samples': min_sample_number,
                                             'features_count': features_count})

@@ -1601,12 +1601,21 @@ class TreeDashboard(Dashboard):
             html.Div(metrics_list)], style={'margin': '50px'})
 
     def _generate_tree_graph(self):
+<<<<<<< HEAD
+        #fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(4, 4), dpi=800)
+        #self.predict.model.fit()
+        #TreeModel.fit(self.predict.model)
+        #tree.plot_tree(self.predict.model, filled=True)
+        #graph = Source(tree.export_graphviz(self.predict.model, out_file=None, filled=True))
+        #fig.savefig('tree.png')
+=======
         fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(4, 4), dpi=800)
         #self.predict.model.fit()
         #TreeModel.fit(self.predict.model)
         tree.plot_tree(self.predict.model, filled=True)
         #graph = Source(tree.export_graphviz(self.predict.model, out_file=None, filled=True))
         fig.savefig('tree.png')
+>>>>>>> check_settings
         #graph.format = 'png'
         #path = graph.render('dtree_render', view=True)
         img = Image.open('tree.png')

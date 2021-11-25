@@ -44,6 +44,7 @@ class WrappedChoiceWindow(ChoiceWindow, QtWidgets.QMainWindow):
         with open('settings.py', 'rb') as f:
             data = pickle.load(f)
         col = data['MODULE_SETTINGS']['columns']
+
         self.child_linear.comboBox.addItems(col)
         self.child_roc.comboBox.addItems(col)
         self.child_tree.comboBox.addItems(col)
