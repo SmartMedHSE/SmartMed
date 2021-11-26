@@ -1,6 +1,7 @@
 import requests
 from flask import Flask, request, abort
 import sys
+import threading
 sys.path.append('C:\\Users\\egorl\\Desktop\\SmartMed-1')
 from SmartMedApp.backend.ModuleManipulator import ModuleManipulator
 
@@ -13,8 +14,10 @@ app = Flask(__name__)
 def requesting():
     if request.method == 'POST':
         data_json = request.json
+        data_json['MODULE_SETTINGS']['data']['path'] = 'C:\\Users\\egorl\\Desktop\\Глаукому.xlsx'
         print(data_json)    
-        ModuleManipulator(data_json).start() 
+        module_starter = ModuleManipulator(data_json)
+        threading.Thread(target=module_starter.start, daemon=True).start()
     return 'get'
 
 
