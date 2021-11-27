@@ -6,6 +6,7 @@ import socket
 import dash
 from logs.logger import debug
 
+from logs.logger import debug
 
 def is_port_in_use(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
