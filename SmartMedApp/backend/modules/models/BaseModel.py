@@ -11,12 +11,12 @@ class BaseModel(Model):
 
     def __init__(self, math_model_class, x, y, extra_param=None):
 
-        if extra_param is not None:
-            if math_model_class == DecisionTreeClassifier:
-                self.model = math_model_class(max_depth=extra_param[0], min_samples_split=extra_param[1],
-                                              max_features=extra_param[2])
+        if math_model_class == DecisionTreeClassifier:
+            self.model = math_model_class(max_depth=extra_param[0], min_samples_split=extra_param[1],
+                                          max_features=extra_param[2])
         else:
             self.model = math_model_class()
+        self.math_model_class = math_model_class
         super().__init__(x, y)
 
     def score(self) -> float:
@@ -154,3 +154,9 @@ class BaseModel(Model):
         p_values = [2 * (1 - stats.t.cdf(np.abs(i), (len(newX) -
                                                      len(newX.columns) - 1))) for i in def_t_stat]
         return p_values
+
+    def get_classes(self):
+        if self.math_model_class == DecisionTreeClassifier:
+            return self.model.classes_
+        else:
+            return 0
