@@ -3,6 +3,7 @@ from typing import Dict
 
 from logs.logger import debug
 
+from logs.logger import debug
 
 class Module(ABC):
 
