@@ -15,15 +15,14 @@ import pandas as pd
 import scipy.stats as sps
 from scipy.sparse import issparse
 from sklearn.feature_selection import chi2
+from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import KBinsDiscretizer
 
 import plotly.graph_objects as go
 import plotly.express as px
 
 import matplotlib.pyplot as plt
-from graphviz import Source
 from PIL import Image
-from sklearn.utils.validation import check_is_fitted
 
 from .text.linear_text import *
 from .text.roc_text import *
@@ -1645,11 +1644,12 @@ class TreeDashboard(Dashboard):
         ], style={'margin': '50px'})
 
     def _generate_indicators(self):
-        # Accuracy
-        score = round(TreeModel.score(self.predict.model), 3)
-        # Энтропийный индекс неоднородности
         predict_Y = TreeModel.predict(self.predict.model, self.predict.df_X_test)
         classes = TreeModel.get_classes(self.predict.model)
+        df_Y = self.predict.df_Y_test
+        # Score
+        accuracy = round(accuracy_score(predict_Y, df_Y), 3)
+        # Энтропийный индекс неоднородности
         dict_frequency = {i: 0 for i in classes}
         for el in predict_Y:
             dict_frequency[el] += 1
@@ -1664,10 +1664,32 @@ class TreeDashboard(Dashboard):
         gini = np.round(1 - (frequency ** 2).sum(), 3)
         # Индекс ошибочной классификации
         index_wrong_classification = np.round(1 - max(frequency), 3)
-        # Table
-        df = pd.DataFrame({'Accuracy': score, 'Энтропийный индекс неоднородности': entropy_heterogeneity,
+        # Table 1
+        df = pd.DataFrame({'Score': accuracy, 'Энтропийный индекс неоднородности': entropy_heterogeneity,
                            'Индекс Джини': gini, 'Индекс ошибочной классификации': index_wrong_classification},
                           index=[0])
+        # Table if 2 classes
+        if len(classes) == 2:
+            tp = fn = fp = tn = 0
+            for i in range(len(df_Y)):
+                if df_Y[i] == 1:
+                    if predict_Y[i] == 1:
+                        tp += 1
+                    else:
+                        fn += 1
+                else:
+                    if predict_Y[i] == 1:
+                        fp += 1
+                    else:
+                        tn += 1
+            recall = round(tp / (tp + fn), 3)
+            precision = round(tp / (tp + fp), 3)
+            accuracy_2 = round((tp + tn) / (tp + fn + fp + tn), 3)
+            f1 = round(2 * (recall * precision) / (recall + precision), 3)
+            df = pd.DataFrame({'Accuracy': accuracy, 'Энтропийный индекс неоднородности': entropy_heterogeneity,
+                               'Индекс Джини': gini, 'Индекс ошибочной классификации': index_wrong_classification,
+                               'Полнота': recall, 'Тончость': precision, 'F1-мера': f1},
+                              index=[0])
         return html.Div([html.Div([
             html.Div(html.H4(children='Показатели качества построенного дерева'),
                      style={'text-align': 'center'}),
@@ -1678,8 +1700,7 @@ class TreeDashboard(Dashboard):
                              for i in df.columns],
                     data=df.to_dict('records'),
                     export_format='csv'
-                ), style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'text-align': 'center',
-                          'width': str(len(df.columns) * 10 - 10) + '%', 'display': 'inline-block'}),
+                )),
                 html.Div(dcc.Markdown(markdown_quality))])
         ], style={'width': '78%', 'display': 'inline-block',
                   'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
