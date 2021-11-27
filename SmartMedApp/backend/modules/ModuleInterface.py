@@ -3,7 +3,7 @@ from typing import Dict
 
 import sys
 
-from SmartMedApp.logs.logger import debug
+from logs.logger import debug
 
 
 class Module(ABC):

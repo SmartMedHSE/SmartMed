@@ -5,7 +5,7 @@ import socket
 import dash
 import webbrowser
 
-from SmartMedApp.logs.logger import debug
+from logs.logger import debug
 
 
 def is_port_in_use(port):
