@@ -8,7 +8,7 @@ import pandas as pd
 from sklearn import preprocessing
 
 # logging decorator
-from SmartMedApp.logs.logger import debug
+from logs.logger import debug
 
 
 class ExtentionFileException(Exception):

@@ -15,9 +15,9 @@ function createWindow() {
 
     void win.loadURL(`file://${path.join(__dirname, '../dist/index.html')}`);
     // Open the DevTools.
-    // if (isDev) {
-    //     win.webContents.openDevTools({ mode: 'detach' });
-    // }
+    if (isDev) {
+        win.webContents.openDevTools({ mode: 'detach' });
+    }
 }
 
 app.whenReady().then(() => {

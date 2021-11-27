@@ -6,7 +6,7 @@ import sys
 import dash
 import webbrowser
 
-from SmartMedApp.logs.logger import debug
+from logs.logger import debug
 
 
 class Dashboard(ABC):
