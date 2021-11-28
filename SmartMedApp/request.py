@@ -16,7 +16,7 @@ app = Flask(__name__)
 def requesting():
     if request.method == 'POST':
         data_json = request.json
-        data_json['MODULE_SETTINGS']['data']['path'] = 'C:\\Users\\egorl\\Desktop\\Глаукому.xlsx'
+        # data_json['MODULE_SETTINGS']['data']['path'] = 'C:\\Users\\egorl\\Desktop\\Глаукому.xlsx'
         module_starter = ModuleManipulator(data_json)
         threading.Thread(target=module_starter.start, daemon=True).start()
     return 'get'
