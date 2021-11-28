@@ -314,7 +314,8 @@ class PredictionModule(Module, PredictionDashboard):
                 elif metric == 'variable':
                     settings['y'] = self.settings['variable']
                     settings['x'].remove(self.settings['variable'])
-                elif metric == 'tree' or metric == 'table' or metric == 'indicators' or metric == 'distributions':
+                elif metric == 'tree' or metric == 'table' or metric == 'indicators' or metric == 'distributions' or \
+                        metric == 'prediction':
                     settings['metrics'].append(metric)
                 elif self.settings[metric]:
                     settings['features'].append(metric)

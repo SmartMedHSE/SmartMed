@@ -22,11 +22,13 @@ class WrappedTreeVisualWindow(TreeVisualWindow, QtWidgets.QMainWindow):
         self.settings = {'tree': True,
                          'table': True,
                          'indicators': True,
-                         'distributions': True}
+                         'distributions': True,
+                         'prediction': True}
         self.checkBoxTree.setChecked(True)
         self.checkBoxTablr.setChecked(True)
         self.checkBoxValue.setChecked(True)
         self.checkBoxDistributions.setChecked(True)
+        self.checkBoxPrediction.setChecked(True)
         self.setWindowTitle('Выбор графиков и таблиц')
 
     def __build_buttons(self):
@@ -36,6 +38,7 @@ class WrappedTreeVisualWindow(TreeVisualWindow, QtWidgets.QMainWindow):
         self.checkBoxTablr.clicked.connect(self.table)
         self.checkBoxValue.clicked.connect(self.indicators)
         self.checkBoxDistributions.clicked.connect(self.distributions)
+        self.checkBoxPrediction.clicked.connect(self.prediction)
 
     def tree(self):
         if self.checkBoxTree.isChecked():
@@ -68,6 +71,14 @@ class WrappedTreeVisualWindow(TreeVisualWindow, QtWidgets.QMainWindow):
         else:
             self.checkBoxDistributions.setChecked(False)
             self.settings['distributions'] = False
+
+    def prediction(self):
+        if self.checkBoxPrediction.isChecked():
+            self.checkBoxPrediction.setChecked(True)
+            self.settings['prediction'] = True
+        else:
+            self.checkBoxPrediction.setChecked(False)
+            self.settings['prediction'] = False
 
     def back(self):
         self.hide()
