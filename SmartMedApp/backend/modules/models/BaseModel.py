@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import sklearn.metrics as sm
 from scipy import stats
 import pandas as pd
@@ -94,7 +95,7 @@ class BaseModel(Model):
                 def_st += ' + ' + str(round(def_b[i], 3)) + 'X(' + str(i) + ')'
             else:
                 def_st += ' - ' + \
-                    str(round(abs(def_b[i]), 3)) + 'X(' + str(i) + ')'
+                          str(round(abs(def_b[i]), 3)) + 'X(' + str(i) + ')'
         def_st += ', где:'  # \nX(0)-константа'
         uravlist = [def_st]
         uravlist.append('\n')
@@ -142,7 +143,7 @@ class BaseModel(Model):
 
     def get_R2_adj(self, def_df_X, def_df_Y, def_predict_Y):  # R^2 adjusted
         return 1 - (1 - sm.r2_score(def_df_Y, def_predict_Y)) * (
-            (len(def_df_X) - 1) / (len(def_df_X) - def_df_X.shape[1] - 1))
+                (len(def_df_X) - 1) / (len(def_df_X) - def_df_X.shape[1] - 1))
 
     def get_Fst(self, def_df_X, def_df_Y, def_predict_Y):  # F-статистика
         r2 = sm.r2_score(def_df_Y, def_predict_Y)

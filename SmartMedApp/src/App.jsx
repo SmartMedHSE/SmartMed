@@ -1,9 +1,9 @@
 import * as React from 'react';
 
-import { Container } from '@material-ui/core';
+import {Container} from '@material-ui/core';
 
-import { DescriptiveAnalysis } from './components/DescriptiveAnalysis';
-import { Menu } from './components/Menu';
+import {DescriptiveAnalysis} from './components/DescriptiveAnalysis';
+import {Menu} from './components/Menu';
 
 import './styles/_styles.scss';
 
@@ -24,10 +24,10 @@ export class App extends React.Component {
      * @returns {JSX.Element}
      */
     detectPage = () => {
-        const { openPage } = this.state;
+        const {openPage} = this.state;
         switch (openPage) {
             case PAGES.DescriptiveAnalysis:
-                return <DescriptiveAnalysis onExit={() => this.setState({ openPage: 0 })}/>;
+                return <DescriptiveAnalysis onExit={() => this.setState({openPage: 0})}/>;
             case PAGES.Bioequivalence:
                 return (
                     <div>
@@ -43,7 +43,7 @@ export class App extends React.Component {
                     <Menu
                         onClick={(menuId) => {
                             if (PAGES.hasOwnProperty(menuId)) {
-                                this.setState({ openPage: PAGES[menuId] });
+                                this.setState({openPage: PAGES[menuId]});
                             }
                         }}
                     />
@@ -52,7 +52,7 @@ export class App extends React.Component {
     };
 
     render() {
-        const { openPage } = this.state;
+        const {openPage} = this.state;
         return (
             <div className="main">
                 <Container maxWidth="md">

@@ -1,17 +1,17 @@
-from .WrappedDesignWindow import WrappedDesignWindow
-from .WrappedDownloadWindow import WrappedDownloadWindow
-from .WrappedFinishWindow import WrappedFinishWindow
-from .WrappedTablesWindow import WrappedTablesWindow
-from .WrappedGraphsWindow import WrappedGraphsWindow
-from .WrappedUniformityWindow import WrappedUniformityWindow
-from .WrappedNormalityWindow import WrappedNormalityWindow
-from .WrappedDownloadWindowCross import WrappedDownloadWindowCross
-from .WrappedTablesWindowCross import WrappedTablesWindowCross
-from .WrappedGraphsWindowCross import WrappedGraphsWindowCross
-#from..StartingApp.WrappedStartingWindow import WrappedStartingWindow
-
 # logging decorator
 from SmartMedApp.logs.logger import debug
+from .WrappedDesignWindow import WrappedDesignWindow
+from .WrappedDownloadWindow import WrappedDownloadWindow
+from .WrappedDownloadWindowCross import WrappedDownloadWindowCross
+from .WrappedGraphsWindow import WrappedGraphsWindow
+from .WrappedGraphsWindowCross import WrappedGraphsWindowCross
+from .WrappedNormalityWindow import WrappedNormalityWindow
+from .WrappedTablesWindow import WrappedTablesWindow
+from .WrappedTablesWindowCross import WrappedTablesWindowCross
+from .WrappedUniformityWindow import WrappedUniformityWindow
+
+
+# from..StartingApp.WrappedStartingWindow import WrappedStartingWindow
 
 
 class BioequivalenceApp():

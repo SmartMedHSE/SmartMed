@@ -1,11 +1,4 @@
-import pickle
-
-from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox)
-
 from .StartingWindow import *
-from ..StatisticsApp.StatisticsAppController import StatisticsApp
 from ..BioequivalenceApp.BioequivalenceAppController import BioequivalenceApp
 from ..PredictionApp.PredictionAppController import PredictionApp
 from ..ComparativeApp.ComparativeAppController import ComparativeApp
@@ -14,8 +7,7 @@ from ..ComparativeApp.ComparativeAppController import ComparativeApp
 class WrappedStartingWindow(StartingWindow, QtWidgets.QMainWindow):
 
     def __init__(self):
-
-        #self.settings = {}
+        # self.settings = {}
         super().__init__()
         self.setupUi(self)
         self.__build_buttons()

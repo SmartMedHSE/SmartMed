@@ -1,10 +1,11 @@
 import dash
-import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
-from dash.exceptions import PreventUpdate
+import dash_table
+import numpy as np
+import pandas as pd
+import plotly.express as px
 import plotly.figure_factory as ff
-
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
@@ -12,8 +13,6 @@ import numpy as np
 from scipy.stats import variation
 
 from .text.markdown_stats import *
-
-from .Dashboard import Dashboard
 
 
 class StatisticsDashboard(Dashboard):
@@ -45,24 +44,24 @@ class StatisticsDashboard(Dashboard):
             for i in range(len(df)):
                 df.iloc[i, j] = float('{:.3f}'.format(float(df.iloc[i, j])))
         if len(df.columns) <= 5:
-            return html.Div([html.Div(html.H1(children='Описательная таблица'), 
-                style={'text-align':'center'}),
-                html.Div([
-                html.Div([
-                    html.Div([dash_table.DataTable(
-                        id='table',
-                        columns=[{"name": i, "id": i, "deletable":True} for i in df.columns],
-                        data=df.to_dict('records'),
-                        style_table={'overflowX': 'auto'},
-                        export_format='xlsx'
-                    )],style={'border-color': 'rgb(220, 220, 220)',
-                    'border-style': 'solid','padding':'5px','margin':'5px'})],
-                    style={'width': len_t, 'display': 'inline-block'}),
-                    html.Div(dcc.Markdown(children=markdown_text_table), 
-                        style={'width': len_text, 'float': 'right', 'display': 'inline-block'})
-                    ])
-                ], style={'margin':'50px'}
-            )
+            return html.Div([html.Div(html.H1(children='Описательная таблица'),
+                                      style={'text-align': 'center'}),
+                             html.Div([
+                                 html.Div([
+                                     html.Div([dash_table.DataTable(
+                                         id='table',
+                                         columns=[{"name": i, "id": i, "deletable": True} for i in df.columns],
+                                         data=df.to_dict('records'),
+                                         style_table={'overflowX': 'auto'},
+                                         export_format='xlsx'
+                                     )], style={'border-color': 'rgb(220, 220, 220)',
+                                                'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
+                                     style={'width': len_t, 'display': 'inline-block'}),
+                                 html.Div(dcc.Markdown(children=markdown_text_table),
+                                          style={'width': len_text, 'float': 'right', 'display': 'inline-block'})
+                             ])
+                             ], style={'margin': '50px'}
+                            )
         else:
             return html.Div([html.Div(html.H1(children='Описательная таблица'), 
                 style={'text-align':'center'}),
@@ -78,10 +77,9 @@ class StatisticsDashboard(Dashboard):
                 ], style={'margin':'50px'}
             )
 
-
     def _generate_linear(self):
 
-        def update_graph(xaxis_column_name, yaxis_column_name,):
+        def update_graph(xaxis_column_name, yaxis_column_name, ):
             fig = px.scatter(
                 self.settings['data'], x=xaxis_column_name, y=yaxis_column_name)
             fig.update_xaxes(title=xaxis_column_name,
@@ -95,39 +93,38 @@ class StatisticsDashboard(Dashboard):
                           [dash.dependencies.Input('xaxis_column_name', 'value'),
                            dash.dependencies.Input('yaxis_column_name', 'value')])(update_graph)
 
-
         df = self.pp.get_numeric_df(self.settings['data'])
         available_indicators = df.columns.unique()
 
-        return html.Div([html.Div(html.H1(children='Линейный график'), style={'text-align':'center'}),
-            html.Div([
-            html.Div([
-                html.Div([
-                    dcc.Markdown(children="Выберите показатель для оси ОХ:"),
-                    dcc.Dropdown(
-                        id='xaxis_column_name',
-                        options=[{'label': i, 'value': i}
-                                 for i in available_indicators],
-                        value=available_indicators[0]
-                    )
-                ], style={'width': '48%', 'display': 'inline-block'}),
-                html.Div([
-                    dcc.Markdown(children="Выберите показатель для оси ОY:"),
-                    dcc.Dropdown(
-                        id='yaxis_column_name',
-                        options=[{'label': i, 'value': i}
-                                 for i in available_indicators],
-                         value=available_indicators[1]
-                    )
-                ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
-            ], style={'padding': '5px'}),
-            dcc.Graph(id='linear_graph')], 
-            style={'width': '78%', 'display': 'inline-block','border-color': 'rgb(220, 220, 220)',
-            'border-style': 'solid','padding':'5px'}),
-            html.Div(dcc.Markdown(children=markdown_text_lin), 
-                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-            style={'margin':'100px'}
-        )
+        return html.Div([html.Div(html.H1(children='Линейный график'), style={'text-align': 'center'}),
+                         html.Div([
+                             html.Div([
+                                 html.Div([
+                                     dcc.Markdown(children="Выберите показатель для оси ОХ:"),
+                                     dcc.Dropdown(
+                                         id='xaxis_column_name',
+                                         options=[{'label': i, 'value': i}
+                                                  for i in available_indicators],
+                                         value=available_indicators[0]
+                                     )
+                                 ], style={'width': '48%', 'display': 'inline-block'}),
+                                 html.Div([
+                                     dcc.Markdown(children="Выберите показатель для оси ОY:"),
+                                     dcc.Dropdown(
+                                         id='yaxis_column_name',
+                                         options=[{'label': i, 'value': i}
+                                                  for i in available_indicators],
+                                         value=available_indicators[1]
+                                     )
+                                 ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+                             ], style={'padding': '5px'}),
+                             dcc.Graph(id='linear_graph')],
+                             style={'width': '78%', 'display': 'inline-block', 'border-color': 'rgb(220, 220, 220)',
+                                    'border-style': 'solid', 'padding': '5px'}),
+                         html.Div(dcc.Markdown(children=markdown_text_lin),
+                                  style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                        style={'margin': '100px'}
+                        )
 
     def _generate_scatter(self):
         df = self.pp.get_numeric_df(self.settings['data']).copy()
@@ -162,85 +159,83 @@ class StatisticsDashboard(Dashboard):
                     style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
             ], style={'margin':'100px'})
 
-
     def _generate_heatmap(self):
         df = self.pp.get_numeric_df(self.settings['data']).copy()
         numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
         df = df.select_dtypes(include=numerics)
         fig = px.imshow(df)
         fig.update_yaxes(title='Индекс записи в датасете')
-        return html.Div([html.Div(html.H1(children='Хитмап'), style={'text-align':'center'}),
-            html.Div([
-                html.Div(dcc.Graph(
-                    id='heatmap',
-                    figure=fig
-                ),style={'width': '78%', 'display': 'inline-block',
-                'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
-                html.Div(dcc.Markdown(children=markdown_text_heatmap), 
-                    style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
-            ], style={'margin':'100px'})
-
+        return html.Div([html.Div(html.H1(children='Хитмап'), style={'text-align': 'center'}),
+                         html.Div([
+                             html.Div(dcc.Graph(
+                                 id='heatmap',
+                                 figure=fig
+                             ), style={'width': '78%', 'display': 'inline-block',
+                                       'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
+                                       'padding': '5px'}),
+                             html.Div(dcc.Markdown(children=markdown_text_heatmap),
+                                      style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
+                         ], style={'margin': '100px'})
 
     def _generate_corr(self, max_rows=10):
         df = self.pp.get_numeric_df(self.settings['data'])
         df = df.corr()
         cols = df.columns
-        len_t = str(len(df.columns)*10 + 10)+'%'
-        len_text = str(98-len(df.columns)*10 - 10)+'%'
+        len_t = str(len(df.columns) * 10 + 10) + '%'
+        len_text = str(98 - len(df.columns) * 10 - 10) + '%'
         for j in range(len(cols)):
             for i in range(len(df)):
                 df.iloc[i, j] = float('{:.3f}'.format(float(df.iloc[i, j])))
         if len(df.columns) <= 5:
-            return html.Div([html.Div(html.H1(children='Таблица корреляций'), 
-                style={'text-align':'center'}),
-                html.Div([
-                html.Div([
-                    html.Div([dash_table.DataTable(
-                        id='corr',
-                        columns=[{"name": i, "id": i} for i in df.columns],
-                        data=df.to_dict('records'),
-                        style_table={'overflowX': 'auto'},
-                        export_format='xlsx'
-                        )],style={'border-color':'rgb(220, 220, 220)',
-                    'border-style': 'solid','padding':'5px'})],
-                    style={'width': len_t, 'display': 'inline-block'}),
-                    html.Div(dcc.Markdown(children=markdown_text_corr), 
-                        style={'width': len_text, 'float': 'right', 'display': 'inline-block'})
-                    ])
-                ], style={'margin':'50px'}
-            )
+            return html.Div([html.Div(html.H1(children='Таблица корреляций'),
+                                      style={'text-align': 'center'}),
+                             html.Div([
+                                 html.Div([
+                                     html.Div([dash_table.DataTable(
+                                         id='corr',
+                                         columns=[{"name": i, "id": i} for i in df.columns],
+                                         data=df.to_dict('records'),
+                                         style_table={'overflowX': 'auto'},
+                                         export_format='xlsx'
+                                     )], style={'border-color': 'rgb(220, 220, 220)',
+                                                'border-style': 'solid', 'padding': '5px'})],
+                                     style={'width': len_t, 'display': 'inline-block'}),
+                                 html.Div(dcc.Markdown(children=markdown_text_corr),
+                                          style={'width': len_text, 'float': 'right', 'display': 'inline-block'})
+                             ])
+                             ], style={'margin': '50px'}
+                            )
         else:
-            return html.Div([html.Div(html.H1(children='Таблица корреляций'), 
-                style={'text-align':'center'}),
-                dcc.Markdown(children=markdown_text_corr),
-                    html.Div([dash_table.DataTable(
-                        id='corr',
-                        columns=[{"name": i, "id": i} for i in df.columns],
-                        data=df.to_dict('records'),
-                        style_table={'overflowX': 'auto'},
-                        export_format='xlsx')
-                    ],style={'border-color':'rgb(192, 192, 192)',
-                    'border-style': 'solid','padding':'5px'})  
-                ], style={'margin':'50px'}
-            )
-
+            return html.Div([html.Div(html.H1(children='Таблица корреляций'),
+                                      style={'text-align': 'center'}),
+                             dcc.Markdown(children=markdown_text_corr),
+                             html.Div([dash_table.DataTable(
+                                 id='corr',
+                                 columns=[{"name": i, "id": i} for i in df.columns],
+                                 data=df.to_dict('records'),
+                                 style_table={'overflowX': 'auto'},
+                                 export_format='xlsx')
+                             ], style={'border-color': 'rgb(192, 192, 192)',
+                                       'border-style': 'solid', 'padding': '5px'})
+                             ], style={'margin': '50px'}
+                            )
 
     def _generate_box(self):
         df = self.pp.get_numeric_df(self.settings['data'])
         fig = px.box(df)
         fig.update_xaxes(title='Переменные')
         fig.update_yaxes(title='Значения квантилей')
-        return html.Div([html.Div(html.H1(children='Ящик с усами'), style={'text-align':'center'}),
-            html.Div([
-                html.Div(dcc.Graph(
-                    id='box',
-                    figure=fig
-                ),style={'width': '78%', 'display': 'inline-block',
-                'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
-                html.Div(dcc.Markdown(children=markdown_text_box), 
-                    style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
-            ], style={'margin':'100px'})
-
+        return html.Div([html.Div(html.H1(children='Ящик с усами'), style={'text-align': 'center'}),
+                         html.Div([
+                             html.Div(dcc.Graph(
+                                 id='box',
+                                 figure=fig
+                             ), style={'width': '78%', 'display': 'inline-block',
+                                       'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
+                                       'padding': '5px'}),
+                             html.Div(dcc.Markdown(children=markdown_text_box),
+                                      style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
+                         ], style={'margin': '100px'})
 
     def _generate_hist(self):
         def update_hist(xaxis_column_name_hist):
@@ -276,7 +271,7 @@ class StatisticsDashboard(Dashboard):
 
     def _generate_log(self):
 
-        def update_graph(xaxis_column_name_log, yaxis_column_name_log,):
+        def update_graph(xaxis_column_name_log, yaxis_column_name_log, ):
             fig = px.scatter(
                 self.settings['data'], x=xaxis_column_name_log, y=yaxis_column_name_log)
             fig.update_xaxes(title=xaxis_column_name_log,
@@ -290,39 +285,38 @@ class StatisticsDashboard(Dashboard):
                           [dash.dependencies.Input('xaxis_column_name_log', 'value'),
                            dash.dependencies.Input('yaxis_column_name_log', 'value')])(update_graph)
 
-
         df = self.pp.get_numeric_df(self.settings['data'])
         available_indicators = df.columns.unique()
 
-        return html.Div([html.Div(html.H1(children='Логарифмический график'), style={'text-align':'center'}),
-            html.Div([
-            html.Div([
-                html.Div([
-                    dcc.Markdown(children="Выберите показатель для оси ОХ:"),
-                    dcc.Dropdown(
-                        id='xaxis_column_name_log',
-                        options=[{'label': i, 'value': i}
-                                 for i in available_indicators],
-                        value=available_indicators[0]
-                    )
-                ], style={'width': '48%', 'display': 'inline-block'}),
-                html.Div([
-                    dcc.Markdown(children="Выберите показатель для оси ОY:"),
-                    dcc.Dropdown(
-                        id='yaxis_column_name_log',
-                        options=[{'label': i, 'value': i}
-                                 for i in available_indicators],
-                         value=available_indicators[1]
-                    )
-                ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
-            ], style={'padding': '5px'}),
-            dcc.Graph(id='log_graph')], style={'width': '78%', 'display': 'inline-block',
-            'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
-            html.Div(dcc.Markdown(children=markdown_text_log), 
-                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-            style={'margin':'100px'}
-        )
-
+        return html.Div([html.Div(html.H1(children='Логарифмический график'), style={'text-align': 'center'}),
+                         html.Div([
+                             html.Div([
+                                 html.Div([
+                                     dcc.Markdown(children="Выберите показатель для оси ОХ:"),
+                                     dcc.Dropdown(
+                                         id='xaxis_column_name_log',
+                                         options=[{'label': i, 'value': i}
+                                                  for i in available_indicators],
+                                         value=available_indicators[0]
+                                     )
+                                 ], style={'width': '48%', 'display': 'inline-block'}),
+                                 html.Div([
+                                     dcc.Markdown(children="Выберите показатель для оси ОY:"),
+                                     dcc.Dropdown(
+                                         id='yaxis_column_name_log',
+                                         options=[{'label': i, 'value': i}
+                                                  for i in available_indicators],
+                                         value=available_indicators[1]
+                                     )
+                                 ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+                             ], style={'padding': '5px'}),
+                             dcc.Graph(id='log_graph')], style={'width': '78%', 'display': 'inline-block',
+                                                                'border-color': 'rgb(220, 220, 220)',
+                                                                'border-style': 'solid', 'padding': '5px'}),
+                         html.Div(dcc.Markdown(children=markdown_text_log),
+                                  style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                        style={'margin': '100px'}
+                        )
 
     def _generate_linlog(self):
 
@@ -341,59 +335,60 @@ class StatisticsDashboard(Dashboard):
                           [dash.dependencies.Input('xaxis_column_name_linlog', 'value'),
                            dash.dependencies.Input('yaxis_column_name_linlog', 'value')],
                           dash.dependencies.Input(
-            'xaxis_type_linlog', 'value'),
-            dash.dependencies.Input('yaxis_type_linlog', 'value'))(update_graph)
-
+                              'xaxis_type_linlog', 'value'),
+                          dash.dependencies.Input('yaxis_type_linlog', 'value'))(update_graph)
 
         df = self.pp.get_numeric_df(self.settings['data'])
         available_indicators = df.columns.unique()
 
-        return html.Div([html.Div(html.H1(children='Линейный/логарифмический график'), 
-            style={'text-align':'center'}),
-            html.Div([
-            html.Div([
-                        html.Div([
-                            dcc.Markdown(children="Выберите показатель для оси ОХ:"),
-                            dcc.Dropdown(
-                                id='xaxis_column_name_linlog',
-                                options=[{'label': i, 'value': i}
-                                         for i in available_indicators],
-                                value=available_indicators[0]
-                            ),
-                            dcc.RadioItems(
-                                id='xaxis_type_linlog',
-                                options=[{'label': i, 'value': i}
-                                         for i in ['Linear', 'Log']],
-                                value='Linear'
-                            )
-                        ], style={'width': '48%', 'display': 'inline-block'}),
-                        html.Div([
-                            dcc.Markdown(children="Выберите показатель для оси ОY:"),
-                            dcc.Dropdown(
-                                id='yaxis_column_name_linlog',
-                                options=[{'label': i, 'value': i}
-                                         for i in available_indicators],
-                                value=available_indicators[0]
-                            ),
-                            dcc.RadioItems(
-                                id='yaxis_type_linlog',
-                                options=[{'label': i, 'value': i}
-                                         for i in ['Linear', 'Log']],
-                                value='Linear'
-                            )
-                        ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
-                        ], style={'padding': '5px'}),
-            dcc.Graph(id='linlog_graph')], style={'width': '78%', 'display': 'inline-block',
-            'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
-            html.Div(dcc.Markdown(children=markdown_text_linlog), 
-                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
-            style={'margin':'100px'}
+        return html.Div([html.Div(html.H1(children='Линейный/логарифмический график'),
+                                  style={'text-align': 'center'}),
+                         html.Div([
+                             html.Div([
+                                 html.Div([
+                                     dcc.Markdown(children="Выберите показатель для оси ОХ:"),
+                                     dcc.Dropdown(
+                                         id='xaxis_column_name_linlog',
+                                         options=[{'label': i, 'value': i}
+                                                  for i in available_indicators],
+                                         value=available_indicators[0]
+                                     ),
+                                     dcc.RadioItems(
+                                         id='xaxis_type_linlog',
+                                         options=[{'label': i, 'value': i}
+                                                  for i in ['Linear', 'Log']],
+                                         value='Linear'
+                                     )
+                                 ], style={'width': '48%', 'display': 'inline-block'}),
+                                 html.Div([
+                                     dcc.Markdown(children="Выберите показатель для оси ОY:"),
+                                     dcc.Dropdown(
+                                         id='yaxis_column_name_linlog',
+                                         options=[{'label': i, 'value': i}
+                                                  for i in available_indicators],
+                                         value=available_indicators[0]
+                                     ),
+                                     dcc.RadioItems(
+                                         id='yaxis_type_linlog',
+                                         options=[{'label': i, 'value': i}
+                                                  for i in ['Linear', 'Log']],
+                                         value='Linear'
+                                     )
+                                 ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+                             ], style={'padding': '5px'}),
+                             dcc.Graph(id='linlog_graph')], style={'width': '78%', 'display': 'inline-block',
+                                                                   'border-color': 'rgb(220, 220, 220)',
+                                                                   'border-style': 'solid', 'padding': '5px'}),
+                         html.Div(dcc.Markdown(children=markdown_text_linlog),
+                                  style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                        style={'margin': '100px'}
 
-        )
+                        )
 
     def _generate_piechart(self):
         df = self.pp.get_categorical_df(self.settings['data'])
         fig = px.pie(df)
+
         def update_pie(xaxis_column_name_pie):
             df_counts = df[xaxis_column_name_pie].value_counts()
             df_unique = df[xaxis_column_name_pie].unique()
@@ -405,41 +400,39 @@ class StatisticsDashboard(Dashboard):
             return fig
 
         self.app.callback(dash.dependencies.Output('Pie Chart', 'figure'),
-                         dash.dependencies.Input('xaxis_column_name_pie', 'value'))(update_pie)
+                          dash.dependencies.Input('xaxis_column_name_pie', 'value'))(update_pie)
 
         available_indicators = df.columns.unique()
-        
 
         if df.size > 0:
-            return html.Div([html.Div(html.H1(children='Круговая диаграмма'), 
-                style={'text-align': 'center'}),
-                         html.Div([
+            return html.Div([html.Div(html.H1(children='Круговая диаграмма'),
+                                      style={'text-align': 'center'}),
                              html.Div([
                                  html.Div([
-                                     dcc.Markdown(children="Выберите показатель для оси ОX:"),
-                                     dcc.Dropdown(
-                                         id='xaxis_column_name_pie',
-                                         options=[{'label': i, 'value': i}
-                                                  for i in available_indicators],
-                                         value=available_indicators[0]
-                                     )
+                                     html.Div([
+                                         dcc.Markdown(children="Выберите показатель для оси ОX:"),
+                                         dcc.Dropdown(
+                                             id='xaxis_column_name_pie',
+                                             options=[{'label': i, 'value': i}
+                                                      for i in available_indicators],
+                                             value=available_indicators[0]
+                                         )
 
-                                 ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px'})
-                             ]),
-                             dcc.Graph(id='Pie Chart', figure={'data':fig})], 
-                             style={'width': '78%', 'display': 'inline-block',
-                                                                            'border-color': 'rgb(220, 220, 220)',
-                                                                            'border-style': 'solid', 'padding': '5px'}),
-                         html.Div(dcc.Markdown(children=markdown_text_pie), style={'width': '18%', 'float': 'right',
-                                                                                   'display': 'inline-block'})],
-                        style={'margin': '100px'})
+                                     ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px'})
+                                 ]),
+                                 dcc.Graph(id='Pie Chart', figure={'data': fig})],
+                                 style={'width': '78%', 'display': 'inline-block',
+                                        'border-color': 'rgb(220, 220, 220)',
+                                        'border-style': 'solid', 'padding': '5px'}),
+                             html.Div(dcc.Markdown(children=markdown_text_pie), style={'width': '18%', 'float': 'right',
+                                                                                       'display': 'inline-block'})],
+                            style={'margin': '100px'})
         else:
             return html.Div([html.Div(html.H1(children='Круговая диаграмма'), style={'text-align': 'center'}),
-                         html.Div(dcc.Markdown(
-                             children='Ошибка: невозможно построить круговую диаграмму, т.к. нет категориальных данных.'),
-                             style={'width': '80%', 'display': 'inline-block'})],
-                        style={'margin': '100px'})
-
+                             html.Div(dcc.Markdown(
+                                 children='Ошибка: невозможно построить круговую диаграмму, т.к. нет категориальных данных.'),
+                                 style={'width': '80%', 'display': 'inline-block'})],
+                            style={'margin': '100px'})
 
     def _generate_dotplot(self):
         df = self.settings['data']
@@ -450,9 +443,8 @@ class StatisticsDashboard(Dashboard):
         fig = go.Figure()
 
         fig.update_layout(title="Dot Plot",
-                            xaxis_title="Value",
-                            yaxis_title="Number")
-
+                          xaxis_title="Value",
+                          yaxis_title="Number")
 
         def update_dot(xaxis_column_name_dotplot, yaxis_column_name_dotplot):
             fig = px.scatter(
@@ -465,45 +457,47 @@ class StatisticsDashboard(Dashboard):
             return fig
 
         self.app.callback(dash.dependencies.Output('Dot Plot', 'figure'),
-                              dash.dependencies.Input('xaxis_column_name_dotplot', 'value'),
-                              dash.dependencies.Input('yaxis_column_name_dotplot', 'value'))(update_dot)
+                          dash.dependencies.Input('xaxis_column_name_dotplot', 'value'),
+                          dash.dependencies.Input('yaxis_column_name_dotplot', 'value'))(update_dot)
 
         if df_cat.size > 0:
-            return html.Div([html.Div(html.H1(children='Точечная диаграмма'), 
-                style={'text-align': 'center'}),
-                         html.Div([
-                            html.Div([
-                                html.Div([
-                                    dcc.Markdown(children="Выберите показатель для оси ОХ:"),
-                                    dcc.Dropdown(
-                                        id='xaxis_column_name_dotplot',
-                                        options=[{'label': i, 'value': i}
-                                                 for i in available_indicators_num],
-                                        value=available_indicators_num[0]
-                                    )
-                                ], style={'width': '48%', 'display': 'inline-block'}),
-                                html.Div([
-                                    dcc.Markdown(children="Выберите показатель для оси ОY:"),
-                                    dcc.Dropdown(
-                                        id='yaxis_column_name_dotplot',
-                                        options=[{'label': i, 'value': i}
-                                                 for i in available_indicators_cat],
-                                        value=available_indicators_cat[0]
-                                    )
+            return html.Div([html.Div(html.H1(children='Точечная диаграмма'),
+                                      style={'text-align': 'center'}),
+                             html.Div([
+                                 html.Div([
+                                     html.Div([
+                                         dcc.Markdown(children="Выберите показатель для оси ОХ:"),
+                                         dcc.Dropdown(
+                                             id='xaxis_column_name_dotplot',
+                                             options=[{'label': i, 'value': i}
+                                                      for i in available_indicators_num],
+                                             value=available_indicators_num[0]
+                                         )
+                                     ], style={'width': '48%', 'display': 'inline-block'}),
+                                     html.Div([
+                                         dcc.Markdown(children="Выберите показатель для оси ОY:"),
+                                         dcc.Dropdown(
+                                             id='yaxis_column_name_dotplot',
+                                             options=[{'label': i, 'value': i}
+                                                      for i in available_indicators_cat],
+                                             value=available_indicators_cat[0]
+                                         )
 
-                                ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
-                            ], style={'padding': '5px'}),
-                         dcc.Graph(id='Dot Plot', figure=fig)], style={'width': '78%', 'display': 'inline-block',
-                                                                        'border-color': 'rgb(220, 220, 220)',
-                                                                        'border-style': 'solid', 'padding':'5px'}),
-                         html.Div(dcc.Markdown(children=markdown_text_dotplot),style={'width': '18%', 'float': 'right',
-                                                            'display': 'inline-block'})],style={'margin': '100px'})
+                                     ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
+                                 ], style={'padding': '5px'}),
+                                 dcc.Graph(id='Dot Plot', figure=fig)],
+                                 style={'width': '78%', 'display': 'inline-block',
+                                        'border-color': 'rgb(220, 220, 220)',
+                                        'border-style': 'solid', 'padding': '5px'}),
+                             html.Div(dcc.Markdown(children=markdown_text_dotplot),
+                                      style={'width': '18%', 'float': 'right',
+                                             'display': 'inline-block'})], style={'margin': '100px'})
         else:
             return html.Div([html.Div(html.H1(children='Точечная диаграмма'), style={'text-align': 'center'}),
-                         html.Div(dcc.Markdown(
-                             children='Ошибка: невозможно построить точечную диаграмму, т.к. нет категориальных данных.'),
-                             style={'width': '80%', 'display': 'inline-block'})
-                        ], style={'margin': '100px'})
+                             html.Div(dcc.Markdown(
+                                 children='Ошибка: невозможно построить точечную диаграмму, т.к. нет категориальных данных.'),
+                                 style={'width': '80%', 'display': 'inline-block'})
+                             ], style={'margin': '100px'})
 
     def _generate_box_hist(self):
         df = self.pp.get_numeric_df(self.settings['data'])
@@ -519,7 +513,7 @@ class StatisticsDashboard(Dashboard):
             return fig_hist
 
         self.app.callback(dash.dependencies.Output('Histogram_boxhist', 'figure'),
-                        dash.dependencies.Input('xaxis_column_name_box_hist', 'value'))(update_hist)
+                          dash.dependencies.Input('xaxis_column_name_box_hist', 'value'))(update_hist)
 
         def update_box(xaxis_column_name_box_hist):
             fig_box = px.box(
@@ -534,38 +528,35 @@ class StatisticsDashboard(Dashboard):
 
         return html.Div([html.Div(html.H1(children='Гистограмма и ящик с усами'), style={'text-align': 'center'}),
                          html.Div([
-                            html.Div([
-                                html.Div([
-                                    dcc.Markdown(children="Выберите показатель:"),
-                                    dcc.Dropdown(
-                                        id='xaxis_column_name_box_hist',
-                                        options=[{'label': i, 'value': i}
-                                                 for i in available_indicators],
-                                        value=available_indicators[0]
-                                    )
+                             html.Div([
+                                 html.Div([
+                                     dcc.Markdown(children="Выберите показатель:"),
+                                     dcc.Dropdown(
+                                         id='xaxis_column_name_box_hist',
+                                         options=[{'label': i, 'value': i}
+                                                  for i in available_indicators],
+                                         value=available_indicators[0]
+                                     )
 
-                                ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px'})
-                            ]),
+                                 ], style={'width': '48%', 'display': 'inline-block', 'padding': '5px'})
+                             ]),
                              html.Div([
                                  dcc.Graph(id='Histogram_boxhist', figure=fig_hist),
                                  dcc.Graph(id='Box_boxhist', figure=fig_box)
                              ])
                          ], style={'width': '78%', 'display': 'inline-block',
-                                       'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
-                                       'padding': '5px'}),
-                         html.Div(dcc.Markdown(children=markdown_text_histbox),style={'width': '18%', 'float': 'right',
-                                                            'display': 'inline-block'})],style={'margin': '100px'})
-
-
-
-
+                                   'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
+                                   'padding': '5px'}),
+                         html.Div(dcc.Markdown(children=markdown_text_histbox), style={'width': '18%', 'float': 'right',
+                                                                                       'display': 'inline-block'})],
+                        style={'margin': '100px'})
 
     def _generate_multi_hist(self):
         df = self.settings['data']
         df_dummies = pd.get_dummies(df)
         columns = df.columns.to_numpy()
-        option_list = [{'label': str(i), 'value': str(i)} for i in columns]   
-        bins = [{'label': str(i), 'value': i} for i in np.arange(1, 100)]   
+        option_list = [{'label': str(i), 'value': str(i)} for i in columns]
+        bins = [{'label': str(i), 'value': i} for i in np.arange(1, 100)]
 
         def update_multi_hist(xaxis_column_name_multi_hist, nbins_multi_hist):
             if not xaxis_column_name_multi_hist or not nbins_multi_hist:
@@ -581,8 +572,8 @@ class StatisticsDashboard(Dashboard):
             return fig_multi_hist
 
         self.app.callback(dash.dependencies.Output('Histogram_multi_hist', 'figure'),
-                        dash.dependencies.Input('xaxis_chosen_fearures_multi_hist', 'value'),
-                        dash.dependencies.Input('nbins_multi_hist', 'value'))(update_multi_hist)
+                          dash.dependencies.Input('xaxis_chosen_fearures_multi_hist', 'value'),
+                          dash.dependencies.Input('nbins_multi_hist', 'value'))(update_multi_hist)
 
         def update_dropdown_milti_hist(features_multi_hist):
             if not features_multi_hist:
@@ -593,46 +584,41 @@ class StatisticsDashboard(Dashboard):
                 return Options
 
         self.app.callback(dash.dependencies.Output('xaxis_chosen_fearures_multi_hist', 'options'),
-                        dash.dependencies.Input('xaxis_features_multi_hist', 'value'))(update_dropdown_milti_hist)
-
-
+                          dash.dependencies.Input('xaxis_features_multi_hist', 'value'))(update_dropdown_milti_hist)
 
         return html.Div([html.Div(html.H1(children='Множественная гистограмма'), style={'text-align': 'center'}),
                          html.Div([
-                            html.Div([
-                                dcc.Markdown(children="Возможные показатели:"),
-                                dcc.Dropdown(
-                                    id='xaxis_features_multi_hist',                    
-                                    options=option_list,
-                                    value=columns,
-                                    multi=True)],
-                                    style={'width': '100%', 'display': 'inline-block'}),
+                             html.Div([
+                                 dcc.Markdown(children="Возможные показатели:"),
+                                 dcc.Dropdown(
+                                     id='xaxis_features_multi_hist',
+                                     options=option_list,
+                                     value=columns,
+                                     multi=True)],
+                                 style={'width': '100%', 'display': 'inline-block'}),
 
-                            html.Div([
-                                dcc.Markdown(children="Выберите показатель:"),
-                                dcc.Dropdown(
-                                    id='xaxis_chosen_fearures_multi_hist',
-                                    multi=True)],
-                                style={'width': '48%', 'float': 'left', 'display': 'inline-block', 'padding': '5px'}),
+                             html.Div([
+                                 dcc.Markdown(children="Выберите показатель:"),
+                                 dcc.Dropdown(
+                                     id='xaxis_chosen_fearures_multi_hist',
+                                     multi=True)],
+                                 style={'width': '48%', 'float': 'left', 'display': 'inline-block', 'padding': '5px'}),
 
-                            html.Div([
+                             html.Div([
 
-                                dcc.Markdown(children="Выберите ширину ячейки:"),
-                                dcc.Dropdown(
-                                    id='nbins_multi_hist',                    
-                                    options=bins,
-                                    value=bins[0]['value'])
-                            ],
-                            style={'width': '48%', 'float': 'right', 'display': 'inline-block', 'padding': '5px'}),
-                            
-                            html.Div([dcc.Graph(id='Histogram_multi_hist')], style={'width': '100%', 'display': 'inline-block'})
-                        ], style={'width': '78%', 'display': 'inline-block',
-                                    'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
-                                    'padding': '5px'}),
-                    html.Div(dcc.Markdown(children=markdown_text_histbox),style={'width': '18%', 'float': 'right',
-                                                        'display': 'inline-block'})],style={'margin': '100px'})
+                                 dcc.Markdown(children="Выберите ширину ячейки:"),
+                                 dcc.Dropdown(
+                                     id='nbins_multi_hist',
+                                     options=bins,
+                                     value=bins[0]['value'])
+                             ],
+                                 style={'width': '48%', 'float': 'right', 'display': 'inline-block', 'padding': '5px'}),
 
-       
-
-    
-
+                             html.Div([dcc.Graph(id='Histogram_multi_hist')],
+                                      style={'width': '100%', 'display': 'inline-block'})
+                         ], style={'width': '78%', 'display': 'inline-block',
+                                   'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
+                                   'padding': '5px'}),
+                         html.Div(dcc.Markdown(children=markdown_text_histbox), style={'width': '18%', 'float': 'right',
+                                                                                       'display': 'inline-block'})],
+                        style={'margin': '100px'})

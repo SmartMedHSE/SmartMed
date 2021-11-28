@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 
 const os = require('os');
 
@@ -37,8 +37,8 @@ module.exports = (env, options) => {
                     use: {
                         loader: 'babel-loader',
                         options: {
-                            presets: [ '@babel/preset-env' ],
-                            plugins: [ '@babel/plugin-proposal-private-methods', '@babel/plugin-proposal-class-properties' ],
+                            presets: ['@babel/preset-env'],
+                            plugins: ['@babel/plugin-proposal-private-methods', '@babel/plugin-proposal-class-properties'],
                         }
                     }
                 },

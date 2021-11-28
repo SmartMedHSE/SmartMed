@@ -1,2 +1,2 @@
 class ModelChoiceException(Exception):
-	pass
+    pass

@@ -1,15 +1,14 @@
 import * as React from 'react';
-import * as cn from 'classnames';
 
 import * as s from './DescriptiveAnalysis.scss';
 
-import { DataDownload } from '../DataDownload';
-import { ListButtons } from '../ManageButtons';
-import { DataPreparation } from './DataPreparation.jsx';
-import { Checkbox, FormControlLabel, FormGroup } from '@material-ui/core';
-import { fetchPost } from '../../utils';
+import {DataDownload} from '../DataDownload';
+import {ListButtons} from '../ManageButtons';
+import {DataPreparation} from './DataPreparation.jsx';
+import {Checkbox, FormControlLabel, FormGroup} from '@material-ui/core';
+import {fetchPost} from '../../utils';
 
-const DATA_PREP_OPTIONS = [ 'Средним/модой (численные/категориальные значения)',
+const DATA_PREP_OPTIONS = ['Средним/модой (численные/категориальные значения)',
     'Введенным значением (требуется ввод для каждого столбца отдельно)',
     'Удаление строк с пропущенными значениями',
     'Медианной/модой (численные/категориальные значения)'
@@ -63,12 +62,12 @@ export class DescriptiveAnalysis extends React.Component {
     };
 
     paginate = (goNext) => {
-        const { currentPage, maxPage } = this.state;
+        const {currentPage, maxPage} = this.state;
         if (goNext) {
             if (currentPage < maxPage) {
-                this.setState({ currentPage: currentPage + 1 });
+                this.setState({currentPage: currentPage + 1});
             } else {
-                const { dataPrepOptionId, file } = this.state;
+                const {dataPrepOptionId, file} = this.state;
                 this.settings.dataPrepOption = dataPrepOptionId;
                 console.log(file);
                 this.settings.data = file.path;
@@ -77,18 +76,18 @@ export class DescriptiveAnalysis extends React.Component {
             }
         } else {
             if (currentPage > 0) {
-                this.setState({ currentPage: currentPage - 1 });
+                this.setState({currentPage: currentPage - 1});
             } else {
                 this.props.onExit();
             }
         }
     };
 
-    selectDataPrepType = (id) => this.setState({ dataPrepOptionId: id });
+    selectDataPrepType = (id) => this.setState({dataPrepOptionId: id});
 
     onDataLoad = (event) => {
         if (event.target.files && event.target.files[0]) {
-            this.setState({ file: event.target.files[0] });
+            this.setState({file: event.target.files[0]});
             this.readDataFromFile(event.target.files[0]);
         }
     };
@@ -112,7 +111,7 @@ export class DescriptiveAnalysis extends React.Component {
     };
 
     openCurrentPage = () => {
-        const { currentPage } = this.state;
+        const {currentPage} = this.state;
         switch (currentPage) {
             case 0:
                 return <DataDownload onLoad={this.onDataLoad}/>;

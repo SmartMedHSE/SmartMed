@@ -26,7 +26,7 @@ export const MAIN_MENU = [
  * @returns {JSX.Element}
  * @constructor
  */
-export const Menu = ({ onClick }) => (
+export const Menu = ({onClick}) => (
     <div className={s.menu}>
         <div className={s.menu__title}>
             <h3 className={s.menu__title}>Выберете способ анализа</h3>

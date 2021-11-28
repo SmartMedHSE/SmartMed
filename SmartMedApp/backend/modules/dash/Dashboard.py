@@ -1,10 +1,9 @@
+import webbrowser
 from abc import ABC, abstractmethod
 
 import socket
 
 import dash
-import webbrowser
-
 from logs.logger import debug
 
 
@@ -27,7 +26,6 @@ class Dashboard(ABC):
 
     @debug
     def __init__(self):
-
         # include general styleshits and scripts
         external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
         external_scripts = [

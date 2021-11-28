@@ -1,16 +1,13 @@
 import pickle
 import threading
 
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTimer, QEventLoop
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox, )
-
-from .RocGraphsWindow import RocGraphsWindow
-from ..utils import remove_if_exists
-from ..WaitingSpinnerWidget import QtWaitingSpinner
 
 from SmartMedApp.backend import ModuleManipulator
+from .RocGraphsWindow import RocGraphsWindow
+from ..WaitingSpinnerWidget import QtWaitingSpinner
+from ..utils import remove_if_exists
 
 
 class WrappedRocGraphsWindow(RocGraphsWindow, QtWidgets.QMainWindow):
@@ -61,7 +58,7 @@ class WrappedRocGraphsWindow(RocGraphsWindow, QtWidgets.QMainWindow):
         self.spinner = QtWaitingSpinner(self)
         self.layout().addWidget(self.spinner)
         self.spinner.start()
-        #QTimer.singleShot(10000, self.spinner.stop)
+        # QTimer.singleShot(10000, self.spinner.stop)
         loop = QEventLoop()
         QTimer.singleShot(10000, loop.quit)
         loop.exec_()

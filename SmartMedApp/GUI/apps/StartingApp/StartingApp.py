@@ -1,7 +1,6 @@
-from .WrappedStartingWindow import WrappedStartingWindow
-
 # logging decorator
 from SmartMedApp.logs.logger import debug
+from .WrappedStartingWindow import WrappedStartingWindow
 
 
 class StartingApp():
