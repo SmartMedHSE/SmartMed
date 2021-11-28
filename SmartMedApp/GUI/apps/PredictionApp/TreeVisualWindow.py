@@ -21,7 +21,7 @@ class TreeVisualWindow(object):
         self.label.setGeometry(QtCore.QRect(70, 30, 521, 81))
         self.label.setObjectName("label")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(110, 140, 509, 131))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(110, 140, 600, 200))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)

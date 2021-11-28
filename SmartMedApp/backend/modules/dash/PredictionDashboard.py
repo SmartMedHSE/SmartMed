@@ -1604,12 +1604,12 @@ class TreeDashboard(Dashboard):
             html.Div(metrics_list)], style={'margin': '50px'})
 
     def _generate_tree_graph(self):
-        # fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(4, 4), dpi=800)
+        fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(4, 4), dpi=800)
         # self.predict.model.fit()
         # TreeModel.fit(self.predict.model)
-        # tree.plot_tree(self.predict.model, filled=True)
+        tree.plot_tree(self.predict.model, filled=True)
         # graph = Source(tree.export_graphviz(self.predict.model, out_file=None, filled=True))
-        # fig.savefig('tree.png')
+        fig.savefig('tree.png')
         # graph.format = 'png'
         # path = graph.render('dtree_render', view=True)
         img = Image.open('tree.png')
@@ -1725,33 +1725,6 @@ class TreeDashboard(Dashboard):
                                   dash.dependencies.Input('x_name', 'value'),
                                   dash.dependencies.Input('y_name', 'value'))(update_graph)
 
-        # return html.Div([html.Div(html.H1(children='График распределения классов'), style={'text-align': 'center'}),
-        #                  html.Div([
-        #                      html.Div([
-        #                          dcc.Markdown(children="X:"),
-        #                          dcc.Dropdown(
-        #                              id='x_name',
-        #                              options=option_list,
-        #                              value=option_list[0]['value'],
-        #                              clearable=False)]),
-        #
-        #                      html.Div([
-        #                          dcc.Markdown(children="Y:"),
-        #                          dcc.Dropdown(
-        #                              id='y_name',
-        #                              options=option_list,
-        #                              value=option_list[0]['value'],
-        #                              clearable=False)],
-        #                          style={'width': '48%', 'display': 'inline-block', 'padding': '5px'}),
-        #
-        #                      html.Div([dcc.Graph(id='graph_distributions')],
-        #                               style={'width': '100%', 'display': 'inline-block'})
-        #                  ], style={'width': '78%', 'display': 'inline-block',
-        #                            'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
-        #                            'padding': '5px'}),
-        #                  html.Div(dcc.Markdown(children=markdown_quality), style={'width': '18%', 'float': 'right',
-        #                                                                           'display': 'inline-block'})],
-        #                 style={'margin': '100px'})
 
         return html.Div([html.H1(children='График распределения классов', style={'text-align': 'center'}),
                          html.Div([
@@ -1782,14 +1755,11 @@ class TreeDashboard(Dashboard):
 
         def get_data(data, n_clicks):
             data = pd.DataFrame.from_records(data)
-            print(data)
-            print(self.predict.df_X_test)
             columns_X = self.predict.df_X_test.columns
             data = data[columns_X]
             changed_id = [p['prop_id'] for p in callback_context.triggered][0]
             if 'btn_ok' in changed_id:
                 predict_Y = TreeModel.predict(self.predict.model, data)
-                print(predict_Y)
                 df_Y = self.predict.df_Y_test
                 df_res = pd.DataFrame(
                     {'Верное значение': df_Y,
