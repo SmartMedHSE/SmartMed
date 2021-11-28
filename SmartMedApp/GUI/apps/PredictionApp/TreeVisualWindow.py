@@ -35,6 +35,9 @@ class TreeVisualWindow(object):
         self.checkBoxValue = QtWidgets.QCheckBox(self.verticalLayoutWidget)
         self.checkBoxValue.setObjectName("checkBoxValue")
         self.verticalLayout.addWidget(self.checkBoxValue)
+        self.checkBoxDistributions = QtWidgets.QCheckBox(self.verticalLayoutWidget)
+        self.checkBoxDistributions.setObjectName("checkBoxDistributions")
+        self.verticalLayout.addWidget(self.checkBoxDistributions)
         self.pushButtonDone = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonDone.setGeometry(QtCore.QRect(460, 420, 113, 32))
         self.pushButtonDone.setObjectName("pushButtonDone")
@@ -54,5 +57,6 @@ class TreeVisualWindow(object):
         self.checkBoxTablr.setText(_translate("MainWindow", "  Классификационная таблица, в которой наблюдаемые показатели\n  "
 "противопоставляются предсказанным "))
         self.checkBoxValue.setText(_translate("MainWindow", "  Показатели построенного дерева"))
+        self.checkBoxDistributions.setText(_translate("MainWindow", "  График распределения классов"))
         self.pushButtonDone.setText(_translate("MainWindow", "Завершить"))
         self.pushButtonBack.setText(_translate("MainWindow", "Назад"))

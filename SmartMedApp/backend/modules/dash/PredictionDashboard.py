@@ -7,6 +7,7 @@ import dash
 import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
 
 import sklearn.metrics as sm
@@ -1589,7 +1590,8 @@ class TreeDashboard(Dashboard):
         metrics_method = {
             'tree': self._generate_tree_graph(),
             'table': self._generate_table(),
-            'indicators': self._generate_indicators()
+            'indicators': self._generate_indicators(),
+            'distributions': self._generate_class_distributions()
         }
         for metric in metrics_method:
             if metric in self.predict.settings['metrics']:
@@ -1684,7 +1686,6 @@ class TreeDashboard(Dashboard):
                         tn += 1
             recall = round(tp / (tp + fn), 3)
             precision = round(tp / (tp + fp), 3)
-            accuracy_2 = round((tp + tn) / (tp + fn + fp + tn), 3)
             f1 = round(2 * (recall * precision) / (recall + precision), 3)
             df = pd.DataFrame({'Accuracy': accuracy, 'Энтропийный индекс неоднородности': entropy_heterogeneity,
                                'Индекс Джини': gini, 'Индекс ошибочной классификации': index_wrong_classification,
@@ -1705,3 +1706,71 @@ class TreeDashboard(Dashboard):
         ], style={'width': '78%', 'display': 'inline-block',
                   'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
         ], style={'margin': '50px'})
+
+
+    def _generate_class_distributions(self):
+        predict_Y = TreeModel.predict(self.predict.model, self.predict.df_X_test)
+        df = self.predict.df_X_test
+        columns = df.columns.to_numpy()
+        df['predict'] = predict_Y
+        option_list = [{'label': str(i), 'value': str(i)} for i in columns]
+
+        def update_graph(x_name, y_name):
+            fig_graph = px.scatter(df, x=x_name, y=y_name, color="predict")
+            return fig_graph
+
+        self.predict.app.callback(dash.dependencies.Output('graph_distributions', 'figure'),
+                                  dash.dependencies.Input('x_name', 'value'),
+                                  dash.dependencies.Input('y_name', 'value'))(update_graph)
+
+        # return html.Div([html.Div(html.H1(children='График распределения классов'), style={'text-align': 'center'}),
+        #                  html.Div([
+        #                      html.Div([
+        #                          dcc.Markdown(children="X:"),
+        #                          dcc.Dropdown(
+        #                              id='x_name',
+        #                              options=option_list,
+        #                              value=option_list[0]['value'],
+        #                              clearable=False)]),
+        #
+        #                      html.Div([
+        #                          dcc.Markdown(children="Y:"),
+        #                          dcc.Dropdown(
+        #                              id='y_name',
+        #                              options=option_list,
+        #                              value=option_list[0]['value'],
+        #                              clearable=False)],
+        #                          style={'width': '48%', 'display': 'inline-block', 'padding': '5px'}),
+        #
+        #                      html.Div([dcc.Graph(id='graph_distributions')],
+        #                               style={'width': '100%', 'display': 'inline-block'})
+        #                  ], style={'width': '78%', 'display': 'inline-block',
+        #                            'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
+        #                            'padding': '5px'}),
+        #                  html.Div(dcc.Markdown(children=markdown_quality), style={'width': '18%', 'float': 'right',
+        #                                                                           'display': 'inline-block'})],
+        #                 style={'margin': '100px'})
+
+        return html.Div([html.H1(children='График распределения классов'),
+                         html.Div([
+                            dcc.Markdown(
+                                children="Выберите первую группирующую переменную:"),
+                            dcc.Dropdown(
+                                 id='x_name',
+                                 options=option_list,
+                                 value=option_list[0]['value'],
+                                 clearable=False)
+                        ], style={'width': '48%', 'display': 'inline-block'}),
+                        html.Div([
+                            dcc.Markdown(
+                                children="Выберите вторую группирующую переменную:"),
+                            dcc.Dropdown(
+                                 id='y_name',
+                                 options=option_list,
+                                 value=option_list[0]['value'],
+                                 clearable=False)
+                        ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'}),
+                        html.Div([dcc.Graph(id='graph_distributions')],
+                                 style={'width': '100%', 'display': 'inline-block'})
+                    ], style={'padding': '5px', 'margin': '50px'})
+
