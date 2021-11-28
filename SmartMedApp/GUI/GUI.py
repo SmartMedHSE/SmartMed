@@ -2,10 +2,9 @@ import sys
 
 from PyQt5 import QtWidgets
 
-from .apps import StartingApp
-
 # logging decorator
 from SmartMedApp.logs.logger import debug
+from .apps import StartingApp
 
 
 class GUI:

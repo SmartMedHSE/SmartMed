@@ -1,11 +1,7 @@
 DEGUG_MODE = True
 
 
-import logging
-
-
 def debug(fn):
-
     def wrapper(*args, **kwargs):
 
         if DEGUG_MODE:

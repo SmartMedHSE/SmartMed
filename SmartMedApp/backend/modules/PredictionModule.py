@@ -1,13 +1,12 @@
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 import sklearn.model_selection as sm
 import sklearn.preprocessing as sp
-
 from sklearn.preprocessing import KBinsDiscretizer
+
+from .ModelManipulator import ModelManipulator
 from .ModuleInterface import Module
 from .dash import PredictionDashboard
-from .ModelManipulator import ModelManipulator
 from .dataprep import PandasPreprocessor
 
 
@@ -42,7 +41,8 @@ class PredictionModule(Module, PredictionDashboard):
             self.df_X = self.df_X.drop('index', axis=1)
             # self.df_Y = self.df_Y.reset_index()
 
-        dfX_train, dfX_test, dfY_train, dfY_test = sm.train_test_split(self.df_X, self.df_Y, test_size=0.3, random_state=42)
+        dfX_train, dfX_test, dfY_train, dfY_test = sm.train_test_split(self.df_X, self.df_Y, test_size=0.3,
+                                                                       random_state=42)
         self.df_X_train = dfX_train
         self.df_X_test = dfX_test
         self.df_Y_train = dfY_train
@@ -108,9 +108,9 @@ class PredictionModule(Module, PredictionDashboard):
             settings = self._init_settings('linreg')
         elif self.settings['model'] == 'logreg':
             numerics_list = {'int16', 'int32', 'int', 'float', 'bool',
-                                  'int64', 'float16', 'float32', 'float64'}
+                             'int64', 'float16', 'float32', 'float64'}
 
-            #self.df_Y = self.pp.df[self.settings['variable']]
+            # self.df_Y = self.pp.df[self.settings['variable']]
             df_Y = self.pp.df[self.settings['variable']]
             print('first', type(df_Y), df_Y.dtype, df_Y.nunique())
             print(df_Y)
@@ -136,29 +136,29 @@ class PredictionModule(Module, PredictionDashboard):
             settings = self._init_settings('logreg')
         elif self.settings['model'] == 'roc':
             numerics_list = {'int16', 'int32', 'int', 'float', 'bool',
-                                  'int64', 'float16', 'float32', 'float64'}
+                             'int64', 'float16', 'float32', 'float64'}
             df_Y = self.pp.df[self.settings['variable']]
-            #print('first', type(df_Y), df_Y.dtype, df_Y.nunique())
-            #print(df_Y)
+            # print('first', type(df_Y), df_Y.dtype, df_Y.nunique())
+            # print(df_Y)
             if df_Y.nunique() == 2:
-                #print('12')
+                # print('12')
                 self.df_Y = df_Y
             else:
                 if df_Y.dtype not in numerics_list:
-                    #print('23')
+                    # print('23')
                     labelencoder = sp.LabelEncoder()
                     df_Y = labelencoder.fit_transform(df_Y)
                 mean_Y = df_Y.mean()
                 df_Y1 = df_Y
-                #print('type', type(df_Y1))
+                # print('type', type(df_Y1))
                 for i in range(len(df_Y)):
                     if df_Y[i] < mean_Y:
                         df_Y1[i] = 0
                     else:
                         df_Y1[i] = 1
                 self.df_Y = pd.Series(df_Y1)
-                #print('second', type(self.df_Y), self.df_Y.dtype, self.df_Y.nunique())
-                #print(self.df_Y)
+                # print('second', type(self.df_Y), self.df_Y.dtype, self.df_Y.nunique())
+                # print(self.df_Y)
 
             # prepare metrics as names list from str -> bool
             settings['path'] = []
@@ -183,9 +183,9 @@ class PredictionModule(Module, PredictionDashboard):
                     settings['x'].remove(self.settings['variable'])
                 elif metric == 'auc' or metric == 'diff_graphics' or metric == 'paint':
                     settings['graphs'].append(metric)
-                #elif metric == 'spec_and_sens':
+                # elif metric == 'spec_and_sens':
                 #    settings['spec_and_sens'] = self.settings['spec_and_sens']
-                #elif metric == 'spec_and_sens_table':
+                # elif metric == 'spec_and_sens_table':
                 #    settings['spec_and_sens_table'] = self.settings[
                 #        'spec_and_sens_table']
                 elif self.settings[metric]:
@@ -216,7 +216,7 @@ class PredictionModule(Module, PredictionDashboard):
 
             self.df_Y = self.pp.df[self.settings['variable']]
             numerics_list = {'int16', 'int32', 'int', 'float', 'bool',
-                                  'int64', 'float16', 'float32', 'float64'}
+                             'int64', 'float16', 'float32', 'float64'}
 
             if self.df_Y.dtype not in numerics_list:
                 labelencoder = sp.LabelEncoder()

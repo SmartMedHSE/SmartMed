@@ -1,15 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
-import sys
-
 from logs.logger import debug
 
 
 class Module(ABC):
 
     def __init__(self, settings: Dict):
-
         # get settings['MODULE_SETTINGS']
         self.settings = settings
 

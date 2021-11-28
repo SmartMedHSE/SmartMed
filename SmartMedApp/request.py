@@ -1,8 +1,8 @@
-from flask import Flask, request
-
-import sys
 import os
+import sys
 import threading
+
+from flask import Flask, request
 
 from backend.ModuleManipulator import ModuleManipulator
 

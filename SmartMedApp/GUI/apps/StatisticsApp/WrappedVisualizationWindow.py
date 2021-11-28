@@ -1,19 +1,13 @@
 import pickle
-import time
-import os
-import sys
 import threading
 
 from PyQt5 import QtWidgets
-from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox)
 from PyQt5.QtCore import QTimer, QEventLoop
 
+from SmartMedApp.backend import ModuleManipulator
 from .VisualizationWindow import VisualizationWindow
 from ..WaitingSpinnerWidget import QtWaitingSpinner
 from ..utils import remove_if_exists
-
-from SmartMedApp.backend import ModuleManipulator
 
 
 class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
@@ -84,7 +78,7 @@ class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
         self.spinner = QtWaitingSpinner(self)
         self.layout().addWidget(self.spinner)
         self.spinner.start()
-        #QTimer.singleShot(10000, self.spinner.stop)
+        # QTimer.singleShot(10000, self.spinner.stop)
         loop = QEventLoop()
         QTimer.singleShot(10000, loop.quit)
         loop.exec_()

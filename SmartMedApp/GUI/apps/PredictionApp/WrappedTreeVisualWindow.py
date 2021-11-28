@@ -1,16 +1,13 @@
 import pickle
 import threading
 
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTimer, QEventLoop
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox, )
-
-from .TreeVisualWindow import TreeVisualWindow
-from ..utils import remove_if_exists
-from ..WaitingSpinnerWidget import QtWaitingSpinner
 
 from SmartMedApp.backend import ModuleManipulator
+from .TreeVisualWindow import TreeVisualWindow
+from ..WaitingSpinnerWidget import QtWaitingSpinner
+from ..utils import remove_if_exists
 
 
 class WrappedTreeVisualWindow(TreeVisualWindow, QtWidgets.QMainWindow):
@@ -77,7 +74,7 @@ class WrappedTreeVisualWindow(TreeVisualWindow, QtWidgets.QMainWindow):
         self.layout().addWidget(self.spinner)
         remove_if_exists()
         self.spinner.start()
-        #QTimer.singleShot(10000, self.spinner.stop)
+        # QTimer.singleShot(10000, self.spinner.stop)
         loop = QEventLoop()
         QTimer.singleShot(10000, loop.quit)
         loop.exec_()

@@ -1,14 +1,10 @@
+import pathlib
 from typing import Dict
 
-import pathlib
-import sys
-
 import pandas as pd
-
-from sklearn import preprocessing
-
 # logging decorator
 from logs.logger import debug
+from sklearn import preprocessing
 
 
 class ExtentionFileException(Exception):

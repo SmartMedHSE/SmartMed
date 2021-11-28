@@ -1,10 +1,11 @@
+import sys
 import unittest
 
-import sys
 sys.path.append("/Users/aleksandrgrikurov/Documents/GitHub/SmartMed/SmartMedApp/")
 
 from backend.modules.dash.Dashboard import Dashboard
 from backend.DashExceptions import ModelChoiceException
+
 
 class TestDashboard(unittest.TestCase):
     def setUp(self):

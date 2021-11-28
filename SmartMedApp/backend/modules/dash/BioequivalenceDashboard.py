@@ -1,18 +1,15 @@
-import dash
-import dash_table
-import dash_core_components as dcc
-import dash_html_components as html
-
-import plotly.graph_objects as go
-import plotly.express as px
-
-import numpy as np
-import pandas as pd
-
 from math import e
 
-from .text.markdown_bio import *
+import dash
+import dash_core_components as dcc
+import dash_html_components as html
+import dash_table
+import numpy as np
+import pandas as pd
+import plotly.graph_objects as go
+
 from .Dashboard import Dashboard
+from .text.markdown_bio import *
 
 
 def round_df(df):
@@ -31,7 +28,7 @@ def round_df(df):
                     point = num.find('.')
                     num = num[:point]
                     df.iloc[i, j] = num[0] + '.' + \
-                        num[1:3] + 'e' + str(len(num) - 1)
+                                    num[1:3] + 'e' + str(len(num) - 1)
                 elif 'e' in num:
                     epos = num.find('e')
                     df.iloc[i, j] = num[0:4] + num[epos:]
@@ -43,7 +40,7 @@ def round_df(df):
                         df.iloc[i, j] = '0'
                     else:
                         df.iloc[i, j] = num[notnul] + '.' + \
-                            num[notnul + 1:notnul + 3] + 'e-' + str(notnul - 1)
+                                        num[notnul + 1:notnul + 3] + 'e-' + str(notnul - 1)
     return df
 
 
@@ -56,40 +53,40 @@ class BioequivalenceDashboard(Dashboard):
     def _generate_criteria(self):
         if self.settings[0].plan == 'parallel':
             if self.settings[0].check_normal == 'Kolmogorov' and self.settings[0].check_uniformity == 'F':
-                data = {'Критерий': ['Колмогорова-Смирнова', 
-                'Колмогорова-Смирнова', 'F-критерий'],
+                data = {'Критерий': ['Колмогорова-Смирнова',
+                                     'Колмогорова-Смирнова', 'F-критерий'],
                         'Группа': ['R', 'T', 'RT'],
-                        'Значение критерия': [self.settings[0].kstest_r[0], 
-                        self.settings[0].kstest_t[0], self.settings[0].f[0]],
-                        'p-уровень': [self.settings[0].kstest_r[1], 
-                        self.settings[0].kstest_t[1], self.settings[0].f[1]]}
+                        'Значение критерия': [self.settings[0].kstest_r[0],
+                                              self.settings[0].kstest_t[0], self.settings[0].f[0]],
+                        'p-уровень': [self.settings[0].kstest_r[1],
+                                      self.settings[0].kstest_t[1], self.settings[0].f[1]]}
             elif self.settings[0].check_normal == 'Kolmogorov' and self.settings[0].check_uniformity == 'Leven':
-                data = {'Критерий': ['Колмогорова-Смирнова', 
-                'Колмогорова-Смирнова', 'Левена'],
+                data = {'Критерий': ['Колмогорова-Смирнова',
+                                     'Колмогорова-Смирнова', 'Левена'],
                         'Группа': ['R', 'T', 'RT'],
-                        'Значение критерия': [self.settings[0].kstest_r[0], 
-                        self.settings[0].kstest_t[0], self.settings[0].levene[0]],
-                        'p-уровень': [self.settings[0].kstest_r[1], 
-                        self.settings[0].kstest_t[1], self.settings[0].levene[1]]}
+                        'Значение критерия': [self.settings[0].kstest_r[0],
+                                              self.settings[0].kstest_t[0], self.settings[0].levene[0]],
+                        'p-уровень': [self.settings[0].kstest_r[1],
+                                      self.settings[0].kstest_t[1], self.settings[0].levene[1]]}
             elif self.settings[0].check_normal == 'Shapiro' and self.settings[0].check_uniformity == 'Leven':
                 data = {'Критерий': ['Шапиро-Уилка', 'Шапиро-Уилка', 'Левена'],
                         'Группа': ['R', 'T', 'RT'],
-                        'Значение критерия': [self.settings[0].shapiro_r[0], 
-                        self.settings[0].shapiro_t[0], self.settings[0].levene[0]],
-                        'p-уровень': [self.settings[0].shapiro_r[1], 
-                        self.settings[0].shapiro_t[1], self.settings[0].levene[1]]}
+                        'Значение критерия': [self.settings[0].shapiro_r[0],
+                                              self.settings[0].shapiro_t[0], self.settings[0].levene[0]],
+                        'p-уровень': [self.settings[0].shapiro_r[1],
+                                      self.settings[0].shapiro_t[1], self.settings[0].levene[1]]}
             else:
                 data = {'Критерий': ['Шапиро-Уилка', 'Шапиро-Уилка', 'F-критерий'],
                         'Группа': ['R', 'T', 'RT'],
-                        'Значение критерия': [self.settings[0].shapiro_r[0], 
-                        self.settings[0].shapiro_t[0], self.settings[0].f[0]],
-                        'p-уровень': [self.settings[0].shapiro_r[1], 
-                        self.settings[0].shapiro_t[1], self.settings[0].f[1]]}
+                        'Значение критерия': [self.settings[0].shapiro_r[0],
+                                              self.settings[0].shapiro_t[0], self.settings[0].f[0]],
+                        'p-уровень': [self.settings[0].shapiro_r[1],
+                                      self.settings[0].shapiro_t[1], self.settings[0].f[1]]}
 
             df = pd.DataFrame(data)
             df = round_df(df)
-            return html.Div([html.Div(html.H1(children='Выполнение критериев'), 
-                style={'text-align': 'center'}),
+            return html.Div([html.Div(html.H1(children='Выполнение критериев'),
+                                      style={'text-align': 'center'}),
                              html.Div([
                                  html.Div([
                                      html.Div([dash_table.DataTable(
@@ -109,45 +106,51 @@ class BioequivalenceDashboard(Dashboard):
                                          ],
                                          style_table={'overflowX': 'auto'},
                                          export_format='xlsx'
-                                     )], style={'border-color': 'rgb(220, 220, 220)', 
-                                     'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
+                                     )], style={'border-color': 'rgb(220, 220, 220)',
+                                                'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
                                      style={'width': '78%', 'display': 'inline-block'}),
                                  html.Div(dcc.Markdown(children=markdown_text_criteria), style={
-                                          'width': '18%', 'float': 'right', 'display': 'inline-block'})
+                                     'width': '18%', 'float': 'right', 'display': 'inline-block'})
                              ])
                              ], style={'margin': '50px'}
                             )
         else:
-            if self.settings[0].check_normal =='Kolmogorov':
-                data = {'Критерий':['Бартлетта', 'Бартлетта', 
-                'Колмогорова-Смирнова', 'Колмогорова-Смирнова', 'Колмогорова-Смирнова',
-                    'Колмогорова-Смирнова'],
-                    'Выборки':['Первая и вторая группы', 
-                    'Период 1 и период 2', 'Первая группа тестовый препарат', 'Первая группа референсный препарат', 
-                    'Вторая группа тестовый препарат', 'Вторя группа референсный препарат'],
-                    'Значение критерия':[self.settings[0].bartlett_groups[0], 
-                    self.settings[0].bartlett_period[0], self.settings[0].kstest_t_1[0],
-                    self.settings[0].kstest_r_1[0], self.settings[0].kstest_t_2[0], self.settings[0].kstest_r_2[0]],
-                    'p-уровень':[self.settings[0].bartlett_groups[1], 
-                    self.settings[0].bartlett_period[1], self.settings[0].kstest_t_1[1],
-                    self.settings[0].kstest_r_1[1], self.settings[0].kstest_t_2[1], self.settings[0].kstest_r_2[1]]}
+            if self.settings[0].check_normal == 'Kolmogorov':
+                data = {'Критерий': ['Бартлетта', 'Бартлетта',
+                                     'Колмогорова-Смирнова', 'Колмогорова-Смирнова', 'Колмогорова-Смирнова',
+                                     'Колмогорова-Смирнова'],
+                        'Выборки': ['Первая и вторая группы',
+                                    'Период 1 и период 2', 'Первая группа тестовый препарат',
+                                    'Первая группа референсный препарат',
+                                    'Вторая группа тестовый препарат', 'Вторя группа референсный препарат'],
+                        'Значение критерия': [self.settings[0].bartlett_groups[0],
+                                              self.settings[0].bartlett_period[0], self.settings[0].kstest_t_1[0],
+                                              self.settings[0].kstest_r_1[0], self.settings[0].kstest_t_2[0],
+                                              self.settings[0].kstest_r_2[0]],
+                        'p-уровень': [self.settings[0].bartlett_groups[1],
+                                      self.settings[0].bartlett_period[1], self.settings[0].kstest_t_1[1],
+                                      self.settings[0].kstest_r_1[1], self.settings[0].kstest_t_2[1],
+                                      self.settings[0].kstest_r_2[1]]}
             else:
-                data = {'Критерий':['Бартлетта', 'Бартлетта', 'Шапиро-Уилка', 'Шапиро-Уилка', 'Шапиро-Уилка',
-                    'Шапиро-Уилка'],
-                    'Выборки':['Первая и вторая группы', 
-                    'Период 1 и период 2', 'Первая группа тестовый препарат', 'Первая группа референсный препарат', 
-                    'Вторая группа тестовый препарат', 'Вторя группа референсный препарат'],
-                    'Значение критерия':[self.settings[0].bartlett_groups[0], 
-                    self.settings[0].bartlett_period[0], self.settings[0].shapiro_t_1[0],
-                    self.settings[0].shapiro_r_1[0], self.settings[0].shapiro_t_2[0], self.settings[0].shapiro_r_2[0]],
-                    'p-уровень':[self.settings[0].bartlett_groups[1], 
-                    self.settings[0].bartlett_period[1], self.settings[0].shapiro_t_1[1],
-                    self.settings[0].shapiro_r_1[1], self.settings[0].shapiro_t_2[1], self.settings[0].shapiro_r_2[1]]}
+                data = {'Критерий': ['Бартлетта', 'Бартлетта', 'Шапиро-Уилка', 'Шапиро-Уилка', 'Шапиро-Уилка',
+                                     'Шапиро-Уилка'],
+                        'Выборки': ['Первая и вторая группы',
+                                    'Период 1 и период 2', 'Первая группа тестовый препарат',
+                                    'Первая группа референсный препарат',
+                                    'Вторая группа тестовый препарат', 'Вторя группа референсный препарат'],
+                        'Значение критерия': [self.settings[0].bartlett_groups[0],
+                                              self.settings[0].bartlett_period[0], self.settings[0].shapiro_t_1[0],
+                                              self.settings[0].shapiro_r_1[0], self.settings[0].shapiro_t_2[0],
+                                              self.settings[0].shapiro_r_2[0]],
+                        'p-уровень': [self.settings[0].bartlett_groups[1],
+                                      self.settings[0].bartlett_period[1], self.settings[0].shapiro_t_1[1],
+                                      self.settings[0].shapiro_r_1[1], self.settings[0].shapiro_t_2[1],
+                                      self.settings[0].shapiro_r_2[1]]}
 
             df = pd.DataFrame(data)
             df = round_df(df)
-            return html.Div([html.Div(html.H1(children='Выполнение критериев'), 
-                style={'text-align': 'center'}),
+            return html.Div([html.Div(html.H1(children='Выполнение критериев'),
+                                      style={'text-align': 'center'}),
                              html.Div([
                                  html.Div([
                                      html.Div([dash_table.DataTable(
@@ -167,32 +170,32 @@ class BioequivalenceDashboard(Dashboard):
                                          ],
                                          style_table={'overflowX': 'auto'},
                                          export_format='xlsx'
-                                     )], style={'border-color': 'rgb(220, 220, 220)', 
-                                     'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
+                                     )], style={'border-color': 'rgb(220, 220, 220)',
+                                                'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
                                      style={'width': '78%', 'display': 'inline-block'}),
                                  html.Div(dcc.Markdown(children=markdown_text_criteria), style={
-                                          'width': '18%', 'float': 'right', 'display': 'inline-block'})
+                                     'width': '18%', 'float': 'right', 'display': 'inline-block'})
                              ])
                              ], style={'margin': '50px'}
                             )
 
     def _generate_param(self):
         data = {'Группа': ['R', 'T'],
-                'AUC': [float(np.mean(self.settings[0].auc_r_notlog)), 
-                float(np.mean(self.settings[0].auc_t_notlog))],
-                'AUC_inf': [float(np.mean(self.settings[0].auc_r_infty)), 
-                float(np.mean(self.settings[0].auc_t_infty))],
+                'AUC': [float(np.mean(self.settings[0].auc_r_notlog)),
+                        float(np.mean(self.settings[0].auc_t_notlog))],
+                'AUC_inf': [float(np.mean(self.settings[0].auc_r_infty)),
+                            float(np.mean(self.settings[0].auc_t_infty))],
                 'ln AUC': [float(np.mean(self.settings[0].auc_r)), float(np.mean(self.settings[0].auc_t))],
-                'ln AUC_inf': [float(np.mean(self.settings[0].auc_r_infty_log)), 
-                float(np.mean(self.settings[0].auc_t_infty_log))],
-                'ln Tmax': [float(np.log(self.settings[0].concentration_r.columns.max())), 
-                float(np.log(self.settings[0].concentration_t.columns.max()))],
-                'ln Cmax': [float(np.log(self.settings[0].concentration_r.max().max())), 
-                float(np.log(self.settings[0].concentration_t.max().max()))]}
+                'ln AUC_inf': [float(np.mean(self.settings[0].auc_r_infty_log)),
+                               float(np.mean(self.settings[0].auc_t_infty_log))],
+                'ln Tmax': [float(np.log(self.settings[0].concentration_r.columns.max())),
+                            float(np.log(self.settings[0].concentration_t.columns.max()))],
+                'ln Cmax': [float(np.log(self.settings[0].concentration_r.max().max())),
+                            float(np.log(self.settings[0].concentration_t.max().max()))]}
         df = pd.DataFrame(data)
         df = round_df(df)
-        return html.Div([html.Div(html.H1(children='Таблица с распределением ключевых параметров по группам'), 
-            style={'text-align': 'center'}),
+        return html.Div([html.Div(html.H1(children='Таблица с распределением ключевых параметров по группам'),
+                                  style={'text-align': 'center'}),
                          html.Div([
                              html.Div([
                                  html.Div([dash_table.DataTable(
@@ -202,12 +205,12 @@ class BioequivalenceDashboard(Dashboard):
                                      data=df.to_dict('records'),
                                      style_table={'overflowX': 'auto'},
                                      export_format='xlsx'
-                                 )], style={'border-color': 'rgb(220, 220, 220)', 
-                                 'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
+                                 )], style={'border-color': 'rgb(220, 220, 220)',
+                                            'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
                                  style={'width': '68%', 'display': 'inline-block'}),
-                             html.Div(dcc.Markdown(children=markdown_text_param), 
-                                style={'width': '28%', 'float': 'right', 'display': 'inline-block',
-                                                                                         'padding': '5px', 'margin': '5px'})
+                             html.Div(dcc.Markdown(children=markdown_text_param),
+                                      style={'width': '28%', 'float': 'right', 'display': 'inline-block',
+                                             'padding': '5px', 'margin': '5px'})
                          ])
                          ], style={'margin': '50px'}
                         )
@@ -218,8 +221,8 @@ class BioequivalenceDashboard(Dashboard):
                 'ln AUC R': [float(np.mean(self.settings[0].auc_r_1)), float(np.mean(self.settings[0].auc_r_2))]}
         df = pd.DataFrame(data)
         df = round_df(df)
-        return html.Div([html.Div(html.H1(children='Средние площади под графиком по каждому препарату'), 
-            style={'text-align': 'center'}),
+        return html.Div([html.Div(html.H1(children='Средние площади под графиком по каждому препарату'),
+                                  style={'text-align': 'center'}),
                          html.Div([
                              html.Div([
                                  html.Div([dash_table.DataTable(
@@ -229,11 +232,11 @@ class BioequivalenceDashboard(Dashboard):
                                      data=df.to_dict('records'),
                                      style_table={'overflowX': 'auto'},
                                      export_format='xlsx'
-                                 )], style={'border-color': 'rgb(220, 220, 220)', 
-                                 'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
+                                 )], style={'border-color': 'rgb(220, 220, 220)',
+                                            'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
                                  style={'width': '78%', 'display': 'inline-block'}),
                              html.Div(dcc.Markdown(children=markdown_text_log_auc), style={
-                                      'width': '18%', 'float': 'right', 'display': 'inline-block'})
+                                 'width': '18%', 'float': 'right', 'display': 'inline-block'})
                          ])
                          ], style={'margin': '50px'}
                         )
@@ -272,19 +275,21 @@ class BioequivalenceDashboard(Dashboard):
                                      ],
                                      style_table={'overflowX': 'auto'},
                                      export_format='xlsx'
-                                 )], style={'border-color': 'rgb(220, 220, 220)', 
-                                 'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
+                                 )], style={'border-color': 'rgb(220, 220, 220)',
+                                            'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
                                  style={'width': '78%', 'display': 'inline-block'}),
                              html.Div(dcc.Markdown(children=mark), style={
-                                      'width': '18%', 'float': 'right', 'display': 'inline-block'})
+                                 'width': '18%', 'float': 'right', 'display': 'inline-block'})
                          ])
                          ], style={'margin': '50px', 'margin-top': marg}
                         )
 
     def _generate_interval(self):
         data = {'Критерий': ['Биоэквивалентности', 'Бионеэквивалентности'],
-                'Нижняя граница': [100 * (e**self.settings[0].oneside_eq[0]), 100 * (e**self.settings[0].oneside_noteq[0])],
-                'Верхняя граница': [100 * (e**self.settings[0].oneside_eq[1]), 100 * (e**self.settings[0].oneside_noteq[1])],
+                'Нижняя граница': [100 * (e ** self.settings[0].oneside_eq[0]),
+                                   100 * (e ** self.settings[0].oneside_noteq[0])],
+                'Верхняя граница': [100 * (e ** self.settings[0].oneside_eq[1]),
+                                    100 * (e ** self.settings[0].oneside_noteq[1])],
                 'Доверительный интервал критерия': ['80.00-125.00%', '80.00-125.00%'],
                 'Выполнение критерия': ['Выполнен' if (self.settings[0].oneside_eq[0] > -0.223 and
                                                        self.settings[0].oneside_eq[1] < 0.223) else 'Не выполнен',
@@ -292,8 +297,8 @@ class BioequivalenceDashboard(Dashboard):
                                                        self.settings[0].oneside_noteq[1] < -0.223) else 'Не выполнен']}
         df = pd.DataFrame(data)
         df = round_df(df)
-        return html.Div([html.Div(html.H1(children='Результаты оценки биоэквивалентности'), 
-            style={'text-align': 'center'}),
+        return html.Div([html.Div(html.H1(children='Результаты оценки биоэквивалентности'),
+                                  style={'text-align': 'center'}),
                          html.Div([
                              html.Div([
                                  html.Div([dash_table.DataTable(
@@ -303,11 +308,11 @@ class BioequivalenceDashboard(Dashboard):
                                      data=df.to_dict('records'),
                                      style_table={'overflowX': 'auto'},
                                      export_format='xlsx'
-                                 )], style={'border-color': 'rgb(220, 220, 220)', 
-                                 'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
+                                 )], style={'border-color': 'rgb(220, 220, 220)',
+                                            'border-style': 'solid', 'padding': '5px', 'margin': '5px'})],
                                  style={'width': '78%', 'display': 'inline-block'}),
                              html.Div(dcc.Markdown(children=markdown_text_interval), style={
-                                      'width': '18%', 'float': 'right', 'display': 'inline-block'})
+                                 'width': '18%', 'float': 'right', 'display': 'inline-block'})
                          ])
                          ], style={'margin': '50px', 'margin-top': '150px'}
                         )
@@ -320,15 +325,17 @@ class BioequivalenceDashboard(Dashboard):
             def update_graph(yaxis_column_name_conc_r):
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(x=time, y=df.loc[
-                              yaxis_column_name_conc_r], name='График'))
+                    yaxis_column_name_conc_r], name='График'))
                 fig.add_trace(go.Scatter(x=[time[np.argmax(df.loc[
-                              yaxis_column_name_conc_r])]], y = [max(df.loc[
-                              yaxis_column_name_conc_r])], mode='markers', name='Максимум',
-                              marker=dict(size = 15, color = 'violet')))
+                                                               yaxis_column_name_conc_r])]], y=[max(df.loc[
+                                                                                                        yaxis_column_name_conc_r])],
+                                         mode='markers', name='Максимум',
+                                         marker=dict(size=15, color='violet')))
                 fig.add_trace(go.Scatter(x=[time[np.argmin(df.loc[
-                              yaxis_column_name_conc_r])]], y = [min(df.loc[
-                              yaxis_column_name_conc_r])], mode='markers', name='Минимум',
-                              marker=dict(size = 15, color = 'green')))
+                                                               yaxis_column_name_conc_r])]], y=[min(df.loc[
+                                                                                                        yaxis_column_name_conc_r])],
+                                         mode='markers', name='Минимум',
+                                         marker=dict(size=15, color='green')))
                 fig.update_xaxes(title='Время')
                 fig.update_yaxes(title=yaxis_column_name_conc_r,
                                  type='linear')
@@ -339,27 +346,30 @@ class BioequivalenceDashboard(Dashboard):
 
             available_indicators = df.index
 
-            return html.Div([html.Div(html.H1(children='График зависимости концентрации от времени группа референсного препарата'), 
-                style={'text-align': 'center'}),
-                             html.Div([
-                                 html.Div([
-                                     html.Div([
-                                         dcc.Markdown(
-                                             children="Выберите показатель для оси ОY:"),
-                                         dcc.Dropdown(
-                                             id='yaxis_column_name_conc_r',
-                                             options=[{'label': i, 'value': i}
-                                                      for i in available_indicators],
-                                             value=available_indicators[0]
-                                         )
-                                     ], style={'width': '48%', 'display': 'inline-block'}),
-                                 ], style={'padding': '5px'}),
-                                 dcc.Graph(id='concentration_time_r')], style={'width': '78%', 
-                                 'display': 'inline-block', 'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-                             html.Div(dcc.Markdown(children=markdown_text_conc_time_r), 
-                                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-                             style={'margin': '100px'}
-                            )
+            return html.Div(
+                [html.Div(html.H1(children='График зависимости концентрации от времени группа референсного препарата'),
+                          style={'text-align': 'center'}),
+                 html.Div([
+                     html.Div([
+                         html.Div([
+                             dcc.Markdown(
+                                 children="Выберите показатель для оси ОY:"),
+                             dcc.Dropdown(
+                                 id='yaxis_column_name_conc_r',
+                                 options=[{'label': i, 'value': i}
+                                          for i in available_indicators],
+                                 value=available_indicators[0]
+                             )
+                         ], style={'width': '48%', 'display': 'inline-block'}),
+                     ], style={'padding': '5px'}),
+                     dcc.Graph(id='concentration_time_r')], style={'width': '78%',
+                                                                   'display': 'inline-block',
+                                                                   'border-color': 'rgb(220, 220, 220)',
+                                                                   'border-style': 'solid', 'padding': '5px'}),
+                 html.Div(dcc.Markdown(children=markdown_text_conc_time_r),
+                          style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                style={'margin': '100px'}
+                )
         else:
             df = self.settings[0].concentration_t
             time = df.columns
@@ -367,15 +377,17 @@ class BioequivalenceDashboard(Dashboard):
             def update_graph(yaxis_column_name_conc_t):
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(x=time, y=df.loc[
-                              yaxis_column_name_conc_t], name='График'))
+                    yaxis_column_name_conc_t], name='График'))
                 fig.add_trace(go.Scatter(x=[time[np.argmax(df.loc[
-                              yaxis_column_name_conc_t])]], y = [max(df.loc[
-                              yaxis_column_name_conc_t])], mode='markers', name='Максимум',
-                              marker=dict(size = 15, color = 'violet')))
+                                                               yaxis_column_name_conc_t])]], y=[max(df.loc[
+                                                                                                        yaxis_column_name_conc_t])],
+                                         mode='markers', name='Максимум',
+                                         marker=dict(size=15, color='violet')))
                 fig.add_trace(go.Scatter(x=[time[np.argmin(df.loc[
-                              yaxis_column_name_conc_t])]], y = [min(df.loc[
-                              yaxis_column_name_conc_t])], mode='markers', name='Минимум',
-                              marker=dict(size = 15, color = 'green')))
+                                                               yaxis_column_name_conc_t])]], y=[min(df.loc[
+                                                                                                        yaxis_column_name_conc_t])],
+                                         mode='markers', name='Минимум',
+                                         marker=dict(size=15, color='green')))
                 fig.update_xaxes(title='Время')
                 fig.update_yaxes(title=yaxis_column_name_conc_t,
                                  type='linear')
@@ -386,27 +398,30 @@ class BioequivalenceDashboard(Dashboard):
 
             available_indicators = df.index
 
-            return html.Div([html.Div(html.H1(children='График зависимости концентрации от времени группа тестового препарата'), 
-                style={'text-align': 'center'}),
-                             html.Div([
-                                 html.Div([
-                                     html.Div([
-                                         dcc.Markdown(
-                                             children="Выберите показатель для оси ОY:"),
-                                         dcc.Dropdown(
-                                             id='yaxis_column_name_conc_t',
-                                             options=[{'label': i, 'value': i}
-                                                      for i in available_indicators],
-                                             value=available_indicators[0]
-                                         )
-                                     ], style={'width': '48%', 'display': 'inline-block'}),
-                                 ], style={'padding': '5px'}),
-                                 dcc.Graph(id='concentration_time_t')], style={'width': '78%', 
-                                 'display': 'inline-block', 'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-                             html.Div(dcc.Markdown(children=markdown_text_conc_time_t), 
-                                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-                             style={'margin': '100px'}
-                            )
+            return html.Div(
+                [html.Div(html.H1(children='График зависимости концентрации от времени группа тестового препарата'),
+                          style={'text-align': 'center'}),
+                 html.Div([
+                     html.Div([
+                         html.Div([
+                             dcc.Markdown(
+                                 children="Выберите показатель для оси ОY:"),
+                             dcc.Dropdown(
+                                 id='yaxis_column_name_conc_t',
+                                 options=[{'label': i, 'value': i}
+                                          for i in available_indicators],
+                                 value=available_indicators[0]
+                             )
+                         ], style={'width': '48%', 'display': 'inline-block'}),
+                     ], style={'padding': '5px'}),
+                     dcc.Graph(id='concentration_time_t')], style={'width': '78%',
+                                                                   'display': 'inline-block',
+                                                                   'border-color': 'rgb(220, 220, 220)',
+                                                                   'border-style': 'solid', 'padding': '5px'}),
+                 html.Div(dcc.Markdown(children=markdown_text_conc_time_t),
+                          style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                style={'margin': '100px'}
+                )
 
     def _generate_concentration_time_log(self, ref=True):
         if ref:
@@ -416,15 +431,17 @@ class BioequivalenceDashboard(Dashboard):
             def update_graph(yaxis_column_name_conc_r_log):
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(x=time, y=df.loc[
-                              yaxis_column_name_conc_r_log], name='График'))
+                    yaxis_column_name_conc_r_log], name='График'))
                 fig.add_trace(go.Scatter(x=[time[np.argmax(df.loc[
-                              yaxis_column_name_conc_r_log])]], y = [max(df.loc[
-                              yaxis_column_name_conc_r_log])], mode='markers', name='Максимум',
-                              marker=dict(size = 15, color = 'violet')))
+                                                               yaxis_column_name_conc_r_log])]], y=[max(df.loc[
+                                                                                                            yaxis_column_name_conc_r_log])],
+                                         mode='markers', name='Максимум',
+                                         marker=dict(size=15, color='violet')))
                 fig.add_trace(go.Scatter(x=[time[np.argmin(df.loc[
-                              yaxis_column_name_conc_r_log])]], y = [min(df.loc[
-                              yaxis_column_name_conc_r_log])], mode='markers', name='Минимум',
-                              marker=dict(size = 15, color = 'green')))
+                                                               yaxis_column_name_conc_r_log])]], y=[min(df.loc[
+                                                                                                            yaxis_column_name_conc_r_log])],
+                                         mode='markers', name='Минимум',
+                                         marker=dict(size=15, color='green')))
                 fig.update_xaxes(title='Время')
                 fig.update_yaxes(title=yaxis_column_name_conc_r_log,
                                  type='log')
@@ -435,8 +452,9 @@ class BioequivalenceDashboard(Dashboard):
 
             available_indicators = df.index
 
-            return html.Div([html.Div(html.H1(children='График зависимости прологарифмированной концентрации от времени группа референсного препарата'), 
-                style={'text-align': 'center'}),
+            return html.Div([html.Div(html.H1(
+                children='График зависимости прологарифмированной концентрации от времени группа референсного препарата'),
+                                      style={'text-align': 'center'}),
                              html.Div([
                                  html.Div([
                                      html.Div([
@@ -450,11 +468,14 @@ class BioequivalenceDashboard(Dashboard):
                                          )
                                      ], style={'width': '48%', 'display': 'inline-block'}),
                                  ], style={'padding': '5px'}),
-                                 dcc.Graph(id='concentration_time_r_log')], style={'width': '78%', 
-                                 'display': 'inline-block', 'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-                             html.Div(dcc.Markdown(children=markdown_text_conc_time_r_log), 
-                                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-                             style={'margin': '100px'}
+                                 dcc.Graph(id='concentration_time_r_log')], style={'width': '78%',
+                                                                                   'display': 'inline-block',
+                                                                                   'border-color': 'rgb(220, 220, 220)',
+                                                                                   'border-style': 'solid',
+                                                                                   'padding': '5px'}),
+                             html.Div(dcc.Markdown(children=markdown_text_conc_time_r_log),
+                                      style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                            style={'margin': '100px'}
                             )
         else:
             df = self.settings[0].concentration_t
@@ -463,15 +484,17 @@ class BioequivalenceDashboard(Dashboard):
             def update_graph(yaxis_column_name_conc_t_log):
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(x=time, y=df.loc[
-                              yaxis_column_name_conc_t_log], name='График'))
+                    yaxis_column_name_conc_t_log], name='График'))
                 fig.add_trace(go.Scatter(x=[time[np.argmax(df.loc[
-                              yaxis_column_name_conc_t_log])]], y = [max(df.loc[
-                              yaxis_column_name_conc_t_log])], mode='markers', name='Максимум',
-                              marker=dict(size = 15, color = 'violet')))
+                                                               yaxis_column_name_conc_t_log])]], y=[max(df.loc[
+                                                                                                            yaxis_column_name_conc_t_log])],
+                                         mode='markers', name='Максимум',
+                                         marker=dict(size=15, color='violet')))
                 fig.add_trace(go.Scatter(x=[time[np.argmin(df.loc[
-                              yaxis_column_name_conc_t_log])]], y = [min(df.loc[
-                              yaxis_column_name_conc_t_log])], mode='markers', name='Минимум',
-                              marker=dict(size = 15, color = 'green')))
+                                                               yaxis_column_name_conc_t_log])]], y=[min(df.loc[
+                                                                                                            yaxis_column_name_conc_t_log])],
+                                         mode='markers', name='Минимум',
+                                         marker=dict(size=15, color='green')))
                 fig.update_xaxes(title='Время')
                 fig.update_yaxes(title=yaxis_column_name_conc_t_log,
                                  type='log')
@@ -482,8 +505,9 @@ class BioequivalenceDashboard(Dashboard):
 
             available_indicators = df.index
 
-            return html.Div([html.Div(html.H1(children='График зависимости прологарифмированной концентрации от времени группа тестового препарата'), 
-                style={'text-align': 'center'}),
+            return html.Div([html.Div(html.H1(
+                children='График зависимости прологарифмированной концентрации от времени группа тестового препарата'),
+                                      style={'text-align': 'center'}),
                              html.Div([
                                  html.Div([
                                      html.Div([
@@ -497,11 +521,14 @@ class BioequivalenceDashboard(Dashboard):
                                          )
                                      ], style={'width': '48%', 'display': 'inline-block'}),
                                  ], style={'padding': '5px'}),
-                                 dcc.Graph(id='concentration_time_t_log')], style={'width': '78%', 
-                                 'display': 'inline-block', 'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-                             html.Div(dcc.Markdown(children=markdown_text_conc_time_t_log), 
-                                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-                             style={'margin': '100px'}
+                                 dcc.Graph(id='concentration_time_t_log')], style={'width': '78%',
+                                                                                   'display': 'inline-block',
+                                                                                   'border-color': 'rgb(220, 220, 220)',
+                                                                                   'border-style': 'solid',
+                                                                                   'padding': '5px'}),
+                             html.Div(dcc.Markdown(children=markdown_text_conc_time_t_log),
+                                      style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                            style={'margin': '100px'}
                             )
 
     def _generate_concentration_time_linlog(self, ref=True):
@@ -512,15 +539,17 @@ class BioequivalenceDashboard(Dashboard):
             def update_graph(yaxis_column_name_conc_r_linlog, yaxis_type_conc_r_linlog):
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(x=time, y=df.loc[
-                              yaxis_column_name_conc_r_linlog], name='График'))
+                    yaxis_column_name_conc_r_linlog], name='График'))
                 fig.add_trace(go.Scatter(x=[time[np.argmax(df.loc[
-                              yaxis_column_name_conc_r_linlog])]], y = [max(df.loc[
-                              yaxis_column_name_conc_r_linlog])], mode='markers', name='Максимум',
-                              marker=dict(size = 15, color = 'violet')))
+                                                               yaxis_column_name_conc_r_linlog])]], y=[max(df.loc[
+                                                                                                               yaxis_column_name_conc_r_linlog])],
+                                         mode='markers', name='Максимум',
+                                         marker=dict(size=15, color='violet')))
                 fig.add_trace(go.Scatter(x=[time[np.argmin(df.loc[
-                              yaxis_column_name_conc_r_linlog])]], y = [min(df.loc[
-                              yaxis_column_name_conc_r_linlog])], mode='markers', name='Минимум',
-                              marker=dict(size = 15, color = 'green')))
+                                                               yaxis_column_name_conc_r_linlog])]], y=[min(df.loc[
+                                                                                                               yaxis_column_name_conc_r_linlog])],
+                                         mode='markers', name='Минимум',
+                                         marker=dict(size=15, color='green')))
                 fig.update_xaxes(title='Время')
                 fig.update_yaxes(title=yaxis_column_name_conc_r_linlog,
                                  type=yaxis_type_conc_r_linlog)
@@ -532,33 +561,36 @@ class BioequivalenceDashboard(Dashboard):
 
             available_indicators = df.index
 
-            return html.Div([html.Div(html.H1(children='График зависимости концентрации от времени группа референсного препарата'), 
-                style={'text-align': 'center'}),
-                             html.Div([
-                                 html.Div([
-                                     html.Div([
-                                         dcc.Markdown(
-                                             children="Выберите показатель для оси ОY:"),
-                                         dcc.Dropdown(
-                                             id='yaxis_column_name_conc_r_linlog',
-                                             options=[{'label': i, 'value': i}
-                                                      for i in available_indicators],
-                                             value=available_indicators[0]
-                                         )
-                                     ], style={'width': '48%', 'display': 'inline-block'}),
-                                     html.Div([dcc.RadioItems(
-                                         id='yaxis_type_conc_r_linlog',
-                                         options=[{'label': i, 'value': i}
-                                                  for i in ['linear', 'log']],
-                                         value='linear'
-                                     )], style={'width': '48%', 'display': 'inline-block', 'float': 'right'})
-                                 ], style={'padding': '5px'}),
-                                 dcc.Graph(id='concentration_time_r_linlog')], style={'width': '78%', 
-                                 'display': 'inline-block', 'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-                             html.Div(dcc.Markdown(children=markdown_text_conc_time_r), 
-                                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-                             style={'margin': '100px'}
-                            )
+            return html.Div(
+                [html.Div(html.H1(children='График зависимости концентрации от времени группа референсного препарата'),
+                          style={'text-align': 'center'}),
+                 html.Div([
+                     html.Div([
+                         html.Div([
+                             dcc.Markdown(
+                                 children="Выберите показатель для оси ОY:"),
+                             dcc.Dropdown(
+                                 id='yaxis_column_name_conc_r_linlog',
+                                 options=[{'label': i, 'value': i}
+                                          for i in available_indicators],
+                                 value=available_indicators[0]
+                             )
+                         ], style={'width': '48%', 'display': 'inline-block'}),
+                         html.Div([dcc.RadioItems(
+                             id='yaxis_type_conc_r_linlog',
+                             options=[{'label': i, 'value': i}
+                                      for i in ['linear', 'log']],
+                             value='linear'
+                         )], style={'width': '48%', 'display': 'inline-block', 'float': 'right'})
+                     ], style={'padding': '5px'}),
+                     dcc.Graph(id='concentration_time_r_linlog')], style={'width': '78%',
+                                                                          'display': 'inline-block',
+                                                                          'border-color': 'rgb(220, 220, 220)',
+                                                                          'border-style': 'solid', 'padding': '5px'}),
+                 html.Div(dcc.Markdown(children=markdown_text_conc_time_r),
+                          style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                style={'margin': '100px'}
+                )
         else:
             df = self.settings[0].concentration_t
             time = df.columns
@@ -566,15 +598,17 @@ class BioequivalenceDashboard(Dashboard):
             def update_graph(yaxis_column_name_conc_t_linlog, yaxis_type_conc_t_linlog):
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(x=time, y=df.loc[
-                              yaxis_column_name_conc_t_linlog], name='График'))
+                    yaxis_column_name_conc_t_linlog], name='График'))
                 fig.add_trace(go.Scatter(x=[time[np.argmax(df.loc[
-                              yaxis_column_name_conc_t_linlog])]], y = [max(df.loc[
-                              yaxis_column_name_conc_t_linlog])], mode='markers', name='Максимум',
-                              marker=dict(size = 15, color = 'violet')))
+                                                               yaxis_column_name_conc_t_linlog])]], y=[max(df.loc[
+                                                                                                               yaxis_column_name_conc_t_linlog])],
+                                         mode='markers', name='Максимум',
+                                         marker=dict(size=15, color='violet')))
                 fig.add_trace(go.Scatter(x=[time[np.argmin(df.loc[
-                              yaxis_column_name_conc_t_linlog])]], y = [min(df.loc[
-                              yaxis_column_name_conc_t_linlog])], mode='markers', name='Минимум',
-                              marker=dict(size = 15, color = 'green')))
+                                                               yaxis_column_name_conc_t_linlog])]], y=[min(df.loc[
+                                                                                                               yaxis_column_name_conc_t_linlog])],
+                                         mode='markers', name='Минимум',
+                                         marker=dict(size=15, color='green')))
                 fig.update_xaxes(title='Время')
                 fig.update_yaxes(title=yaxis_column_name_conc_t_linlog,
                                  type=yaxis_type_conc_t_linlog)
@@ -586,33 +620,36 @@ class BioequivalenceDashboard(Dashboard):
 
             available_indicators = df.index
 
-            return html.Div([html.Div(html.H1(children='График зависимости концентрации от времени группа тестового препарата'), 
-                style={'text-align': 'center'}),
-                             html.Div([
-                                 html.Div([
-                                     html.Div([
-                                         dcc.Markdown(
-                                             children="Выберите показатель для оси ОY:"),
-                                         dcc.Dropdown(
-                                             id='yaxis_column_name_conc_t_linlog',
-                                             options=[{'label': i, 'value': i}
-                                                      for i in available_indicators],
-                                             value=available_indicators[0]
-                                         )
-                                     ], style={'width': '48%', 'display': 'inline-block'}),
-                                     html.Div([dcc.RadioItems(
-                                         id='yaxis_type_conc_t_linlog',
-                                         options=[{'label': i, 'value': i}
-                                                  for i in ['linear', 'log']],
-                                         value='linear'
-                                     )], style={'width': '48%', 'display': 'inline-block', 'float': 'right'})
-                                 ], style={'padding': '5px'}),
-                                 dcc.Graph(id='concentration_time_t_linlog')], style={'width': '78%', 
-                                 'display': 'inline-block', 'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-                             html.Div(dcc.Markdown(children=markdown_text_conc_time_t), 
-                                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-                             style={'margin': '100px'}
-                            )
+            return html.Div(
+                [html.Div(html.H1(children='График зависимости концентрации от времени группа тестового препарата'),
+                          style={'text-align': 'center'}),
+                 html.Div([
+                     html.Div([
+                         html.Div([
+                             dcc.Markdown(
+                                 children="Выберите показатель для оси ОY:"),
+                             dcc.Dropdown(
+                                 id='yaxis_column_name_conc_t_linlog',
+                                 options=[{'label': i, 'value': i}
+                                          for i in available_indicators],
+                                 value=available_indicators[0]
+                             )
+                         ], style={'width': '48%', 'display': 'inline-block'}),
+                         html.Div([dcc.RadioItems(
+                             id='yaxis_type_conc_t_linlog',
+                             options=[{'label': i, 'value': i}
+                                      for i in ['linear', 'log']],
+                             value='linear'
+                         )], style={'width': '48%', 'display': 'inline-block', 'float': 'right'})
+                     ], style={'padding': '5px'}),
+                     dcc.Graph(id='concentration_time_t_linlog')], style={'width': '78%',
+                                                                          'display': 'inline-block',
+                                                                          'border-color': 'rgb(220, 220, 220)',
+                                                                          'border-style': 'solid', 'padding': '5px'}),
+                 html.Div(dcc.Markdown(children=markdown_text_conc_time_t),
+                          style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                style={'margin': '100px'}
+                )
 
     def _generate_concentration_time_cross(self, tr=True):
         if tr:
@@ -623,25 +660,29 @@ class BioequivalenceDashboard(Dashboard):
             def update_graph(yaxis_column_name_conc_tr, yaxis_type_conc_tr):
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(x=time, y=df_t.loc[
-                              yaxis_column_name_conc_tr], name='T'))
+                    yaxis_column_name_conc_tr], name='T'))
                 fig.add_trace(go.Scatter(x=time, y=df_r.loc[
-                              yaxis_column_name_conc_tr], name='R'))
+                    yaxis_column_name_conc_tr], name='R'))
                 fig.add_trace(go.Scatter(x=[time[np.argmax(df_t.loc[
-                              yaxis_column_name_conc_tr])]], y = [max(df_t.loc[
-                              yaxis_column_name_conc_tr])], mode='markers', name='Максимум T',
-                              marker=dict(size = 15, color = 'violet')))
+                                                               yaxis_column_name_conc_tr])]], y=[max(df_t.loc[
+                                                                                                         yaxis_column_name_conc_tr])],
+                                         mode='markers', name='Максимум T',
+                                         marker=dict(size=15, color='violet')))
                 fig.add_trace(go.Scatter(x=[time[np.argmin(df_t.loc[
-                              yaxis_column_name_conc_tr])]], y = [min(df_t.loc[
-                              yaxis_column_name_conc_tr])], mode='markers', name='Минимум T',
-                              marker=dict(size = 15, color = 'green')))
+                                                               yaxis_column_name_conc_tr])]], y=[min(df_t.loc[
+                                                                                                         yaxis_column_name_conc_tr])],
+                                         mode='markers', name='Минимум T',
+                                         marker=dict(size=15, color='green')))
                 fig.add_trace(go.Scatter(x=[time[np.argmax(df_r.loc[
-                              yaxis_column_name_conc_tr])]], y = [max(df_r.loc[
-                              yaxis_column_name_conc_tr])], mode='markers', name='Максимум R',
-                              marker=dict(size = 15, color = 'violet')))
+                                                               yaxis_column_name_conc_tr])]], y=[max(df_r.loc[
+                                                                                                         yaxis_column_name_conc_tr])],
+                                         mode='markers', name='Максимум R',
+                                         marker=dict(size=15, color='violet')))
                 fig.add_trace(go.Scatter(x=[time[np.argmin(df_r.loc[
-                              yaxis_column_name_conc_tr])]], y = [min(df_r.loc[
-                              yaxis_column_name_conc_tr])], mode='markers', name='Минимум R',
-                              marker=dict(size = 15, color = 'green')))
+                                                               yaxis_column_name_conc_tr])]], y=[min(df_r.loc[
+                                                                                                         yaxis_column_name_conc_tr])],
+                                         mode='markers', name='Минимум R',
+                                         marker=dict(size=15, color='green')))
                 fig.update_xaxes(title='Время')
                 fig.update_yaxes(title=yaxis_column_name_conc_tr,
                                  type=yaxis_type_conc_tr)
@@ -653,8 +694,8 @@ class BioequivalenceDashboard(Dashboard):
 
             available_indicators = df_t.index
 
-            return html.Div([html.Div(html.H1(children='Индивидуальные графики концентрации для пациентов группа TR'), 
-                style={'text-align': 'center'}),
+            return html.Div([html.Div(html.H1(children='Индивидуальные графики концентрации для пациентов группа TR'),
+                                      style={'text-align': 'center'}),
                              html.Div([
                                  html.Div([
                                      html.Div([
@@ -674,11 +715,14 @@ class BioequivalenceDashboard(Dashboard):
                                          value='linear'
                                      )], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
                                  ], style={'padding': '5px'}),
-                                 dcc.Graph(id='concentration_time_tr')], style={'width': '78%', 
-                                 'display': 'inline-block', 'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-                             html.Div(dcc.Markdown(children=markdown_concentration_time_cross_tr), 
-                                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-                             style={'margin': '100px'}
+                                 dcc.Graph(id='concentration_time_tr')], style={'width': '78%',
+                                                                                'display': 'inline-block',
+                                                                                'border-color': 'rgb(220, 220, 220)',
+                                                                                'border-style': 'solid',
+                                                                                'padding': '5px'}),
+                             html.Div(dcc.Markdown(children=markdown_concentration_time_cross_tr),
+                                      style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                            style={'margin': '100px'}
                             )
         else:
             df_t = self.settings[0].concentration_t_2
@@ -688,25 +732,29 @@ class BioequivalenceDashboard(Dashboard):
             def update_graph(yaxis_column_name_conc_rt, yaxis_type_conc_rt):
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(x=time, y=df_t.loc[
-                              yaxis_column_name_conc_rt], name='T'))
+                    yaxis_column_name_conc_rt], name='T'))
                 fig.add_trace(go.Scatter(x=time, y=df_r.loc[
-                              yaxis_column_name_conc_rt], name='R'))
+                    yaxis_column_name_conc_rt], name='R'))
                 fig.add_trace(go.Scatter(x=[time[np.argmax(df_t.loc[
-                              yaxis_column_name_conc_rt])]], y = [max(df_t.loc[
-                              yaxis_column_name_conc_rt])], mode='markers', name='Максимум T',
-                              marker=dict(size = 15, color = 'violet')))
+                                                               yaxis_column_name_conc_rt])]], y=[max(df_t.loc[
+                                                                                                         yaxis_column_name_conc_rt])],
+                                         mode='markers', name='Максимум T',
+                                         marker=dict(size=15, color='violet')))
                 fig.add_trace(go.Scatter(x=[time[np.argmin(df_t.loc[
-                              yaxis_column_name_conc_rt])]], y = [min(df_t.loc[
-                              yaxis_column_name_conc_rt])], mode='markers', name='Минимум T',
-                              marker=dict(size = 15, color = 'green')))
+                                                               yaxis_column_name_conc_rt])]], y=[min(df_t.loc[
+                                                                                                         yaxis_column_name_conc_rt])],
+                                         mode='markers', name='Минимум T',
+                                         marker=dict(size=15, color='green')))
                 fig.add_trace(go.Scatter(x=[time[np.argmax(df_r.loc[
-                              yaxis_column_name_conc_rt])]], y = [max(df_r.loc[
-                              yaxis_column_name_conc_rt])], mode='markers', name='Максимум R',
-                              marker=dict(size = 15, color = 'violet')))
+                                                               yaxis_column_name_conc_rt])]], y=[max(df_r.loc[
+                                                                                                         yaxis_column_name_conc_rt])],
+                                         mode='markers', name='Максимум R',
+                                         marker=dict(size=15, color='violet')))
                 fig.add_trace(go.Scatter(x=[time[np.argmin(df_r.loc[
-                              yaxis_column_name_conc_rt])]], y = [min(df_r.loc[
-                              yaxis_column_name_conc_rt])], mode='markers', name='Минимум R',
-                              marker=dict(size = 15, color = 'green')))
+                                                               yaxis_column_name_conc_rt])]], y=[min(df_r.loc[
+                                                                                                         yaxis_column_name_conc_rt])],
+                                         mode='markers', name='Минимум R',
+                                         marker=dict(size=15, color='green')))
                 fig.update_xaxes(title='Время')
                 fig.update_yaxes(title=yaxis_column_name_conc_rt,
                                  type=yaxis_type_conc_rt)
@@ -718,8 +766,8 @@ class BioequivalenceDashboard(Dashboard):
 
             available_indicators = df_t.index
 
-            return html.Div([html.Div(html.H1(children='Индивидуальные графики концентрации для пациентов группа RT'), 
-                style={'text-align': 'center'}),
+            return html.Div([html.Div(html.H1(children='Индивидуальные графики концентрации для пациентов группа RT'),
+                                      style={'text-align': 'center'}),
                              html.Div([
                                  html.Div([
                                      html.Div([
@@ -739,11 +787,14 @@ class BioequivalenceDashboard(Dashboard):
                                          value='linear'
                                      )], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
                                  ], style={'padding': '5px'}),
-                                 dcc.Graph(id='concentration_time_rt')], style={'width': '78%', 
-                                 'display': 'inline-block', 'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-                             html.Div(dcc.Markdown(children=markdown_concentration_time_cross_rt), 
-                                style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-                             style={'margin': '100px'}
+                                 dcc.Graph(id='concentration_time_rt')], style={'width': '78%',
+                                                                                'display': 'inline-block',
+                                                                                'border-color': 'rgb(220, 220, 220)',
+                                                                                'border-style': 'solid',
+                                                                                'padding': '5px'}),
+                             html.Div(dcc.Markdown(children=markdown_concentration_time_cross_rt),
+                                      style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                            style={'margin': '100px'}
                             )
 
     def _generate_concentration_time_mean(self):
@@ -754,14 +805,14 @@ class BioequivalenceDashboard(Dashboard):
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=time, y=df_r, name='R'))
         fig.add_trace(go.Scatter(x=time, y=df_t, name='T'))
-        fig.add_trace(go.Scatter(x=[time[np.argmax(df_t)]], y = [max(df_t)], mode='markers', name='Максимум T',
-                              marker=dict(size = 15, color = 'violet')))
-        fig.add_trace(go.Scatter(x=[time[np.argmin(df_t)]], y = [min(df_t)], mode='markers', name='Минимум T',
-                              marker=dict(size = 15, color = 'green')))
-        fig.add_trace(go.Scatter(x=[time[np.argmax(df_r)]], y = [max(df_r)], mode='markers', name='Максимум R',
-                              marker=dict(size = 15, color = 'violet')))
-        fig.add_trace(go.Scatter(x=[time[np.argmin(df_r)]], y = [min(df_r)], mode='markers', name='Минимум R',
-                              marker=dict(size = 15, color = 'green')))
+        fig.add_trace(go.Scatter(x=[time[np.argmax(df_t)]], y=[max(df_t)], mode='markers', name='Максимум T',
+                                 marker=dict(size=15, color='violet')))
+        fig.add_trace(go.Scatter(x=[time[np.argmin(df_t)]], y=[min(df_t)], mode='markers', name='Минимум T',
+                                 marker=dict(size=15, color='green')))
+        fig.add_trace(go.Scatter(x=[time[np.argmax(df_r)]], y=[max(df_r)], mode='markers', name='Максимум R',
+                                 marker=dict(size=15, color='violet')))
+        fig.add_trace(go.Scatter(x=[time[np.argmin(df_r)]], y=[min(df_r)], mode='markers', name='Минимум R',
+                                 marker=dict(size=15, color='green')))
         fig.update_xaxes(title='Время')
         fig.update_yaxes(title='Концентрация',
                          type='linear')
@@ -770,11 +821,12 @@ class BioequivalenceDashboard(Dashboard):
                                   style={'text-align': 'center'}),
                          html.Div([
                              dcc.Graph(id='concentration_time_mean', figure=fig)],
-            style={'width': '78%', 'display': 'inline-block', 
-            'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-            html.Div(dcc.Markdown(children=markdown_text_conc_time_mean),
-                     style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], style={'margin': '100px'}
-        )
+                             style={'width': '78%', 'display': 'inline-block',
+                                    'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
+                         html.Div(dcc.Markdown(children=markdown_text_conc_time_mean),
+                                  style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                        style={'margin': '100px'}
+                        )
 
     def _generate_concentration_time_log_mean(self):
         df_r = self.settings[0].concentration_r.mean()
@@ -784,14 +836,14 @@ class BioequivalenceDashboard(Dashboard):
         fig = go.Figure()
         fig.add_trace(go.Scatter(x=time, y=df_r, name='R'))
         fig.add_trace(go.Scatter(x=time, y=df_t, name='T'))
-        fig.add_trace(go.Scatter(x=[time[np.argmax(df_t)]], y = [max(df_t)], mode='markers', name='Максимум T',
-                              marker=dict(size = 15, color = 'violet')))
-        fig.add_trace(go.Scatter(x=[time[np.argmin(df_t)]], y = [min(df_t)], mode='markers', name='Минимум T',
-                              marker=dict(size = 15, color = 'green')))
-        fig.add_trace(go.Scatter(x=[time[np.argmax(df_r)]], y = [max(df_r)], mode='markers', name='Максимум R',
-                              marker=dict(size = 15, color = 'violet')))
-        fig.add_trace(go.Scatter(x=[time[np.argmin(df_r)]], y = [min(df_r)], mode='markers', name='Минимум R',
-                              marker=dict(size = 15, color = 'green')))
+        fig.add_trace(go.Scatter(x=[time[np.argmax(df_t)]], y=[max(df_t)], mode='markers', name='Максимум T',
+                                 marker=dict(size=15, color='violet')))
+        fig.add_trace(go.Scatter(x=[time[np.argmin(df_t)]], y=[min(df_t)], mode='markers', name='Минимум T',
+                                 marker=dict(size=15, color='green')))
+        fig.add_trace(go.Scatter(x=[time[np.argmax(df_r)]], y=[max(df_r)], mode='markers', name='Максимум R',
+                                 marker=dict(size=15, color='violet')))
+        fig.add_trace(go.Scatter(x=[time[np.argmin(df_r)]], y=[min(df_r)], mode='markers', name='Минимум R',
+                                 marker=dict(size=15, color='green')))
         fig.update_xaxes(title='Время')
         fig.update_yaxes(title='Концентрация',
                          type='log')
@@ -801,10 +853,10 @@ class BioequivalenceDashboard(Dashboard):
             style={'text-align': 'center'}),
             html.Div([
                 dcc.Graph(id='concentration_time_r_log_mean', figure=fig)],
-            style={'width': '78%', 'display': 'inline-block', 
-            'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
+                style={'width': '78%', 'display': 'inline-block',
+                       'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
             html.Div(dcc.Markdown(children=markdown_text_conc_time_log_mean),
-                     style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
+                     style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
             style={'margin': '100px'}
         )
 
@@ -817,14 +869,14 @@ class BioequivalenceDashboard(Dashboard):
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=time, y=df_r, name='R'))
             fig.add_trace(go.Scatter(x=time, y=df_t, name='T'))
-            fig.add_trace(go.Scatter(x=[time[np.argmax(df_t)]], y = [max(df_t)], mode='markers', name='Максимум T',
-                              marker=dict(size = 15, color = 'violet')))
-            fig.add_trace(go.Scatter(x=[time[np.argmin(df_t)]], y = [min(df_t)], mode='markers', name='Минимум T',
-                              marker=dict(size = 15, color = 'green')))
-            fig.add_trace(go.Scatter(x=[time[np.argmax(df_r)]], y = [max(df_r)], mode='markers', name='Максимум R',
-                              marker=dict(size = 15, color = 'violet')))
-            fig.add_trace(go.Scatter(x=[time[np.argmin(df_r)]], y = [min(df_r)], mode='markers', name='Минимум R',
-                              marker=dict(size = 15, color = 'green')))
+            fig.add_trace(go.Scatter(x=[time[np.argmax(df_t)]], y=[max(df_t)], mode='markers', name='Максимум T',
+                                     marker=dict(size=15, color='violet')))
+            fig.add_trace(go.Scatter(x=[time[np.argmin(df_t)]], y=[min(df_t)], mode='markers', name='Минимум T',
+                                     marker=dict(size=15, color='green')))
+            fig.add_trace(go.Scatter(x=[time[np.argmax(df_r)]], y=[max(df_r)], mode='markers', name='Максимум R',
+                                     marker=dict(size=15, color='violet')))
+            fig.add_trace(go.Scatter(x=[time[np.argmin(df_r)]], y=[min(df_r)], mode='markers', name='Минимум R',
+                                     marker=dict(size=15, color='green')))
             fig.update_xaxes(title='Время')
             fig.update_yaxes(title='Концентрация',
                              type=yaxis_type_conc_linlog_mean)
@@ -833,8 +885,8 @@ class BioequivalenceDashboard(Dashboard):
         self.app.callback(dash.dependencies.Output('concentration_time_linlog_mean', 'figure'),
                           [dash.dependencies.Input('yaxis_type_conc_linlog_mean', 'value')])(update_graph)
 
-        return html.Div([html.Div(html.H1(children='Обобщенный график зависимости концентрации от времени'), 
-            style={'text-align': 'center'}),
+        return html.Div([html.Div(html.H1(children='Обобщенный график зависимости концентрации от времени'),
+                                  style={'text-align': 'center'}),
                          html.Div([
                              html.Div([
                                  html.Div([dcc.RadioItems(
@@ -845,11 +897,12 @@ class BioequivalenceDashboard(Dashboard):
                                  )], style={'width': '48%', 'display': 'inline-block'})
                              ], style={'padding': '5px'}),
                              dcc.Graph(id='concentration_time_linlog_mean')],
-            style={'width': '78%', 'display': 'inline-block', 
-            'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-            html.Div(dcc.Markdown(children=markdown_text_conc_time_mean),
-                     style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], style={'margin': '100px'}
-        )
+                             style={'width': '78%', 'display': 'inline-block',
+                                    'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
+                         html.Div(dcc.Markdown(children=markdown_text_conc_time_mean),
+                                  style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                        style={'margin': '100px'}
+                        )
 
     def _generate_group_mean(self, tr=True):
         if tr:
@@ -861,14 +914,14 @@ class BioequivalenceDashboard(Dashboard):
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(x=time, y=df_t, name='T'))
                 fig.add_trace(go.Scatter(x=time, y=df_r, name='R'))
-                fig.add_trace(go.Scatter(x=[time[np.argmax(df_t)]], y = [max(df_t)], mode='markers', name='Максимум T',
-                              marker=dict(size = 15, color = 'violet')))
-                fig.add_trace(go.Scatter(x=[time[np.argmin(df_t)]], y = [min(df_t)], mode='markers', name='Минимум T',
-                                  marker=dict(size = 15, color = 'green')))
-                fig.add_trace(go.Scatter(x=[time[np.argmax(df_r)]], y = [max(df_r)], mode='markers', name='Максимум R',
-                                  marker=dict(size = 15, color = 'violet')))
-                fig.add_trace(go.Scatter(x=[time[np.argmin(df_r)]], y = [min(df_r)], mode='markers', name='Минимум R',
-                                  marker=dict(size = 15, color = 'green')))
+                fig.add_trace(go.Scatter(x=[time[np.argmax(df_t)]], y=[max(df_t)], mode='markers', name='Максимум T',
+                                         marker=dict(size=15, color='violet')))
+                fig.add_trace(go.Scatter(x=[time[np.argmin(df_t)]], y=[min(df_t)], mode='markers', name='Минимум T',
+                                         marker=dict(size=15, color='green')))
+                fig.add_trace(go.Scatter(x=[time[np.argmax(df_r)]], y=[max(df_r)], mode='markers', name='Максимум R',
+                                         marker=dict(size=15, color='violet')))
+                fig.add_trace(go.Scatter(x=[time[np.argmin(df_r)]], y=[min(df_r)], mode='markers', name='Минимум R',
+                                         marker=dict(size=15, color='green')))
                 fig.update_xaxes(title='Время')
                 fig.update_yaxes(type=group_mean_type_tr, title='Концентрация')
                 return fig
@@ -876,8 +929,8 @@ class BioequivalenceDashboard(Dashboard):
             self.app.callback(dash.dependencies.Output('concentration_time_tr_mean', 'figure'),
                               dash.dependencies.Input('group_mean_type_tr', 'value'))(update_graph)
 
-            return html.Div([html.Div(html.H1(children='Средняя концентрация от времени группа TR'), 
-                style={'text-align': 'center'}),
+            return html.Div([html.Div(html.H1(children='Средняя концентрация от времени группа TR'),
+                                      style={'text-align': 'center'}),
                              html.Div([
                                  html.Div([dcc.RadioItems(
                                      id='group_mean_type_tr',
@@ -886,12 +939,13 @@ class BioequivalenceDashboard(Dashboard):
                                      value='linear'
                                  )], style={'width': '48%', 'display': 'inline-block'}),
                                  dcc.Graph(id='concentration_time_tr_mean')],
-                style={'width': '78%', 'display': 'inline-block', 
-                'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-                html.Div(dcc.Markdown(children=markdown_group_mean_tr),
-                         style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-                style={'margin': '100px'}
-            )
+                                 style={'width': '78%', 'display': 'inline-block',
+                                        'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
+                                        'padding': '5px'}),
+                             html.Div(dcc.Markdown(children=markdown_group_mean_tr),
+                                      style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                            style={'margin': '100px'}
+                            )
         else:
             df_t = self.settings[0].concentration_t_2.mean()
             df_r = self.settings[0].concentration_r_2.mean()
@@ -901,14 +955,14 @@ class BioequivalenceDashboard(Dashboard):
                 fig = go.Figure()
                 fig.add_trace(go.Scatter(x=time, y=df_t, name='T'))
                 fig.add_trace(go.Scatter(x=time, y=df_r, name='R'))
-                fig.add_trace(go.Scatter(x=[time[np.argmax(df_t)]], y = [max(df_t)], mode='markers', name='Максимум T',
-                              marker=dict(size = 15, color = 'violet')))
-                fig.add_trace(go.Scatter(x=[time[np.argmin(df_t)]], y = [min(df_t)], mode='markers', name='Минимум T',
-                              marker=dict(size = 15, color = 'green')))
-                fig.add_trace(go.Scatter(x=[time[np.argmax(df_r)]], y = [max(df_r)], mode='markers', name='Максимум R',
-                              marker=dict(size = 15, color = 'violet')))
-                fig.add_trace(go.Scatter(x=[time[np.argmin(df_r)]], y = [min(df_r)], mode='markers', name='Минимум R',
-                              marker=dict(size = 15, color = 'green')))
+                fig.add_trace(go.Scatter(x=[time[np.argmax(df_t)]], y=[max(df_t)], mode='markers', name='Максимум T',
+                                         marker=dict(size=15, color='violet')))
+                fig.add_trace(go.Scatter(x=[time[np.argmin(df_t)]], y=[min(df_t)], mode='markers', name='Минимум T',
+                                         marker=dict(size=15, color='green')))
+                fig.add_trace(go.Scatter(x=[time[np.argmax(df_r)]], y=[max(df_r)], mode='markers', name='Максимум R',
+                                         marker=dict(size=15, color='violet')))
+                fig.add_trace(go.Scatter(x=[time[np.argmin(df_r)]], y=[min(df_r)], mode='markers', name='Минимум R',
+                                         marker=dict(size=15, color='green')))
                 fig.update_xaxes(title='Время')
                 fig.update_yaxes(type=group_mean_type_rt, title='Концентрация')
                 return fig
@@ -916,8 +970,8 @@ class BioequivalenceDashboard(Dashboard):
             self.app.callback(dash.dependencies.Output('concentration_time_rt_mean', 'figure'),
                               dash.dependencies.Input('group_mean_type_rt', 'value'))(update_graph)
 
-            return html.Div([html.Div(html.H1(children='Средняя концентрация от времени группа RT'), 
-                style={'text-align': 'center'}),
+            return html.Div([html.Div(html.H1(children='Средняя концентрация от времени группа RT'),
+                                      style={'text-align': 'center'}),
                              html.Div([
                                  html.Div([dcc.RadioItems(
                                      id='group_mean_type_rt',
@@ -926,12 +980,13 @@ class BioequivalenceDashboard(Dashboard):
                                      value='linear'
                                  )], style={'width': '48%', 'display': 'inline-block'}),
                                  dcc.Graph(id='concentration_time_rt_mean')],
-                style={'width': '78%', 'display': 'inline-block', 
-                'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-                html.Div(dcc.Markdown(children=markdown_group_mean_rt),
-                         style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-                style={'margin': '100px'}
-            )
+                                 style={'width': '78%', 'display': 'inline-block',
+                                        'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
+                                        'padding': '5px'}),
+                             html.Div(dcc.Markdown(children=markdown_group_mean_rt),
+                                      style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                            style={'margin': '100px'}
+                            )
 
     def _generate_drug_mean(self):
         df_t_1 = self.settings[0].concentration_t_1.mean()
@@ -943,19 +998,23 @@ class BioequivalenceDashboard(Dashboard):
         def update_graph(drug_mean_type):
             fig = go.Figure()
             fig.add_trace(go.Scatter(x=time, y=(
-                df_t_1 + df_t_2) / 2, name='T'))
+                                                       df_t_1 + df_t_2) / 2, name='T'))
             fig.add_trace(go.Scatter(x=time, y=(
-                df_r_1 + df_r_2) / 2, name='R'))
-            fig.add_trace(go.Scatter(x=[time[np.argmax((df_t_1 + df_t_2) / 2)]], y = [max((df_t_1 + df_t_2) / 2)], 
-                mode='markers', name='Максимум T',
-                              marker=dict(size = 15, color = 'violet')))
-            fig.add_trace(go.Scatter(x=[time[np.argmin((df_t_1 + df_t_2) / 2)]], y = [min((df_t_1 + df_t_2) / 2)],
-                mode='markers', name='Минимум T',
-                              marker=dict(size = 15, color = 'green')))
-            fig.add_trace(go.Scatter(x=[time[np.argmax((df_r_1 + df_r_2) / 2)]], y = [max((df_r_1 + df_r_2) / 2)], mode='markers', name='Максимум R',
-                              marker=dict(size = 15, color = 'violet')))
-            fig.add_trace(go.Scatter(x=[time[np.argmin((df_r_1 + df_r_2) / 2)]], y = [min((df_r_1 + df_r_2) / 2)], mode='markers', name='Минимум R',
-                              marker=dict(size = 15, color = 'green')))
+                                                       df_r_1 + df_r_2) / 2, name='R'))
+            fig.add_trace(go.Scatter(x=[time[np.argmax((df_t_1 + df_t_2) / 2)]], y=[max((df_t_1 + df_t_2) / 2)],
+                                     mode='markers', name='Максимум T',
+                                     marker=dict(size=15, color='violet')))
+            fig.add_trace(go.Scatter(x=[time[np.argmin((df_t_1 + df_t_2) / 2)]], y=[min((df_t_1 + df_t_2) / 2)],
+                                     mode='markers', name='Минимум T',
+                                     marker=dict(size=15, color='green')))
+            fig.add_trace(
+                go.Scatter(x=[time[np.argmax((df_r_1 + df_r_2) / 2)]], y=[max((df_r_1 + df_r_2) / 2)], mode='markers',
+                           name='Максимум R',
+                           marker=dict(size=15, color='violet')))
+            fig.add_trace(
+                go.Scatter(x=[time[np.argmin((df_r_1 + df_r_2) / 2)]], y=[min((df_r_1 + df_r_2) / 2)], mode='markers',
+                           name='Минимум R',
+                           marker=dict(size=15, color='green')))
             fig.update_xaxes(title='Время')
             fig.update_yaxes(type=drug_mean_type, title='Концентрация')
             return fig
@@ -963,8 +1022,8 @@ class BioequivalenceDashboard(Dashboard):
         self.app.callback(dash.dependencies.Output('drug_mean', 'figure'),
                           dash.dependencies.Input('drug_mean_type', 'value'))(update_graph)
 
-        return html.Div([html.Div(html.H1(children='Обобщенные данные по двум препаратам'), 
-            style={'text-align': 'center'}),
+        return html.Div([html.Div(html.H1(children='Обобщенные данные по двум препаратам'),
+                                  style={'text-align': 'center'}),
                          html.Div([html.Div([dcc.RadioItems(
                              id='drug_mean_type',
                              options=[{'label': i, 'value': i}
@@ -972,9 +1031,9 @@ class BioequivalenceDashboard(Dashboard):
                              value='linear'
                          )], style={'width': '48%', 'display': 'inline-block'}),
                              dcc.Graph(id='drug_mean')],
-            style={'width': '78%', 'display': 'inline-block', 
-            'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
-            html.Div(dcc.Markdown(children=markdown_drug_mean),
-                     style={'width': '18%', 'float': 'right', 'display': 'inline-block'})], 
-            style={'margin': '100px'}
-        )
+                             style={'width': '78%', 'display': 'inline-block',
+                                    'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'}),
+                         html.Div(dcc.Markdown(children=markdown_drug_mean),
+                                  style={'width': '18%', 'float': 'right', 'display': 'inline-block'})],
+                        style={'margin': '100px'}
+                        )

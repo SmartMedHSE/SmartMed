@@ -1,9 +1,8 @@
 import pickle
-import os
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox)
+    QMessageBox)
 
 from .PreprocessingWindow import PreprocessingWindow
 from ..utils import remove_if_exists
