@@ -1,25 +1,10 @@
 {
   "name": "smartmed-desktop",
   "version": "0.0.1",
-<<<<<<< HEAD
   "description": "Cross-platform version for SmartMed Desktop",
   "main": "src/electron.js",
   "author": "SmartMedHSE",
   "license": "MIT",
-=======
-  "description": "Cross-platform version for SmartMed desktop",
-  "main": "GUI/js-app/src/electron.js",
-  "scripts": {
-    "test": "echo 0",
-    "start-python": "python3 __main__.py",
-    "start-electron": "electron .",
-    "start-flask-request": "python3 request.py",
-    "start-front-flask":"npm-run-all --parallel start-electron start-flask-request",
-    "dev": "npm-run-all --parallel start-electron start-python start-flask-request",
-    "build": "npx webpack --progress --mode=development",
-    "build:watch": "npx webpack --progress -w --mode=development"
-  },
->>>>>>> cfbc15710f6c5bc14e545875e05d3d5da4c23cd2
   "keywords": [
     "js",
     "electorn"
@@ -98,14 +83,5 @@
     "webpack": "^4.42.1",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^3.11.0"
-<<<<<<< HEAD
-=======
-  },
-  "dependencies": {
-    "classnames": "^2.2.6",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-router-dom": "^5.3.0"
->>>>>>> cfbc15710f6c5bc14e545875e05d3d5da4c23cd2
   }
 }

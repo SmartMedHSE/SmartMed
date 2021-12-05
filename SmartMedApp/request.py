@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import os
 import sys
 import threading
@@ -9,28 +8,14 @@ from flask import Flask, request
 BASE_DIR = os.path.abspath(os.curdir)
 sys.path.append(BASE_DIR)
 from backend.ModuleManipulator import ModuleManipulator
-=======
-import requests
-from flask import Flask, request, abort
-import sys
-import threading
-sys.path.append('C:\\Users\\egorl\\Desktop\\SmartMed-1')
-from SmartMedApp.backend.ModuleManipulator import ModuleManipulator
->>>>>>> cfbc15710f6c5bc14e545875e05d3d5da4c23cd2
 
 app = Flask(__name__)
 
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> cfbc15710f6c5bc14e545875e05d3d5da4c23cd2
 @app.route('/api/descriptive', methods=['POST'])
 def requesting():
     if request.method == 'POST':
         data_json = request.json
-<<<<<<< HEAD
 
 
     json_example = {
@@ -85,16 +70,3 @@ def requesting():
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=13000, debug=True)
-=======
-        data_json['MODULE_SETTINGS']['data']['path'] = 'C:\\Users\\egorl\\Desktop\\Глаукому.xlsx'
-        print(data_json)    
-        module_starter = ModuleManipulator(data_json)
-        threading.Thread(target=module_starter.start, daemon=True).start()
-    return 'get'
-
-
-
-
-if __name__ == '__main__':
-   app.run(host='127.0.0.1', port=13000, debug=True)
->>>>>>> cfbc15710f6c5bc14e545875e05d3d5da4c23cd2
