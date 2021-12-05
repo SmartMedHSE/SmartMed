@@ -4,10 +4,10 @@ import threading
 
 from flask import Flask, request
 
-
+from backend.ModuleManipulator import ModuleManipulator
 BASE_DIR = os.path.abspath(os.curdir)
 sys.path.append(BASE_DIR)
-from backend.ModuleManipulator import ModuleManipulator
+
 
 app = Flask(__name__)
 
@@ -21,16 +21,16 @@ def requesting():
     json_example = {
         "MODULE_SETTINGS": 
         {"metrics": 
-            {"count": False, "mean": False, "std": False, "max": False, "min": False, "25%": False, 
-            "50%": False, "75%": False}, 
+            {"count": None, "mean": None, "std": None, "max": None, "min": None, "25%": None, 
+            "50%": None, "75%": None}, 
         "graphs": 
-                {"scatter": False, "hist": False, "corr": False, "heatmap": False, "dotplot": False, "linear": False,"box": False,  
-                "piechart": False, "log": False, "multihist": False},
+                {"scatter": None, "hist": None, "corr": None, "heatmap": None, "dotplot": None, "linear": None,"box": None,  
+                "piechart": None, "log": None, "multihist": None},
         "data": 
                 {"preprocessing": 
-                    {"fillna": "mean", "encoding": "label_encoding", "scaling": False},
-                "path": "C:\\Users\\egorl\\Desktop\\Глаукому", "fillna": "mean"}}, 
-        "MODULE": "STATS"}
+                    {"fillna": None, "encoding": "label_encoding", "scaling": False},
+                "path": None, "fillna": None}}, 
+        "MODULE": None}
 
 
 
@@ -49,20 +49,24 @@ def requesting():
         'graphs': data_json.pop('graphs'), 
         'data': data_json.pop('data')
         }
-    data_json['MODULE'] = 'STATS'
+    data_json['MODULE'] = 'STATS' 
+    #Перебираем ключи, значения для которых нужно изменить
     for settings in ['metrics', 'graphs']:
+        #Сохряняем пользв. выбор в отдельную переменную, отсортировав по порядку
         tmp_lst = sorted(data_json["MODULE_SETTINGS"][settings])
         data_json["MODULE_SETTINGS"][settings] = json_example["MODULE_SETTINGS"][settings]
+        #Словарь ключей settings
+        list_of_keys = list(json_example["MODULE_SETTINGS"][settings].keys())
         for sett in tmp_lst:
             if sett == 5 and settings == 'metrics':
                 data_json["MODULE_SETTINGS"][settings]["25%"] = True
                 data_json["MODULE_SETTINGS"][settings]["50%"] = True
                 data_json["MODULE_SETTINGS"][settings]["75%"] = True
                 continue
-            data_json["MODULE_SETTINGS"][settings][list(json_example["MODULE_SETTINGS"][settings].keys())[sett]] = True
+            #Отмечаем выбранные пользователем параметры
+            data_json["MODULE_SETTINGS"][settings][list_of_keys[sett]] = True
 
 
-    #data_json['MODULE_SETTINGS']['data']['path'] = 'C:\\Users\\egorl\\Desktop\\Глаукому.xlsx'
     module_starter = ModuleManipulator(data_json)
     threading.Thread(target=module_starter.start, daemon=True).start()
     return 'get'
