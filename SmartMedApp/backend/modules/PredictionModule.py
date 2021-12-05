@@ -301,6 +301,7 @@ class PredictionModule(Module, PredictionDashboard):
             settings['model'] = []
             settings['metrics'] = []
             settings['features'] = []
+
             settings['y'] = []
             settings['x'] = self.pp.df.columns.tolist()
 
@@ -329,7 +330,6 @@ class PredictionModule(Module, PredictionDashboard):
                 'fillna': self.settings['preprocessing']
             }
             settings['data'] = dict_pp
-        print(settings)
         return settings
 
     def _prepare_dashboard(self):
