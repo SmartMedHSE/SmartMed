@@ -12,7 +12,8 @@ from logs.logger import debug
 
 def remove_if_exists():
 	if os.path.exists('settings.py'):
-            os.remove('settings.py')
+		os.remove('settings.py')
+
 
 def get_columns(path):
 	df = pd.DataFrame()
@@ -34,12 +35,14 @@ def get_columns(path):
 		df = pd.read_csv(path)
 	return df
 
+
 def check_first_group_cross(path):
 	df = get_columns(path)
 	if df.loc[0, 'Group'] == 'R':
 		return 'R'
 	else:
 		return 'T'
+
 
 def check_group_column(path):
 	df = get_columns(path)

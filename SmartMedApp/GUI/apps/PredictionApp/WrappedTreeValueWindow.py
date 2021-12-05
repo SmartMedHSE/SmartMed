@@ -32,3 +32,4 @@ class WrappedTreeValueWindow(TreeValueWindow, QtWidgets.QMainWindow):
             pickle.dump(data, f)
         self.hide()
         self.child.show()
+
