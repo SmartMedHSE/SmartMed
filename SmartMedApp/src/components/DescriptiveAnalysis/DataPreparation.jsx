@@ -1,8 +1,9 @@
 import * as React from 'react';
+import * as cn from 'classnames';
 
 import * as s from './DataPreparation.scss';
 
-import {MenuItem, Select} from '@material-ui/core';
+import { InputLabel, MenuItem, Select } from '@material-ui/core';
 
 /**
  *
