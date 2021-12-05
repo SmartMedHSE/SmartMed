@@ -3,7 +3,7 @@ import sys
 from PyQt5 import QtWidgets
 
 # logging decorator
-from SmartMedApp.logs.logger import debug
+from logs.logger import debug
 from .apps import StartingApp
 
 
