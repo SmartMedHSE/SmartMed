@@ -19,13 +19,15 @@ class WrappedRocAnyl(RocAnyl, QtWidgets.QMainWindow):
         self.checkBoxPrecision.setChecked(True)
         self.checkBoxRecall.setChecked(True)
         self.checkBoxTrashhold.setChecked(True)
+        self.checkBoxSpecificity.setChecked(True)
         self.setWindowTitle('Метрики')
         self.settings = {'accuracy': True,
                          'confidence': True,
                          'F': True,
                          'precision': True,
                          'recall': True,
-                         'trashhold': True}
+                         'trashhold': True,
+                         'specificity':True}
         self.__build_buttons()
 
     def __build_buttons(self):
@@ -49,6 +51,8 @@ class WrappedRocAnyl(RocAnyl, QtWidgets.QMainWindow):
             self.settings['recall'] = False
         if self.checkBoxTrashhold.isChecked() != True:
             self.settings['trashhold'] = False
+        if self.checkBoxSpecificity.isChecked() != True:
+            self.settings['specificity'] = False
         with open('settings.py', 'rb') as f:
             data = pickle.load(f)
             data['MODULE_SETTINGS'].update(self.settings)

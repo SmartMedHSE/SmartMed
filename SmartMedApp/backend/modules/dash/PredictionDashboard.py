@@ -604,7 +604,7 @@ class LogisticRegressionDashboard(Dashboard):
         cov_mat_2 = LinearRegressionModel.get_cov_matrix_2(self.predict.model,
                                                            self.predict.df_X_test)  # ков. матрица без единичного столбца
         for j in range(self.predict.df_X_test.shape[0]):
-            aa = self.predict.df_X_test.iloc[j, :]  # строка с признаками
+            aa = self.predict.df_X_test.iloc[j, :].to_list()  # строка с признаками
             meann = []  # список отличий от среднего
             for i in range(self.predict.df_X_test.shape[1]):
                 meann.append(mean_list[i] - aa[i])
@@ -1048,8 +1048,9 @@ class ROC(Dashboard):
         TPR = round(self.tp_list[ind][
                         t_ind] / (self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind]), 3)
         PPV = round(self.tp_list[ind][
-                        t_ind] / (self.tp_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3)
-        print(ind, TPR, PPV)
+                    t_ind] / (self.tp_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3)
+        specificity = round(self.tn_list[ind][t_ind] / (
+                self.tn_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3)
         accuracy = round((self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind]) / (
                 self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind] + self.tn_list[ind][t_ind] + self.fp_list[ind][
             t_ind]), 3)
@@ -1065,9 +1066,9 @@ class ROC(Dashboard):
         dov_int_1 = round((self.se_list[ind][t_ind] - 1.96 * dov_int), 3)
         dov_int_2 = round((self.se_list[ind][t_ind] + 1.96 * dov_int), 3)
         df_ost_2 = pd.DataFrame(
-            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота',
+            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота', 'Специфичность',
                      'Точность', 'Accuracy', 'F-мера', 'Доверительный интервал', 'AUC'])
-        df_ost_2.loc[1] = ['Значение', threshold, round(self.dx_list[ind][t_ind], 3), TPR, PPV, accuracy,
+        df_ost_2.loc[1] = ['Значение', threshold, round(self.dx_list[ind][t_ind], 3), TPR, specificity, PPV, accuracy,
                            f_measure, str(str(dov_int_1) + ';' + str(dov_int_2)), auc]
 
         return df_ost_2
@@ -1236,6 +1237,8 @@ class ROC(Dashboard):
             if item == 'Полнота' and 'recall' not in metric_list:
                 df_metrics.pop(item)
             if item == 'Доверительный интервал' and 'confidence' not in metric_list:
+                df_metrics.pop(item)
+            if item == 'Специфичность' and 'specificity' not in metric_list:
                 df_metrics.pop(item)
 
         # ROC-кривая
@@ -1460,7 +1463,7 @@ class ROC(Dashboard):
         fig_roc_2 = go.Figure()
 
         sum_table = pd.DataFrame(
-            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота', 'Точность',
+            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота', 'Специфичность', 'Точность',
                      'Accuracy', 'F-мера', 'Доверительный интервал', 'AUC'])
 
         for i in range(len(columns_list)):
