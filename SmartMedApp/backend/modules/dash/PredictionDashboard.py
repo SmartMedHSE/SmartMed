@@ -36,6 +36,7 @@ from .Dashboard import Dashboard
 from ..models.LinearRegressionModel import *
 from ..models.LogisticRegressionModel import *
 from ..models.TreeModel import *
+from GUI.apps.PredictionApp.utils import read_file
 
 
 class PredictionDashboard(Dashboard):
@@ -1604,12 +1605,12 @@ class TreeDashboard(Dashboard):
             html.Div(metrics_list)], style={'margin': '50px'})
 
     def _generate_tree_graph(self):
-        fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(4, 4), dpi=800)
+        # fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(4, 4), dpi=800)
         # self.predict.model.fit()
         # TreeModel.fit(self.predict.model)
-        tree.plot_tree(self.predict.model, filled=True)
+        #tree.plot_tree(self.predict.model, filled=True)
         # graph = Source(tree.export_graphviz(self.predict.model, out_file=None, filled=True))
-        fig.savefig('tree.png')
+        #fig.savefig('tree.png')
         # graph.format = 'png'
         # path = graph.render('dtree_render', view=True)
         img = Image.open('tree.png')
@@ -1716,9 +1717,20 @@ class TreeDashboard(Dashboard):
         columns = df.columns.to_numpy()
         df['predict'] = predict_Y
         option_list = [{'label': str(i), 'value': str(i)} for i in columns]
-
+        # Соответсиве номера класс и названия
+        init_df = read_file(self.predict.settings['path'])
+        init_y_values = init_df[self.predict.settings['y']].to_list()
+        init_unique_y_values = np.unique(init_y_values)
+        number_class = []
+        for name in init_unique_y_values:
+            number_class.append(self.predict.df_Y[init_y_values.index(name)])
+        dict_classes = dict(zip(number_class, init_unique_y_values))
+        class_names = []
+        for num in predict_Y:
+            class_names.append(dict_classes[num])
+        df['class_names'] = class_names
         def update_graph(x_name, y_name):
-            fig_graph = px.scatter(df, x=x_name, y=y_name, color="predict")
+            fig_graph = px.scatter(df, x=x_name, y=y_name, color="class_names")
             return fig_graph
 
         self.predict.app.callback(dash.dependencies.Output('graph_distributions', 'figure'),
