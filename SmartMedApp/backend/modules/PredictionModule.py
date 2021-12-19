@@ -301,7 +301,6 @@ class PredictionModule(Module, PredictionDashboard):
             settings['model'] = []
             settings['metrics'] = []
             settings['features'] = []
-
             settings['y'] = []
             settings['x'] = self.pp.df.columns.tolist()
 
