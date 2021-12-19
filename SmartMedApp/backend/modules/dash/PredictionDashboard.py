@@ -1814,3 +1814,4 @@ class TreeDashboard(Dashboard):
         ], style={'width': '78%', 'display': 'inline-block',
                   'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
         ], style={'margin': '50px'})
+
