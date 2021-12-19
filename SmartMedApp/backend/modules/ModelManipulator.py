@@ -23,7 +23,6 @@ class ModelManipulator():
 
         elif model_type == 'tree':
             self.model = TreeModel(x, y, extra_param)
-
         else:
             raise ModelChooseException
 

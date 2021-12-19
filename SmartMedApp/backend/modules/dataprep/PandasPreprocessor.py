@@ -34,7 +34,7 @@ class PandasPreprocessor:
             if len(self.df.columns) <= 1:
                 self.df = pd.read_csv(self.settings['path'], sep=';')
 
-        elif ext == '.xlsx':
+        elif ext == '.xlsx' or ext == '.xls':
             self.df = pd.read_excel(self.settings['path'])
 
         elif ext == '.tcv':
