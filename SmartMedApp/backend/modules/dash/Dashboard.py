@@ -32,8 +32,6 @@ class Dashboard(ABC):
         self.app = dash.Dash(
             server=True, external_stylesheets=external_stylesheets, external_scripts=external_scripts)
 
-        # increase port
-        Dashboard.port += 1
 
     @debug
     @abstractmethod
@@ -60,7 +58,7 @@ class Dashboard(ABC):
         self.app.layout = self._generate_layout()
 
         # set port
-        port = Dashboard.port
+        port = self.check_socket()
 
         # open dashboard
         webbrowser.open(f"http://127.0.0.1:{port}/")
