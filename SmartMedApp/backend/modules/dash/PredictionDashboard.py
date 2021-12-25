@@ -1649,9 +1649,9 @@ class TreeDashboard(Dashboard):
                     columns=[{"name": i, "id": i}
                              for i in df.columns],
                     data=df.to_dict('records'),
-                    export_format='csv'
-                ), style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'text-align': 'center',
-                          'width': str(len(df.columns) * 10 - 10) + '%', 'display': 'inline-block'}),
+                    export_format='xlsx'
+                ), style={'text-align': 'center', 'width': str(len(df.columns) * 10 - 10) + '%',
+                          'display': 'inline-block'}),
                 html.Div(dcc.Markdown(markdown_results_table))])
         ], style={'width': '78%', 'display': 'inline-block',
                   'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
@@ -1712,8 +1712,7 @@ class TreeDashboard(Dashboard):
                     columns=[{"name": i, "id": i}
                              for i in df.columns],
                     data=df.to_dict('records'),
-                    export_format='csv'
-                )),
+                    export_format='xlsx')),
                 html.Div(dcc.Markdown(markdown_quality))])
         ], style={'width': '78%', 'display': 'inline-block',
                   'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
@@ -1783,32 +1782,28 @@ class TreeDashboard(Dashboard):
                                   dash.dependencies.Input('predict_table', 'data'),
                                   dash.dependencies.Input('btn_ok', 'n_clicks'))(get_data)
 
-        return html.Div([html.Div([
-            html.Div(html.H4(children='Блок предсказания'),
-                     style={'text-align': 'center'}),
-            html.Div([
-                html.Div(dash_table.DataTable(
-                    id='predict_table',
-                    columns=[{"name": i, "id": i, 'deletable': True, 'renamable': True} for i in df.columns],
-                    data=df.to_dict('records'),
-                    export_format='csv',
-                    editable=True
-                ), style={'text-align': 'center',
-                          'display': 'inline-block'}),
-                html.Div([
-                    html.Div(dash_table.DataTable(
-                        id='predict_results',
-                        columns=[{"name": i, "id": i}
-                                 for i in results_columns],
-                        export_format='csv'
-                    ), style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'text-align': 'center',
-                              'width': str(len(df.columns) * 10 - 10) + '%', 'display': 'inline-block'}),
-                    html.Button('Предсказать', id='btn_ok', n_clicks=0)])
-            ])
-        ], style={'width': '78%', 'display': 'inline-block',
-                  'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
-        ], style={'margin': '50px'})
-
-
-
-
+        return html.Div([html.Div(html.H1(children='Блок предсказания'),
+                                  style={'text-align': 'center'}),
+                         dcc.Markdown(children='Вы можете изменить исходные данные и оценить предсказание'),
+                         html.Div([dash_table.DataTable(
+                             id='predict_table',
+                             columns=[{"name": i, "id": i} for i in df.columns],
+                             data=df.to_dict('records'),
+                             style_table={'overflowX': 'scroll'},
+                             export_format='xlsx',
+                             editable=True),
+                         ]),
+                        html.Button('Предсказать', id='btn_ok', n_clicks=0),
+                         dcc.Markdown(children='Полученное предсказание'),
+                         html.Div([dash_table.DataTable(
+                             id='predict_results',
+                             columns=[{"name": i, "id": i} for i in results_columns],
+                             data=df.to_dict('records'),
+                             export_format='xlsx',
+                             editable=True)],
+                             style={'text-align': 'center', 'width': str(len(results_columns) * 10 - 10) + '%',
+                                    'display': 'inline-block'})
+                         ], style={'border-color': 'rgb(192, 192, 192)',
+                                   'border-style': 'solid', 'padding': '5px', 'margin': '50px'}
+                        )
+    
