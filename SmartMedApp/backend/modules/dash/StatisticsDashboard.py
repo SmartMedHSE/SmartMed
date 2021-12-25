@@ -131,16 +131,32 @@ class StatisticsDashboard(Dashboard):
 
     def _generate_scatter(self):
         df = self.pp.get_numeric_df(self.settings['data']).copy()
-        fig = px.scatter_matrix(df, height=700)
-        fig.update_xaxes(tickangle=90)
-        for annotation in fig['layout']['annotations']: 
-            annotation['textangle']=-90
-        return html.Div([html.Div(html.H1(children='Матрица рассеяния'), style={'text-align':'center'}),
+        columns = df.columns.to_numpy()
+        option_list = [{'label': str(i), 'value': str(i)} for i in columns]
+
+        def update_scatter_matrix(columns):
+            fig = px.scatter_matrix(df[columns], height=700)
+            fig.update_xaxes(tickangle=90)
+            for annotation in fig['layout']['annotations']:
+                annotation['textangle'] = -90
+            return fig
+
+        self.app.callback(dash.dependencies.Output('scatter_matrix', 'figure'),
+                          dash.dependencies.Input('possible_columns', 'value'))(update_scatter_matrix)
+        return html.Div([
+            html.Div([
+                dcc.Markdown(children="Выберите колонки:"),
+                dcc.Dropdown(
+                    id='possible_columns',
+                    options=option_list,
+                    value=columns,
+                    multi=True)],
+                style={'width': '100%', 'display': 'inline-block'}),
+            html.Div(html.H1(children='Матрица рассеяния'), style={'text-align':'center'}),
             html.Div([
                 html.Div(dcc.Graph(
-                    id='scatter_matrix',
-                    figure=fig
-                ),style={'width': '78%', 'display': 'inline-block',
+                    id='scatter_matrix'
+                ), style={'width': '78%', 'display': 'inline-block',
                 'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
                 html.Div(dcc.Markdown(children=markdown_text_scatter), 
                     style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
