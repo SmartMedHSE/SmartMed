@@ -1,12 +1,9 @@
 import * as React from 'react';
-
-import * as s from './DescriptiveAnalysis.scss';
-
-import {DataDownload} from '../DataDownload';
 import {ListButtons} from '../ManageButtons';
-import {DataPreparation} from '../DataPreparation/DataPreparation.jsx';
-import {Checkbox, FormControlLabel, FormGroup} from '@material-ui/core';
+import {DataDownload} from '../DataDownload';
+import {Checkbox, FormControl, FormControlLabel, FormGroup, Radio, RadioGroup} from '@material-ui/core';
 import {fetchPost} from '../../utils';
+import {DataPreparation} from '../DataPreparation/DataPreparation.jsx';
 
 const DATA_PREP_OPTIONS = ['Средним/модой (численные/категориальные значения)',
     'Введенным значением (требуется ввод для каждого столбца отдельно)',
@@ -14,13 +11,28 @@ const DATA_PREP_OPTIONS = ['Средним/модой (численные/кат
     'Медианной/модой (численные/категориальные значения)'
 ];
 
-const METRICS = [
-    'Объем выборки',
-    'Среднее по столбцу',
-    'Стандартное отклонение по столбцу',
-    'Максимальное значение в столбце',
-    'Минимальное значение в столбце',
-    'Квантили 25, 50, 75',
+const REGRESSION_MODELS_OPTIONS = [
+    "Множественная (линейная) регрессия",
+    "Логистическая регрессия",
+    "Деревья классификации",
+    "ROC-анализ",
+    "Полиномиальная регрессия",
+];
+
+const DEPENDENT_PARAMS_OPTIONS = [
+    "ПЗ: до лечения",
+    "ПЗ: 6 месяцев после лечения",
+    "ВГД: до лечения",
+    "ВГД: 6 месяцев после лечения",
+    "Тип операции",
+];
+
+const TABLES_AND_GRAPHICS_OPTIONS = [
+    "Таблица с критериями качества построенной модели",
+    "Таблица с критериями значимости для каждой независимой переменной",
+    "Полученное уравнение регрессии с возможностью ввода собственных переменных",
+    "Таблица с анализами остатков",
+    "Графики распределения остатков",
 ];
 
 const Page = (props) => (
@@ -31,27 +43,14 @@ const Page = (props) => (
     </div>
 );
 
-const GRAPH_TYPE = [
-    'Матрица корреляций (в виде диаграммы рассеяния)',
-    'Гистограмма / столбцовая диаграмма',
-    'Матрица корреляций (в численном виде)',
-    'Тепловая карта',
-    'Точечная диаграмма ',
-    'График линейной зависимости',
-    'График ящик с усами (диаграмма размаха)',
-    'Столбцовая диаграмма',
-    'Круговая диаграмма',
-    'График логарифмической зависимости',
-    'Множественная гистограмма',
-];
-
-export class DescriptiveAnalysis extends React.Component {
+export class PredictiveAnalysis extends React.Component {
 
     state = {
         currentPage: 0,
-        maxPage: 3,
+        maxPage: 4,
         dataPrepOptionId: -1,
-        file: null,
+        fileOne: null,
+        fileTwo: null,
     };
 
     settings = {
@@ -71,7 +70,7 @@ export class DescriptiveAnalysis extends React.Component {
                 this.settings.dataPrepOption = dataPrepOptionId;
                 console.log(file);
                 this.settings.data = file.path;
-                void fetchPost('api/descriptive', this.settings);
+                void fetchPost('api/bioequivalence', this.settings);
                 this.props.onExit();
             }
         } else {
@@ -85,22 +84,6 @@ export class DescriptiveAnalysis extends React.Component {
 
     selectDataPrepType = (id) => this.setState({dataPrepOptionId: id});
 
-    onDataLoad = (event) => {
-        if (event.target.files && event.target.files[0]) {
-            this.setState({file: event.target.files[0]});
-            this.readDataFromFile(event.target.files[0]);
-        }
-    };
-
-    readDataFromFile = (path) => {
-        // const FR = new FileReader();
-        // console.log(path);
-        // FR.addEventListener('load', (event) => {
-        //     this.settings.data = event.target.result;
-        // });
-        // FR.readAsText(path, 'UTF-8');
-    };
-
     selectUnselect = (item, field = '') => {
         const index = this.settings[field].indexOf(item);
         if (index !== -1) {
@@ -110,7 +93,7 @@ export class DescriptiveAnalysis extends React.Component {
         }
     };
 
-    openCurrentPage = () => {
+    openCurrentPage = (props) => {
         const {currentPage} = this.state;
         switch (currentPage) {
             case 0:
@@ -127,36 +110,41 @@ export class DescriptiveAnalysis extends React.Component {
                     <DataPreparation onClick={this.selectDataPrepType} options={DATA_PREP_OPTIONS}/>
                 </Page>);
             case 2:
+                return (<Page
+                    title="Для начала основного этапа выберите одну из регрессивных моделей"
+                >
+                    <FormControl component="fieldset">
+                        <RadioGroup name="radio-buttons-group">
+                            {REGRESSION_MODELS_OPTIONS.map((item, idx) => (
+                                <FormControlLabel
+                                    key={`m-${item}`}
+                                    control={<Radio onClick={() => {
+                                        this.selectUnselect(idx, 'metrics');
+                                    }}/>}
+                                    label={item}
+                                    value={item}
+                                />
+                            ))}
+                        </RadioGroup>
+                    </FormControl>
+                </Page>);
+            case 3:
+                return (<Page
+                    title="Выберите зависимую переменную из списка"
+                >
+                    <DataPreparation onClick={this.selectDataPrepType} options={DEPENDENT_PARAMS_OPTIONS}/>
+                </Page>);
+            case 4:
                 return (
                     <Page
-                        title="Метрики"
-                        description="Выбор статистических метрик"
+                        title="Выберите нужные таблицы"
                     >
                         <FormGroup>
-                            {METRICS.map((item, idx) => (
+                            {TABLES_AND_GRAPHICS_OPTIONS.map((item, idx) => (
                                 <FormControlLabel
                                     key={`m-${item}`}
                                     control={<Checkbox onClick={() => {
                                         this.selectUnselect(idx, 'metrics');
-                                    }}/>}
-                                    label={item}
-                                />
-                            ))}
-                        </FormGroup>
-                    </Page>
-                );
-            case 3:
-                return (
-                    <Page
-                        title="Визуализация"
-                        description="Выбор графиков для реализации"
-                    >
-                        <FormGroup className={s.descriptiveAnalysis}>
-                            {GRAPH_TYPE.map((item, idx) => (
-                                <FormControlLabel
-                                    key={`g-${item}`}
-                                    control={<Checkbox onClick={() => {
-                                        this.selectUnselect(idx, 'graphics');
                                     }}/>}
                                     label={item}
                                 />

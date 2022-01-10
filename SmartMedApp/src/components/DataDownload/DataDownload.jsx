@@ -13,7 +13,6 @@ import * as s from './DataDownload.scss';
 export const DataDownload = (props) => {
     return (
         <div className={s.dataDownload}>
-            <h2 className={cn(s.dataDownload__title)}>Загрузите данные</h2>
             <div className={cn(s.dataDownload__download_text)}>
                 Для того, чтобы выполнить загрузку данных, кликните на кнопку ниже.
                 В открывающемся окне выберите файл в формате "xlsx", "csv", "tsv"

@@ -11,7 +11,7 @@ export const MAIN_MENU = [
     {
         title: 'Биоэквивалентность',
         description: 'Исследование идентичности свойств биодоступности у исходного препарата и дженерика',
-        id: 'Bioequivalence',
+        id: 'BioequivalenceAnalysis',
     },
     {
         title: 'Предсказательный анализ',

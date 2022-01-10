@@ -3,13 +3,16 @@ import * as React from 'react';
 import {Container} from '@material-ui/core';
 
 import {DescriptiveAnalysis} from './components/DescriptiveAnalysis';
+import {BioequivalenceAnalysis} from './components/Bioequivalence';
+import {PredictiveAnalysis} from './components/PredictiveAnalysis';
+
 import {Menu} from './components/Menu';
 
 import './styles/_styles.scss';
 
 export const PAGES = {
     DescriptiveAnalysis: 1,
-    Bioequivalence: 2,
+    BioequivalenceAnalysis: 2,
     PredictiveAnalysis: 3,
 };
 
@@ -28,16 +31,10 @@ export class App extends React.Component {
         switch (openPage) {
             case PAGES.DescriptiveAnalysis:
                 return <DescriptiveAnalysis onExit={() => this.setState({openPage: 0})}/>;
-            case PAGES.Bioequivalence:
-                return (
-                    <div>
-                    </div>
-                );
+            case PAGES.BioequivalenceAnalysis:
+                return <BioequivalenceAnalysis onExit={() => this.setState({openPage: 0})}/>;
             case PAGES.PredictiveAnalysis:
-                return (
-                    <div>
-                    </div>
-                );
+                return <PredictiveAnalysis onExit={() => this.setState({openPage: 0})}/>;
             default:
                 return (
                     <Menu
