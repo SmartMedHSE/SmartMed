@@ -5,6 +5,7 @@ from dash import Dash
 from flask import Flask, request
 
 from backend.ModuleManipulator import ModuleManipulator
+
 BASE_DIR = os.path.abspath(os.curdir)
 sys.path.append(BASE_DIR)
 
