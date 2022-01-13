@@ -29,7 +29,7 @@ export const MAIN_MENU = [
 export const Menu = ({onClick}) => (
     <div className={s.menu}>
         <div className={s.menu__title}>
-            <h3 className={s.menu__title}>Выберете способ анализа</h3>
+            <h3 className={s.menu__title}>Выберите способ анализа</h3>
         </div>
         <form className={s.menu__items} noValidate>
             {MAIN_MENU.map((item) => (

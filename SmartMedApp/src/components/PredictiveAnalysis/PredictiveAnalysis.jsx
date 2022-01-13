@@ -70,7 +70,7 @@ export class PredictiveAnalysis extends React.Component {
                 this.settings.dataPrepOption = dataPrepOptionId;
                 console.log(file);
                 this.settings.data = file.path;
-                void fetchPost('api/bioequivalence', this.settings);
+                void fetchPost('api/predictive', this.settings);
                 this.props.onExit();
             }
         } else {

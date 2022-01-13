@@ -72,6 +72,7 @@ export class DescriptiveAnalysis extends React.Component {
                 console.log(file);
                 this.settings.data = file.path;
                 void fetchPost('api/descriptive', this.settings);
+                this.setState({currentPage: 1});
                 this.props.onExit();
             }
         } else {
@@ -123,18 +124,20 @@ export class DescriptiveAnalysis extends React.Component {
                 return (<Page
                     title="Предварительная обработка данных"
                 >
-                    <div>Выберите опции предварительной обработки данных</div>
-                    <DataPreparation onClick={this.selectDataPrepType} options={DATA_PREP_OPTIONS}/>
+                    <div className={s.selectDataPrepType__text}>
+                        Выберите опции предварительной обработки данных
+                    </div>
+                    <DataPreparation onClick={this.selectDataPrepType} options={DATA_PREP_OPTIONS} labelName={"Выбор опции"}/>
                 </Page>);
             case 2:
                 return (
                     <Page
-                        title="Метрики"
-                        description="Выбор статистических метрик"
+                        title="Выбор статистических метрик"
                     >
-                        <FormGroup>
+                        <FormGroup className={s.choseStatisticMetrics__items}>
                             {METRICS.map((item, idx) => (
                                 <FormControlLabel
+                                    className={s.choseStatisticMetrics__item}
                                     key={`m-${item}`}
                                     control={<Checkbox onClick={() => {
                                         this.selectUnselect(idx, 'metrics');
@@ -148,12 +151,12 @@ export class DescriptiveAnalysis extends React.Component {
             case 3:
                 return (
                     <Page
-                        title="Визуализация"
-                        description="Выбор графиков для реализации"
+                        title="Выбор графиков для реализации"
                     >
-                        <FormGroup className={s.descriptiveAnalysis}>
+                        <FormGroup className={s.descriptiveAnalysis__items}>
                             {GRAPH_TYPE.map((item, idx) => (
                                 <FormControlLabel
+                                    className={s.descriptiveAnalysis__item}
                                     key={`g-${item}`}
                                     control={<Checkbox onClick={() => {
                                         this.selectUnselect(idx, 'graphics');
@@ -171,7 +174,7 @@ export class DescriptiveAnalysis extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="ListButtons">
                 {this.openCurrentPage()}
                 <ListButtons onClick={this.paginate}/>
             </div>

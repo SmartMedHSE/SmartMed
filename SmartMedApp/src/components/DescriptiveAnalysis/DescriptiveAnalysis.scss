@@ -1,3 +1,24 @@
-.descriptiveAnalysis {
-  height: 300px;
+.descriptiveAnalysis__items {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.descriptiveAnalysis__item {
+  height: 25px;
+}
+
+.selectDataPrepType__text {
+  margin-top: 50px;
+}
+
+.choseStatisticMetrics__items {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.choseStatisticMetrics__item {
+  height: 25px;
 }

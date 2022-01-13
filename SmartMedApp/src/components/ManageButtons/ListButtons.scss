@@ -1,9 +1,8 @@
 .listButtons {
-    height: 150px;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-    align-content: flex-end;
+    position: absolute; /* Абсолютное позиционирование */
+    bottom: 30px; /* Положение от нижнего края */
+    right: 30px; /* Положение от правого края */
+    line-height: 1px;
 
     &__btn {
         background-color: white;

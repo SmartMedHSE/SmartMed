@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as cn from 'classnames';
 
-import {Input} from '@material-ui/core';
+import {Button} from '@material-ui/core';
 
 import * as s from './DataDownload.scss';
 
@@ -17,15 +17,23 @@ export const DataDownload = (props) => {
                 Для того, чтобы выполнить загрузку данных, кликните на кнопку ниже.
                 В открывающемся окне выберите файл в формате "xlsx", "csv", "tsv"
             </div>
-            <div>
-                <label for="file">
-                    <i></i> Custom Upload
-                </label>
-                <Input className={cn(s.dataDownload__input)} multiple type="file"
-                       onChange={props.onLoad}>Загрузить</Input>
-                {/* <Button variant="contained" component="span">*/}
-                {/* Загрузить */}
-                {/*</Button> */}
+            <div className={cn(s.dataDownload__div)}>
+                <Button
+                    size="small"
+                    variant="contained"
+                    component="label"
+                    className={cn(s.dataDownload__download_btn)}
+                >
+                    <div className={cn(s.dataDownload__download_btn_text)}>
+                        Загрузить
+                    </div>
+                    <input
+                        onChange={props.onLoad}
+                        type="file"
+                        style={{display: "none"}}
+                        // style={{opacity: 0}}
+                    />
+                </Button>
             </div>
         </div>
     );
