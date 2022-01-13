@@ -25,6 +25,8 @@ import plotly.express as px
 
 import matplotlib.pyplot as plt
 from PIL import Image
+import os
+from GUI.apps.PredictionApp.utils import read_file
 
 from .text.linear_text import *
 from .text.roc_text import *
@@ -36,6 +38,8 @@ from .Dashboard import Dashboard
 from ..models.LinearRegressionModel import *
 from ..models.LogisticRegressionModel import *
 from ..models.TreeModel import *
+from GUI.apps.PredictionApp.utils import read_file
+
 
 
 class PredictionDashboard(Dashboard):
@@ -1607,18 +1611,26 @@ class TreeDashboard(Dashboard):
             html.Div(metrics_list)], style={'margin': '50px'})
 
     def _generate_tree_graph(self):
-        fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(4, 4), dpi=800)
-        # self.predict.model.fit()
-        # TreeModel.fit(self.predict.model)
-        tree.plot_tree(self.predict.model, filled=True)
-        # graph = Source(tree.export_graphviz(self.predict.model, out_file=None, filled=True))
+        fig = plt.figure(figsize=(11, 11), dpi=800)
+        columns = self.predict.df_X_test.columns
+        # Classes
+        init_df = read_file(self.predict.settings['path'])
+        init_y_values = init_df[self.predict.settings['y']].to_list()
+        init_unique_y_values = np.unique(init_y_values)
+        number_class = []
+        for name in init_unique_y_values:
+            number_class.append(self.predict.df_Y[init_y_values.index(name)])
+        dict_classes = dict(zip(number_class, init_unique_y_values))
+        classes = list(dict_classes.values())
+
+        tree.plot_tree(self.predict.model.model, fontsize=6, filled=True, feature_names=columns, class_names=classes)
         fig.savefig('tree.png')
-        # graph.format = 'png'
-        # path = graph.render('dtree_render', view=True)
         img = Image.open('tree.png')
+        image = img.copy()
+        os.remove('tree.png')
         return html.Div([html.Div(html.H2(children='Графическое представление дерева'), style={'text-align': 'center'}),
-                         html.Div([html.Div(html.Img(src=img,
-                                                     style={'width': '80%', 'display': 'inline-block'})),
+                         html.Div([html.Div(html.Img(src=image,
+                                                     style={'width': '100%', 'display': 'inline-block'})),
                                    html.Div(dcc.Markdown(markdown_tree_graph))],  # style={'margin': '50px'},
                                   style={'width': '78%', 'display': 'inline-block',
                                          'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
@@ -1719,9 +1731,20 @@ class TreeDashboard(Dashboard):
         columns = df.columns.to_numpy()
         df['predict'] = predict_Y
         option_list = [{'label': str(i), 'value': str(i)} for i in columns]
-
+        # Соответсиве номера класс и названия
+        init_df = read_file(self.predict.settings['path'])
+        init_y_values = init_df[self.predict.settings['y']].to_list()
+        init_unique_y_values = np.unique(init_y_values)
+        number_class = []
+        for name in init_unique_y_values:
+            number_class.append(self.predict.df_Y[init_y_values.index(name)])
+        dict_classes = dict(zip(number_class, init_unique_y_values))
+        class_names = []
+        for num in predict_Y:
+            class_names.append(dict_classes[num])
+        df['class_names'] = class_names
         def update_graph(x_name, y_name):
-            fig_graph = px.scatter(df, x=x_name, y=y_name, color="predict")
+            fig_graph = px.scatter(df, x=x_name, y=y_name, color="class_names")
             return fig_graph
 
         self.predict.app.callback(dash.dependencies.Output('graph_distributions', 'figure'),
@@ -1801,7 +1824,4 @@ class TreeDashboard(Dashboard):
         ], style={'width': '78%', 'display': 'inline-block',
                   'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
         ], style={'margin': '50px'})
-
-
-
 
