@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as cn from 'classnames';
 
-import { Button } from '@material-ui/core';
+import {Button} from '@material-ui/core';
 
 import * as s from './ListButtons.scss';
 
