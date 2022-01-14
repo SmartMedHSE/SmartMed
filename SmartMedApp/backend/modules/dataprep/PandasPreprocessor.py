@@ -43,6 +43,8 @@ class PandasPreprocessor:
         else:
             raise ExtentionFileException
 
+        self.df.columns = self.df.columns.astype('str')
+
     @debug
     def preprocess(self):
         self.fillna()
