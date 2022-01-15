@@ -329,7 +329,6 @@ class PredictionModule(Module, PredictionDashboard):
                 'fillna': self.settings['preprocessing']
             }
             settings['data'] = dict_pp
-        print(settings)
         return settings
 
     def _prepare_dashboard(self):

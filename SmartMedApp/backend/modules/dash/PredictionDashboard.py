@@ -39,6 +39,9 @@ from ..models.LinearRegressionModel import *
 from ..models.LogisticRegressionModel import *
 from ..models.TreeModel import *
 
+from GUI.apps.PredictionApp.utils import read_file
+
+
 
 class PredictionDashboard(Dashboard):
 
@@ -606,7 +609,7 @@ class LogisticRegressionDashboard(Dashboard):
         cov_mat_2 = LinearRegressionModel.get_cov_matrix_2(self.predict.model,
                                                            self.predict.df_X_test)  # ков. матрица без единичного столбца
         for j in range(self.predict.df_X_test.shape[0]):
-            aa = self.predict.df_X_test.iloc[j, :]  # строка с признаками
+            aa = self.predict.df_X_test.iloc[j, :].to_list()  # строка с признаками
             meann = []  # список отличий от среднего
             for i in range(self.predict.df_X_test.shape[1]):
                 meann.append(mean_list[i] - aa[i])
@@ -1050,8 +1053,9 @@ class ROC(Dashboard):
         TPR = round(self.tp_list[ind][
                         t_ind] / (self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind]), 3)
         PPV = round(self.tp_list[ind][
-                        t_ind] / (self.tp_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3)
-        print(ind, TPR, PPV)
+                    t_ind] / (self.tp_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3)
+        specificity = round(self.tn_list[ind][t_ind] / (
+                self.tn_list[ind][t_ind] + self.fp_list[ind][t_ind]), 3)
         accuracy = round((self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind]) / (
                 self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind] + self.tn_list[ind][t_ind] + self.fp_list[ind][
             t_ind]), 3)
@@ -1067,9 +1071,9 @@ class ROC(Dashboard):
         dov_int_1 = round((self.se_list[ind][t_ind] - 1.96 * dov_int), 3)
         dov_int_2 = round((self.se_list[ind][t_ind] + 1.96 * dov_int), 3)
         df_ost_2 = pd.DataFrame(
-            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота',
+            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота', 'Специфичность',
                      'Точность', 'Accuracy', 'F-мера', 'Доверительный интервал', 'AUC'])
-        df_ost_2.loc[1] = ['Значение', threshold, round(self.dx_list[ind][t_ind], 3), TPR, PPV, accuracy,
+        df_ost_2.loc[1] = ['Значение', threshold, round(self.dx_list[ind][t_ind], 3), TPR, specificity, PPV, accuracy,
                            f_measure, str(str(dov_int_1) + ';' + str(dov_int_2)), auc]
 
         return df_ost_2
@@ -1238,6 +1242,8 @@ class ROC(Dashboard):
             if item == 'Полнота' and 'recall' not in metric_list:
                 df_metrics.pop(item)
             if item == 'Доверительный интервал' and 'confidence' not in metric_list:
+                df_metrics.pop(item)
+            if item == 'Специфичность' and 'specificity' not in metric_list:
                 df_metrics.pop(item)
 
         # ROC-кривая
@@ -1462,7 +1468,7 @@ class ROC(Dashboard):
         fig_roc_2 = go.Figure()
 
         sum_table = pd.DataFrame(
-            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота', 'Точность',
+            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота', 'Специфичность', 'Точность',
                      'Accuracy', 'F-мера', 'Доверительный интервал', 'AUC'])
 
         for i in range(len(columns_list)):
@@ -1649,9 +1655,9 @@ class TreeDashboard(Dashboard):
                     columns=[{"name": i, "id": i}
                              for i in df.columns],
                     data=df.to_dict('records'),
-                    export_format='xlsx'
-                ), style={'text-align': 'center', 'width': str(len(df.columns) * 10 - 10) + '%',
-                          'display': 'inline-block'}),
+                    export_format='csv'
+                ), style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'text-align': 'center',
+                          'width': str(len(df.columns) * 10 - 10) + '%', 'display': 'inline-block'}),
                 html.Div(dcc.Markdown(markdown_results_table))])
         ], style={'width': '78%', 'display': 'inline-block',
                   'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
@@ -1712,7 +1718,8 @@ class TreeDashboard(Dashboard):
                     columns=[{"name": i, "id": i}
                              for i in df.columns],
                     data=df.to_dict('records'),
-                    export_format='xlsx')),
+                    export_format='csv'
+                )),
                 html.Div(dcc.Markdown(markdown_quality))])
         ], style={'width': '78%', 'display': 'inline-block',
                   'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
@@ -1725,9 +1732,20 @@ class TreeDashboard(Dashboard):
         columns = df.columns.to_numpy()
         df['predict'] = predict_Y
         option_list = [{'label': str(i), 'value': str(i)} for i in columns]
-
+        # Соответсиве номера класс и названия
+        init_df = read_file(self.predict.settings['path'])
+        init_y_values = init_df[self.predict.settings['y']].to_list()
+        init_unique_y_values = np.unique(init_y_values)
+        number_class = []
+        for name in init_unique_y_values:
+            number_class.append(self.predict.df_Y[init_y_values.index(name)])
+        dict_classes = dict(zip(number_class, init_unique_y_values))
+        class_names = []
+        for num in predict_Y:
+            class_names.append(dict_classes[num])
+        df['class_names'] = class_names
         def update_graph(x_name, y_name):
-            fig_graph = px.scatter(df, x=x_name, y=y_name, color="predict")
+            fig_graph = px.scatter(df, x=x_name, y=y_name, color="class_names")
             return fig_graph
 
         self.predict.app.callback(dash.dependencies.Output('graph_distributions', 'figure'),
@@ -1782,28 +1800,31 @@ class TreeDashboard(Dashboard):
                                   dash.dependencies.Input('predict_table', 'data'),
                                   dash.dependencies.Input('btn_ok', 'n_clicks'))(get_data)
 
-        return html.Div([html.Div(html.H1(children='Блок предсказания'),
-                                  style={'text-align': 'center'}),
-                         dcc.Markdown(children='Вы можете изменить исходные данные и оценить предсказание'),
-                         html.Div([dash_table.DataTable(
-                             id='predict_table',
-                             columns=[{"name": i, "id": i} for i in df.columns],
-                             data=df.to_dict('records'),
-                             style_table={'overflowX': 'scroll'},
-                             export_format='xlsx',
-                             editable=True),
-                         ]),
-                        html.Button('Предсказать', id='btn_ok', n_clicks=0),
-                         dcc.Markdown(children='Полученное предсказание'),
-                         html.Div([dash_table.DataTable(
-                             id='predict_results',
-                             columns=[{"name": i, "id": i} for i in results_columns],
-                             data=df.to_dict('records'),
-                             export_format='xlsx',
-                             editable=True)],
-                             style={'text-align': 'center', 'width': str(len(results_columns) * 10 - 10) + '%',
-                                    'display': 'inline-block'})
-                         ], style={'border-color': 'rgb(192, 192, 192)',
-                                   'border-style': 'solid', 'padding': '5px', 'margin': '50px'}
-                        )
-    
+        return html.Div([html.Div([
+            html.Div(html.H4(children='Блок предсказания'),
+                     style={'text-align': 'center'}),
+            html.Div([
+                html.Div(dash_table.DataTable(
+                    id='predict_table',
+                    columns=[{"name": i, "id": i, 'deletable': True, 'renamable': True} for i in df.columns],
+                    data=df.to_dict('records'),
+                    export_format='csv',
+                    editable=True,
+                    style_table={'overflowX': 'scroll'}
+                ), style={'text-align': 'center',
+                          'display': 'inline-block'}),
+                html.Div([
+                    html.Div(dash_table.DataTable(
+                        id='predict_results',
+                        columns=[{"name": i, "id": i}
+                                 for i in results_columns],
+                        export_format='csv'
+                    ), style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'text-align': 'center',
+                              'width': str(len(df.columns) * 10 - 10) + '%', 'display': 'inline-block'}),
+                    html.Button('Предсказать', id='btn_ok', n_clicks=0)])
+            ])
+        ], style={'width': '78%', 'display': 'inline-block',
+                  'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
+        ], style={'margin': '50px'})
+
+
