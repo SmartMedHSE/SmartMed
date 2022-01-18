@@ -38,6 +38,7 @@ from .Dashboard import Dashboard
 from ..models.LinearRegressionModel import *
 from ..models.LogisticRegressionModel import *
 from ..models.TreeModel import *
+
 from GUI.apps.PredictionApp.utils import read_file
 
 
@@ -1808,7 +1809,8 @@ class TreeDashboard(Dashboard):
                     columns=[{"name": i, "id": i, 'deletable': True, 'renamable': True} for i in df.columns],
                     data=df.to_dict('records'),
                     export_format='csv',
-                    editable=True
+                    editable=True,
+                    style_table={'overflowX': 'scroll'}
                 ), style={'text-align': 'center',
                           'display': 'inline-block'}),
                 html.Div([
@@ -1824,4 +1826,5 @@ class TreeDashboard(Dashboard):
         ], style={'width': '78%', 'display': 'inline-block',
                   'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
         ], style={'margin': '50px'})
+
 

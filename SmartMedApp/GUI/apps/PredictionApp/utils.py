@@ -11,7 +11,7 @@ def read_file(path):
         if len(df.columns) <= 1:
             df = pd.read_csv(path, sep=';')
 
-    elif ext == '.xlsx':
+    elif ext == '.xlsx' or ext == '.xls':
         df = pd.read_excel(path)
 
     elif ext == '.tcv':
