@@ -1610,7 +1610,8 @@ class TreeDashboard(Dashboard):
                 metrics_list.append(metrics_method[metric])
 
         return html.Div([
-            html.Div(html.H1(children='Дерево классификации'), style={'text-align': 'center'}),
+            html.Div(html.H1(children='Дерево классификации'),
+                     style={'text-align': 'center'}),
             html.Div(metrics_list)], style={'margin': '50px'})
 
     def _generate_tree_graph(self):
@@ -1631,14 +1632,13 @@ class TreeDashboard(Dashboard):
         img = Image.open('tree.png')
         image = img.copy()
         os.remove('tree.png')
-        return html.Div([html.Div(html.H2(children='Графическое представление дерева'), style={'text-align': 'center'}),
+        return html.Div([html.Div(html.H3(children='Графическое представление дерева'), style={'text-align': 'center'}),
                          html.Div([html.Div(html.Img(src=image,
                                                      style={'width': '100%', 'display': 'inline-block'})),
-                                   html.Div(dcc.Markdown(markdown_tree_graph))],  # style={'margin': '50px'},
-                                  style={'width': '78%', 'display': 'inline-block',
-                                         'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
-                                         'padding': '5px'})
-                         ], style={'margin': '50px'})
+                                   html.Div(dcc.Markdown(markdown_tree_graph))])
+                         ],
+                        style={'border-color': 'rgb(192, 192, 192)',
+                                         'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
 
     def _generate_table(self):
         df_Y = self.predict.df_Y_test
@@ -1649,7 +1649,7 @@ class TreeDashboard(Dashboard):
              })
 
         return html.Div([html.Div([
-            html.Div(html.H4(children='Классификационная таблица'),
+            html.Div(html.H3(children='Классификационная таблица'),
                      style={'text-align': 'center'}),
             html.Div([
                 html.Div(dash_table.DataTable(
@@ -1657,13 +1657,13 @@ class TreeDashboard(Dashboard):
                     columns=[{"name": i, "id": i}
                              for i in df.columns],
                     data=df.to_dict('records'),
-                    export_format='csv'
-                ), style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'text-align': 'center',
-                          'width': str(len(df.columns) * 10 - 10) + '%', 'display': 'inline-block'}),
+                    export_format='xlsx'
+                ), style={'text-align': 'center', 'width': str(len(df.columns) * 10 - 10) + '%',
+                          'display': 'inline-block'}),
                 html.Div(dcc.Markdown(markdown_results_table))])
-        ], style={'width': '78%', 'display': 'inline-block',
-                  'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
-        ], style={'margin': '50px'})
+        ], style={'border-color': 'rgb(192, 192, 192)',
+                              'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
+        ])
 
     def _generate_indicators(self):
         predict_Y = TreeModel.predict(self.predict.model, self.predict.df_X_test)
@@ -1712,7 +1712,7 @@ class TreeDashboard(Dashboard):
                                'Полнота': recall, 'Тончость': precision, 'F1-мера': f1},
                               index=[0])
         return html.Div([html.Div([
-            html.Div(html.H4(children='Показатели качества построенного дерева'),
+            html.Div(html.H3(children='Показатели качества построенного дерева'),
                      style={'text-align': 'center'}),
             html.Div([
                 html.Div(dash_table.DataTable(
@@ -1723,9 +1723,9 @@ class TreeDashboard(Dashboard):
                     export_format='csv'
                 )),
                 html.Div(dcc.Markdown(markdown_quality))])
-        ], style={'width': '78%', 'display': 'inline-block',
-                  'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
-        ], style={'margin': '50px'})
+        ], style={'border-color': 'rgb(192, 192, 192)',
+                  'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
+        ])
 
 
     def _generate_class_distributions(self):
@@ -1755,7 +1755,7 @@ class TreeDashboard(Dashboard):
                                   dash.dependencies.Input('y_name', 'value'))(update_graph)
 
 
-        return html.Div([html.H1(children='График распределения классов', style={'text-align': 'center'}),
+        return html.Div([html.H3(children='График распределения классов', style={'text-align': 'center'}),
                          html.Div([
                             dcc.Markdown(
                                 children="Выберите первую группирующую переменную:"),
@@ -1776,7 +1776,8 @@ class TreeDashboard(Dashboard):
                         ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'}),
                         html.Div([dcc.Graph(id='graph_distributions')],
                                  style={'width': '100%', 'display': 'inline-block'})
-                    ], style={'padding': '5px', 'margin': '50px'})
+                    ], style={'border-color': 'rgb(192, 192, 192)',
+                              'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
 
     def _generate_prediction_block(self):
         df = pd.DataFrame.copy(self.predict.df_X_test)
@@ -1802,31 +1803,29 @@ class TreeDashboard(Dashboard):
                                   dash.dependencies.Input('predict_table', 'data'),
                                   dash.dependencies.Input('btn_ok', 'n_clicks'))(get_data)
 
-        return html.Div([html.Div([
-            html.Div(html.H4(children='Блок предсказания'),
-                     style={'text-align': 'center'}),
-            html.Div([
-                html.Div(dash_table.DataTable(
-                    id='predict_table',
-                    columns=[{"name": i, "id": i, 'deletable': True, 'renamable': True} for i in df.columns],
-                    data=df.to_dict('records'),
-                    export_format='csv',
-                    editable=True,
-                    style_table={'overflowX': 'scroll'}
-                ), style={'text-align': 'center',
-                          'display': 'inline-block'}),
-                html.Div([
-                    html.Div(dash_table.DataTable(
-                        id='predict_results',
-                        columns=[{"name": i, "id": i}
-                                 for i in results_columns],
-                        export_format='csv'
-                    ), style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'text-align': 'center',
-                              'width': str(len(df.columns) * 10 - 10) + '%', 'display': 'inline-block'}),
-                    html.Button('Предсказать', id='btn_ok', n_clicks=0)])
-            ])
-        ], style={'width': '78%', 'display': 'inline-block',
-                  'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
-        ], style={'margin': '50px'})
+        return html.Div([html.Div(html.H3(children='Блок предсказания'),
+                                  style={'text-align': 'center'}),
+                         dcc.Markdown(children='Вы можете изменить исходные данные и оценить предсказание'),
+                         html.Div([dash_table.DataTable(
+                             id='predict_table',
+                             columns=[{"name": i, "id": i} for i in df.columns],
+                             data=df.to_dict('records'),
+                             style_table={'overflowX': 'scroll'},
+                             export_format='xlsx',
+                             editable=True),
+                         ]),
+                         html.Button('Предсказать', id='btn_ok', n_clicks=0),
+                         dcc.Markdown(children='Полученное предсказание'),
+                         html.Div([dash_table.DataTable(
+                             id='predict_results',
+                             columns=[{"name": i, "id": i} for i in results_columns],
+                             data=df.to_dict('records'),
+                             export_format='xlsx',
+                             editable=True)],
+                             style={'text-align': 'center', 'width': str(len(results_columns) * 10 - 10) + '%',
+                                    'display': 'inline-block'})
+                         ], style={'border-color': 'rgb(192, 192, 192)',
+                                   'border-style': 'solid', 'padding': '5px', 'margin': '50px'}
+                        )
 
 
