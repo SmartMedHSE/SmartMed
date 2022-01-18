@@ -699,6 +699,8 @@ class LogisticRegressionDashboard(Dashboard):
             res_pval.append(round(p_values[j], 3))
         df_result_2.loc[5] = res_pval
 
+        df_result_2.columns = df_result_2.columns.astype('str')
+
         return html.Div([html.Div(html.H2(children='Критерии значимости переменных'), style={'text-align': 'center'}),
                          html.Div([html.Div(dash_table.DataTable(
                              id='table2',

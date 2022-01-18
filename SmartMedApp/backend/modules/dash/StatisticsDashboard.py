@@ -69,7 +69,7 @@ class StatisticsDashboard(Dashboard):
                 dcc.Markdown(children=markdown_text_table),
                     html.Div([dash_table.DataTable(
                         id='table',
-                        columns=[{"name": i, "id": i, "deletable":True} for i in df.columns],
+                        columns=[{"name": i, "id": i, "deletable": True} for i in df.columns],
                         data=df.to_dict('records'),
                         style_table={'overflowX': 'auto'},
                         export_format='xlsx'
