@@ -1553,7 +1553,7 @@ class ROC(Dashboard):
                     id='group_param_2',
                     options=[{'label': i, 'value': i}
                              for i in columns_list],
-                    value=columns_list[1]
+                    value=columns_list[0]
                 )
             ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
         ], style={'padding': '5px'})
@@ -1608,10 +1608,11 @@ class TreeDashboard(Dashboard):
         for metric in metrics_method:
             if metric in self.predict.settings['metrics']:
                 metrics_list.append(metrics_method[metric])
-
         return html.Div([
             html.Div(html.H1(children='Дерево классификации'),
                      style={'text-align': 'center'}),
+            html.Div(html.H3(children='Выбранная переменная - "{}"'.format(self.predict.settings['y']),
+                             style={'text-align': 'center'})),
             html.Div(metrics_list)], style={'margin': '50px'})
 
     def _generate_tree_graph(self):
