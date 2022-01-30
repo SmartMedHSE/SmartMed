@@ -26,8 +26,8 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 from PIL import Image
 import os
-import scipy.stats
 from scipy.stats import binomtest
+from statsmodels.stats.proportion import proportion_confint
 from GUI.apps.PredictionApp.utils import read_file
 
 from .text.linear_text import *
@@ -1078,8 +1078,8 @@ class ROC(Dashboard):
         p = k / n
         result = binomtest(k=k, n=n, p=p)
         dov_int = result.proportion_ci(confidence_level=0.95, method='wilson')
-        dov_int_1 = dov_int[0]
-        dov_int_2 = dov_int[1]
+        dov_int_1 = round(dov_int[0], 3)
+        dov_int_2 = round(dov_int[1], 3)
 
         # dov_int_1 = round((self.se_list[ind][t_ind] - 1.96 * dov_int), 3)
         # dov_int_2 = round((self.se_list[ind][t_ind] + 1.96 * dov_int), 3)
@@ -1277,15 +1277,33 @@ class ROC(Dashboard):
                           dov_int for i in range(len(self.se_list[ind]))]
             dov_list_2 = [self.se_list[ind][i] + 1.96 *
                           dov_int for i in range(len(self.se_list[ind]))]
-            # print(self.se_list[ind][i])
-            # k = self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind]
-            # n = self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind] + self.fp_list[ind][t_ind] + self.fn_list[ind][
-            #     t_ind]
-            # p = k / n
+            # print(self.se_list[ind])
+            k = np.array(self.tp_list[ind]) + np.array(self.tn_list[ind])
+            n = (np.array(self.tp_list[ind]) + np.array(self.tn_list[ind]) + np.array(self.fp_list[ind]) + np.array(self.fn_list[ind]))[0]
+            dov_int1 = proportion_confint(k, n, method='wilson')
+            # print(dov_int1)
+            # print(k)
+            # print(dov_int1[0], dov_int1[1])
+            # print(se_list[ind])
+            dov_int_low = self.se_list[ind][1] - dov_int1[0][1]
+            dov_int_high = dov_int1[1][1] - self.se_list[ind][1]
+            # print(dov_int_low, dov_int_high)
+            dov_list_1 = [self.se_list[ind][i] - 1.96 *
+                           dov_int_low for i in range(len(self.se_list[ind]))]
+            dov_list_2 = [self.se_list[ind][i] + 1.96 *
+                           dov_int_high for i in range(len(self.se_list[ind]))]
+            # print(self.inv_sp_list[ind])
+            # print(self.se_list[ind])
+
+            # dov_list_1 = dov_int[0]
+            # dov_list_2 = dov_int[1]
+
             # result = binomtest(k=k, n=n, p=p)
             # dov_int = result.proportion_ci(confidence_level=0.95, method='wilson')
             # dov_int_1 = dov_int[0]
             # dov_int_2 = dov_int[1]
+            # print(self.tp_list[ind])
+            # print(self.se_list[ind])
 
             fig_roc.add_trace(
                 go.Scatter(
