@@ -26,6 +26,8 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 from PIL import Image
 import os
+import scipy.stats
+from scipy.stats import binomtest
 from GUI.apps.PredictionApp.utils import read_file
 
 from .text.linear_text import *
@@ -1068,10 +1070,19 @@ class ROC(Dashboard):
             auc += (self.se_list[ind][i] + self.se_list[ind][i + 1]) * (
                     self.inv_sp_list[ind][i + 1] - self.inv_sp_list[ind][i]) / 2
         auc = round(abs(auc), 3)
-        dov_int = (np.var(self.se_list[ind]) /
-                   (len(self.se_list[ind]) * (len(self.se_list[ind]) - 1))) ** 0.5
-        dov_int_1 = round((self.se_list[ind][t_ind] - 1.96 * dov_int), 3)
-        dov_int_2 = round((self.se_list[ind][t_ind] + 1.96 * dov_int), 3)
+        # dov_int = (np.var(self.se_list[ind]) /
+        #            (len(self.se_list[ind]) * (len(self.se_list[ind]) - 1))) ** 0.5
+
+        k = self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind]
+        n = self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind] + self.fp_list[ind][t_ind] + self.fn_list[ind][t_ind]
+        p = k / n
+        result = binomtest(k=k, n=n, p=p)
+        dov_int = result.proportion_ci(confidence_level=0.95, method='wilson')
+        dov_int_1 = dov_int[0]
+        dov_int_2 = dov_int[1]
+
+        # dov_int_1 = round((self.se_list[ind][t_ind] - 1.96 * dov_int), 3)
+        # dov_int_2 = round((self.se_list[ind][t_ind] + 1.96 * dov_int), 3)
         df_ost_2 = pd.DataFrame(
             columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота', 'Специфичность',
                      'Точность', 'Accuracy', 'F-мера', 'Доверительный интервал', 'AUC'])
@@ -1266,6 +1277,16 @@ class ROC(Dashboard):
                           dov_int for i in range(len(self.se_list[ind]))]
             dov_list_2 = [self.se_list[ind][i] + 1.96 *
                           dov_int for i in range(len(self.se_list[ind]))]
+            # print(self.se_list[ind][i])
+            # k = self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind]
+            # n = self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind] + self.fp_list[ind][t_ind] + self.fn_list[ind][
+            #     t_ind]
+            # p = k / n
+            # result = binomtest(k=k, n=n, p=p)
+            # dov_int = result.proportion_ci(confidence_level=0.95, method='wilson')
+            # dov_int_1 = dov_int[0]
+            # dov_int_2 = dov_int[1]
+
             fig_roc.add_trace(
                 go.Scatter(
                     x=self.inv_sp_list[ind],
@@ -1553,7 +1574,7 @@ class ROC(Dashboard):
                     id='group_param_2',
                     options=[{'label': i, 'value': i}
                              for i in columns_list],
-                    value=columns_list[1]
+                    value=columns_list[0]
                 )
             ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
         ], style={'padding': '5px'})
