@@ -92,6 +92,8 @@ class LinearRegressionDashboard(Dashboard):
 
         return html.Div([
             html.Div(html.H1(children='Множественная регрессия'), style={'text-align': 'center'}),
+            html.Div(html.H3(children='Выбранная переменная - "{}"'.format(self.predict.settings['y']),
+                             style={'text-align': 'center'})),
             html.Div(metrics_list)])
 
     def __get_feature_graphic(self):
@@ -513,6 +515,8 @@ class LogisticRegressionDashboard(Dashboard):
         df_X = self.predict.df_X_test
         if np.any((df_X.data if issparse(df_X) else df_X) < 0):
             return html.Div([html.Div(html.H1(children='Логистическая регрессия'), style={'text-align': 'center'}),
+                             html.Div(html.H3(children='Выбранная переменная - "{}"'.format(self.predict.settings['y']),
+                                              style={'text-align': 'center'})),
                              html.Div(dcc.Markdown(markdown_error),
                                       style={'width': '78%', 'display': 'inline-block',
                                              'border-color': 'rgb(220, 220, 220)',
@@ -521,6 +525,8 @@ class LogisticRegressionDashboard(Dashboard):
         else:
             return html.Div([
                 html.Div(html.H1(children='Логистическая регрессия'), style={'text-align': 'center'}),
+                html.Div(html.H3(children='Выбранная переменная - "{}"'.format(self.predict.settings['y']),
+                                 style={'text-align': 'center'})),
                 html.Div(metrics_list)])
 
     def _generate_matrix(self):
@@ -755,6 +761,8 @@ class PolynomRegressionDashboard(Dashboard):
 
         return html.Div([
             html.Div(html.H1(children='Полиномиальная регрессия'), style={'text-align': 'center'}),
+            html.Div(html.H3(children='Выбранная переменная - "{}"'.format(self.predict.settings['y']),
+                                 style={'text-align': 'center'})),
             html.Div(metrics_list)])
 
     # графики
@@ -1042,6 +1050,8 @@ class ROC(Dashboard):
 
         return html.Div([
             html.Div(html.H1(children='ROC-анализ'), style={'text-align': 'center'}),
+            html.Div(html.H3(children='Выбранная переменная - "{}"'.format(self.predict.settings['y']),
+                             style={'text-align': 'center'})),
             html.Div(metrics_list)])
 
     def _generate_metrics(self, ind):
@@ -1610,8 +1620,7 @@ class TreeDashboard(Dashboard):
                 metrics_list.append(metrics_method[metric])
 
         return html.Div([
-            html.Div(html.H1(children='Дерево классификации'),
-                     style={'text-align': 'center'}),
+            html.Div(html.H1(children='Дерево классификации'), style={'text-align': 'center'}),
             html.Div(metrics_list)], style={'margin': '50px'})
 
     def _generate_tree_graph(self):
