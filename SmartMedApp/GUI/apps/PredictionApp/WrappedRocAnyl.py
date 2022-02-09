@@ -17,7 +17,7 @@ class WrappedRocAnyl(RocAnyl, QtWidgets.QMainWindow):
         self.checkBoxConf.setChecked(True)
         self.checkBoxF.setChecked(True)
         self.checkBoxPrecision.setChecked(True)
-        self.checkBoxRecall.setChecked(True)
+        self.checkBoxSensitivity.setChecked(True)
         self.checkBoxTrashhold.setChecked(True)
         self.checkBoxSpecificity.setChecked(True)
         self.setWindowTitle('Метрики')
@@ -25,9 +25,9 @@ class WrappedRocAnyl(RocAnyl, QtWidgets.QMainWindow):
                          'confidence': True,
                          'F': True,
                          'precision': True,
-                         'recall': True,
+                         'sensitivity': True,
                          'trashhold': True,
-                         'specificity':True}
+                         'specificity': True}
         self.__build_buttons()
 
     def __build_buttons(self):
@@ -47,8 +47,8 @@ class WrappedRocAnyl(RocAnyl, QtWidgets.QMainWindow):
             self.settings['F'] = False
         if self.checkBoxPrecision.isChecked() != True:
             self.settings['precision'] = False
-        if self.checkBoxRecall.isChecked() != True:
-            self.settings['recall'] = False
+        if self.checkBoxSensitivity.isChecked() != True:
+            self.settings['sensitivity'] = False
         if self.checkBoxTrashhold.isChecked() != True:
             self.settings['trashhold'] = False
         if self.checkBoxSpecificity.isChecked() != True:
