@@ -1,6 +1,6 @@
 from typing import Dict
 
-from .modules import *
+from SmartMedApp.backend.modules import *
 
 
 class ModuleChoiceException(Exception):

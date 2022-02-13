@@ -5,7 +5,7 @@ from .WrappedPrepWindow import WrappedRadioWindow
 #from..StartingApp.WrappedStartingWindow import WrappedStartingWindow
 
 # logging decorator
-from logs.logger import debug
+from SmartMedApp.logs.logger import debug
 
 
 class StatisticsApp():

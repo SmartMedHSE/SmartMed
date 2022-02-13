@@ -7,7 +7,6 @@ import os
 # logging decorator
 import sys
 sys.path.append("..")
-from logs.logger import debug
 
 
 def remove_if_exists():

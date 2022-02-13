@@ -18,7 +18,7 @@ class WrappedStartingWindow(StartingWindow, QtWidgets.QMainWindow):
         super().__init__()
         self.setupUi(self)
         self.__build_buttons()
-        self.setWindowTitle('SmartMed')
+        self.setWindowTitle('Smart Медицина')
 
     def __build_buttons(self):
         # create button and add signals
