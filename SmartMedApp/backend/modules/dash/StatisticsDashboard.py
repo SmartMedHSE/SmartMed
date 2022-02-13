@@ -1,15 +1,17 @@
-import pylatex
 import dash
 import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.exceptions import PreventUpdate
+import plotly.figure_factory as ff
 
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 import numpy as np
+from scipy.stats import variation
 
-from .text.markdown_text import *
+from .text.markdown_stats import *
 
 from .Dashboard import Dashboard
 
@@ -26,10 +28,17 @@ class StatisticsDashboard(Dashboard):
 
     def _generate_table(self, max_rows=10):
         df = self.pp.get_numeric_df(self.settings['data'])
+        init_df = df
         df = df.describe().reset_index()
         df = df[df['index'].isin(self.settings['metrics'])]
         df = df.rename(columns={"index": "metrics"})
         cols = df.columns
+        init_describe_length = len(df)
+        for col in init_df.columns:
+            df.loc[init_describe_length, col] = np.exp(np.log(init_df[col]).mean())
+            df.loc[init_describe_length + 1, col] = variation(init_df[col])
+        df.loc[init_describe_length, 'metrics'] = 'geom_mean'
+        df.loc[init_describe_length+1, 'metrics'] = 'variation'
         len_t = str(len(df.columns)*10)+'%'
         len_text = str(98-len(df.columns)*10)+'%'
         for j in range(1,len(cols)):
@@ -60,7 +69,7 @@ class StatisticsDashboard(Dashboard):
                 dcc.Markdown(children=markdown_text_table),
                     html.Div([dash_table.DataTable(
                         id='table',
-                        columns=[{"name": i, "id": i, "deletable":True} for i in df.columns],
+                        columns=[{"name": i, "id": i, "deletable": True} for i in df.columns],
                         data=df.to_dict('records'),
                         style_table={'overflowX': 'auto'},
                         export_format='xlsx'
@@ -122,16 +131,32 @@ class StatisticsDashboard(Dashboard):
 
     def _generate_scatter(self):
         df = self.pp.get_numeric_df(self.settings['data']).copy()
-        fig = px.scatter_matrix(df, height=700)
-        fig.update_xaxes(tickangle=90)
-        for annotation in fig['layout']['annotations']: 
-            annotation['textangle']=-90
-        return html.Div([html.Div(html.H1(children='Матрица рассеяния'), style={'text-align':'center'}),
+        columns = df.columns.to_numpy()
+        option_list = [{'label': str(i), 'value': str(i)} for i in columns]
+
+        def update_scatter_matrix(columns):
+            fig = px.scatter_matrix(df[columns], height=700)
+            fig.update_xaxes(tickangle=90)
+            for annotation in fig['layout']['annotations']:
+                annotation['textangle'] = -90
+            return fig
+
+        self.app.callback(dash.dependencies.Output('scatter_matrix', 'figure'),
+                          dash.dependencies.Input('possible_columns', 'value'))(update_scatter_matrix)
+        return html.Div([
+            html.Div([
+                dcc.Markdown(children="Выберите колонки:"),
+                dcc.Dropdown(
+                    id='possible_columns',
+                    options=option_list,
+                    value=columns,
+                    multi=True)],
+                style={'width': '100%', 'display': 'inline-block'}),
+            html.Div(html.H1(children='Матрица рассеяния'), style={'text-align':'center'}),
             html.Div([
                 html.Div(dcc.Graph(
-                    id='scatter_matrix',
-                    figure=fig
-                ),style={'width': '78%', 'display': 'inline-block',
+                    id='scatter_matrix'
+                ), style={'width': '78%', 'display': 'inline-block',
                 'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
                 html.Div(dcc.Markdown(children=markdown_text_scatter), 
                     style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
@@ -530,6 +555,84 @@ class StatisticsDashboard(Dashboard):
                                        'padding': '5px'}),
                          html.Div(dcc.Markdown(children=markdown_text_histbox),style={'width': '18%', 'float': 'right',
                                                             'display': 'inline-block'})],style={'margin': '100px'})
+
+
+
+
+
+    def _generate_multi_hist(self):
+        df = self.settings['data']
+        df_dummies = pd.get_dummies(df)
+        columns = df.columns.to_numpy()
+        option_list = [{'label': str(i), 'value': str(i)} for i in columns]   
+        bins = [{'label': str(i), 'value': i} for i in np.arange(1, 100)]   
+
+        def update_multi_hist(xaxis_column_name_multi_hist, nbins_multi_hist):
+            if not xaxis_column_name_multi_hist or not nbins_multi_hist:
+                raise PreventUpdate
+            else:
+                if type(xaxis_column_name_multi_hist) is str:
+                    data = [df_dummies[xaxis_column_name_multi_hist]]
+                    names = [xaxis_column_name_multi_hist]
+                else:
+                    data = [df_dummies[str(i)] for i in xaxis_column_name_multi_hist]
+                    names = xaxis_column_name_multi_hist
+            fig_multi_hist = ff.create_distplot(data, names, bin_size=nbins_multi_hist)
+            return fig_multi_hist
+
+        self.app.callback(dash.dependencies.Output('Histogram_multi_hist', 'figure'),
+                        dash.dependencies.Input('xaxis_chosen_fearures_multi_hist', 'value'),
+                        dash.dependencies.Input('nbins_multi_hist', 'value'))(update_multi_hist)
+
+        def update_dropdown_milti_hist(features_multi_hist):
+            if not features_multi_hist:
+                raise PreventUpdate
+            else:
+                columns = pd.get_dummies(df[features_multi_hist]).columns
+                Options = [{'label': str(i), 'value': str(i)} for i in columns]
+                return Options
+
+        self.app.callback(dash.dependencies.Output('xaxis_chosen_fearures_multi_hist', 'options'),
+                        dash.dependencies.Input('xaxis_features_multi_hist', 'value'))(update_dropdown_milti_hist)
+
+
+
+        return html.Div([html.Div(html.H1(children='Множественная гистограмма'), style={'text-align': 'center'}),
+                         html.Div([
+                            html.Div([
+                                dcc.Markdown(children="Возможные показатели:"),
+                                dcc.Dropdown(
+                                    id='xaxis_features_multi_hist',                    
+                                    options=option_list,
+                                    value=columns,
+                                    multi=True)],
+                                    style={'width': '100%', 'display': 'inline-block'}),
+
+                            html.Div([
+                                dcc.Markdown(children="Выберите показатель:"),
+                                dcc.Dropdown(
+                                    id='xaxis_chosen_fearures_multi_hist',
+                                    multi=True)],
+                                style={'width': '48%', 'float': 'left', 'display': 'inline-block', 'padding': '5px'}),
+
+                            html.Div([
+
+                                dcc.Markdown(children="Выберите ширину ячейки:"),
+                                dcc.Dropdown(
+                                    id='nbins_multi_hist',                    
+                                    options=bins,
+                                    value=bins[0]['value'])
+                            ],
+                            style={'width': '48%', 'float': 'right', 'display': 'inline-block', 'padding': '5px'}),
+                            
+                            html.Div([dcc.Graph(id='Histogram_multi_hist')], style={'width': '100%', 'display': 'inline-block'})
+                        ], style={'width': '78%', 'display': 'inline-block',
+                                    'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
+                                    'padding': '5px'}),
+                    html.Div(dcc.Markdown(children=markdown_text_histbox),style={'width': '18%', 'float': 'right',
+                                                        'display': 'inline-block'})],style={'margin': '100px'})
+
+       
 
     
 

@@ -1,12 +1,16 @@
 from abc import ABC, abstractmethod
 
-import time
-import sys
+import socket
 
 import dash
 import webbrowser
 
 from SmartMedApp.logs.logger import debug
+
+
+def is_port_in_use(port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        return s.connect_ex(('127.0.0.1', port)) == 0
 
 
 class Dashboard(ABC):
@@ -19,7 +23,7 @@ class Dashboard(ABC):
     in daemon thread
 
     '''
-    port = 8000
+    port = 40000
 
     @debug
     def __init__(self):
@@ -34,7 +38,9 @@ class Dashboard(ABC):
             server=True, external_stylesheets=external_stylesheets, external_scripts=external_scripts)
 
         # increase port
-        Dashboard.port += 1
+        # address already in use fix
+        while is_port_in_use(Dashboard.port):
+            Dashboard.port += 1
 
     @debug
     @abstractmethod

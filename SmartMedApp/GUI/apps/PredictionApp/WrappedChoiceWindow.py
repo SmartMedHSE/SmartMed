@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
     QWidget, QToolTip, QPushButton, QApplication, QMessageBox, )
 
 from .ChoiceWindow import ChoiceWindow
+from .utils import get_class_columns
 
 
 class WrappedChoiceWindow(ChoiceWindow, QtWidgets.QMainWindow):
@@ -26,6 +27,7 @@ class WrappedChoiceWindow(ChoiceWindow, QtWidgets.QMainWindow):
         self.parent.show()
 
     def get_model(self):
+        var = ''
         if self.radioButtonLinear.isChecked():
             var = 'linreg'
         elif self.radioButtonLogit.isChecked():
@@ -34,7 +36,7 @@ class WrappedChoiceWindow(ChoiceWindow, QtWidgets.QMainWindow):
             var = 'polynomreg'
         elif self.radioButtonRoc.isChecked():
             var = 'roc'
-        else:
+        elif self.radioButtonTree.isChecked():
             var = 'tree'
         return var
 
@@ -43,13 +45,15 @@ class WrappedChoiceWindow(ChoiceWindow, QtWidgets.QMainWindow):
         with open('settings.py', 'rb') as f:
             data = pickle.load(f)
         col = data['MODULE_SETTINGS']['columns']
+        path = data['MODULE_SETTINGS']['path']
         self.child_linear.comboBox.addItems(col)
         self.child_roc.comboBox.addItems(col)
+        self.child_tree.comboBox.addItems(get_class_columns(path, 11))
         if self.radioButtonLinear.isChecked() or self.radioButtonLogit.isChecked() or self.radioButtonPol.isChecked():
             self.child_linear.show()
         elif self.radioButtonRoc.isChecked():
             self.child_roc.show()
-        else:
+        elif self.radioButtonTree.isChecked():
             self.child_tree.show()
         data['MODULE_SETTINGS']['model'] = self.get_model()
         with open('settings.py', 'wb') as f:
