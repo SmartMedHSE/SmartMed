@@ -212,7 +212,7 @@ class LinearRegressionDashboard(Dashboard):
                          ], style={'margin': '50px'}),
 
                          html.Div([
-                             html.Div(html.H4(children='График ???'), style={'text-align': 'center'}),
+                             html.Div(html.H4(children='График предсказанных значений'), style={'text-align': 'center'}),
                              html.Div(dcc.Graph(id='graph_new_feature', figure=self.__get_feature_graphic()),
                                       style=graph_styles),
                          ], style={'margin': '50px'}),
@@ -370,31 +370,11 @@ class LinearRegressionDashboard(Dashboard):
                              data=df_result_3.to_dict('records'),
                              columns=[{"name": i, "id": i}
                                       for i in df_result_3.columns],
-                             # tooltip_header={i: i for i in df.columns}, #
-                             # либо этот, либо тот что ниже
-                             tooltip={i: {
-                                 'value': i,
-                                 'use_with': 'both'
-                             } for i in df_result_3.columns},
-                             style_header={
-                                 'textDecoration': 'underline',
-                                 'textDecorationStyle': 'dotted',
-                             },
-                             style_cell={
-                                 'overflow': 'hidden',
-                                 'textOverflow': 'ellipsis',
-                                 'maxWidth': 0,  # len(df_result_3.columns)*5,
-                             },
-
-                             # asdf
-                             page_size=20,
-                             fixed_rows={'headers': True},
                              style_table={'height': '330px',
-                                          'overflowY': 'auto'},
-                             tooltip_delay=0,
-                             tooltip_duration=None,
+                                          'overflowY': 'auto',
+                                          'overflowX': 'scroll'},
                              export_format='xlsx'
-                         ), style={'width': str(len(df_result_3.columns) * 8 - 10) + '%', 'display': 'inline-block'}),
+                         ), style={'width': str(len(df_result_3.columns) * 13 - 10) + '%', 'display': 'inline-block'}),
                              html.Div(dcc.Markdown(markdown_linear_table3))],
                              style={'width': '78%', 'display': 'inline-block',
                                     'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
@@ -454,8 +434,8 @@ class LinearRegressionDashboard(Dashboard):
                                     'b': res_b,
                                     'b_st': res_bst,
                                     'St.Error b': res_errb,
-                                    't-критерий': res_tst,
-                                    'p-value': res_pval})
+                                    't-критерий': res_tst})
+                                    # 'p-value': res_pval})
 
         return html.Div([html.Div(html.H2(children='Критерии значимости переменных'), style={'text-align': 'center'}),
                          html.Div([html.Div(dash_table.DataTable(
@@ -463,29 +443,11 @@ class LinearRegressionDashboard(Dashboard):
                              columns=[{"name": i, "id": i}
                                       for i in df_result_2.columns],
                              data=df_result_2.to_dict('records'),
-                             style_table={'textOverflowX': 'ellipsis', },
-                             tooltip={i: {
-                                 'value': i,
-                                 'use_with': 'both'
-                             } for i in df_result_2.columns},
-                             tooltip_data=[
-                                 {
-                                     column: {'value': str(value), 'type': 'markdown'}
-                                     for column, value in row.items()
-                                 } for row in df_result_2.to_dict('records')
-                             ],
-                             style_header={
-                                 'textDecoration': 'underline',
-                                 'textDecorationStyle': 'dotted',
-                             },
-                             style_cell={
-                                 'overflow': 'hidden',
-                                 'textOverflow': 'ellipsis',
-                                 'maxWidth': 0,  # len(df_result_3.columns)*5,
-                             },
+                             style_table={'overflowY': 'auto',
+                                          'overflowX': 'scroll'},
                              export_format='xlsx'
 
-                         ), style={'width': str(len(df_result_2.columns) * 6) + '%', 'display': 'inline-block'}),
+                         ), style={'width': str(len(df_result_2.columns) * 8) + '%', 'display': 'inline-block'}),
                              html.Div(dcc.Markdown(markdown_linear_table2))],  # style={'margin': '50px'},
                              style={'width': '78%', 'display': 'inline-block',
                                     'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'padding': '5px'})
@@ -747,7 +709,7 @@ class PolynomRegressionDashboard(Dashboard):
     def _generate_layout(self):
         metrics_list = []
         metrics_method = {
-            'model_quality': self._generate_quality(),
+            # 'model_quality': self._generate_quality(),
             'signif': self._generate_signif(),
             'resid': self._generate_resid(),
             'equation': self._generate_equation(),
@@ -1494,7 +1456,7 @@ class ROC(Dashboard):
         ], style={'margin': '50px'})
 
         div_dov_int = html.Div([
-            html.Div(html.H4(children='Таблица доверительных интервалов'),
+            html.Div(html.H4(children='Таблица 95% доверительных интервалов'),
                      style={'text-align': 'center'}),
             html.Div([
                 html.Div(dash_table.DataTable(
@@ -1681,7 +1643,7 @@ class ROC(Dashboard):
         ], style={'margin': '50px'})
 
         div_2_dov_int = html.Div([
-            html.Div(html.H4(children='Таблица доверительных интервалов'),
+            html.Div(html.H4(children='Таблица 95% доверительных интервалов'),
                      style={'text-align': 'center'}),
             html.Div([
                 html.Div(dash_table.DataTable(
