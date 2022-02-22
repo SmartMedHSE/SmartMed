@@ -1685,6 +1685,8 @@ class TreeDashboard(Dashboard):
         return html.Div([
             html.Div(html.H1(children='Дерево классификации'),
                      style={'text-align': 'center'}),
+            html.Div(html.H5(children=markdown_introduction),
+                     style={'text-align': 'center'}),
             html.Div(html.H3(children='Выбранная переменная - "{}"'.format(self.predict.settings['y']),
                              style={'text-align': 'center'})),
             html.Div(metrics_list)], style={'margin': '50px'})
@@ -1787,7 +1789,7 @@ class TreeDashboard(Dashboard):
                                'Полнота': recall, 'Тончость': precision, 'F1-мера': f1},
                               index=[0])
         return html.Div([html.Div([
-            html.Div(html.H3(children='Показатели качества построенного дерева'),
+            html.Div(html.H3(children='Показатели качества построенного дерева решений'),
                      style={'text-align': 'center'}),
             html.Div([
                 html.Div(dash_table.DataTable(
@@ -1856,7 +1858,7 @@ class TreeDashboard(Dashboard):
 
     def _generate_prediction_block(self):
         df = pd.DataFrame.copy(self.predict.df_X_test)
-        results_columns = ['Верное значение', 'Предсказание']
+        results_columns = ['Наблюдаемые значения', 'Предсказанные значения']
 
         def get_data(data, n_clicks):
             data = pd.DataFrame.from_records(data)
@@ -1867,8 +1869,8 @@ class TreeDashboard(Dashboard):
                 predict_Y = TreeModel.predict(self.predict.model, data)
                 df_Y = self.predict.df_Y_test
                 df_res = pd.DataFrame(
-                    {'Верное значение': df_Y,
-                     'Предсказание': predict_Y
+                    {'Наблюдаемые значения': df_Y,
+                     'Предсказанные значения': predict_Y
                      })
                 return df_res.to_dict('records')
             else:
@@ -1878,7 +1880,7 @@ class TreeDashboard(Dashboard):
                                   dash.dependencies.Input('predict_table', 'data'),
                                   dash.dependencies.Input('btn_ok', 'n_clicks'))(get_data)
 
-        return html.Div([html.Div(html.H3(children='Блок предсказания'),
+        return html.Div([html.Div(html.H3(children='Работа с исходной таблицей для получения пресказательных занчений'),
                                   style={'text-align': 'center'}),
                          dcc.Markdown(children='Вы можете изменить исходные данные и оценить предсказание'),
                          html.Div([dash_table.DataTable(
