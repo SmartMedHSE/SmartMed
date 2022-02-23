@@ -54,6 +54,7 @@ class PandasPreprocessor:
     @debug
     def fillna(self):
         value = self.settings['preprocessing']['fillna']
+        print("value = ", value)
         if value == 'mean':
             for col in self.df.columns:
                 if self.df[col].dtype in self.numerics_list:
@@ -68,8 +69,8 @@ class PandasPreprocessor:
                 else:
                     self.df[col] = self.df[col].fillna(
                         self.df[col].mode().values[0])
-        elif value == 'droprows':
-            self.df = self.df[col].dropna()
+        elif value == 'dropna':
+            self.df = self.df.dropna().reset_index(drop=True)
 
     @debug
     def encoding(self):
