@@ -7,6 +7,7 @@ from PyQt5.QtWidgets import (
 
 from .ChoiceWindow import ChoiceWindow
 from .utils import get_class_columns
+from .utils import get_binary_columns
 
 
 class WrappedChoiceWindow(ChoiceWindow, QtWidgets.QMainWindow):
@@ -46,7 +47,10 @@ class WrappedChoiceWindow(ChoiceWindow, QtWidgets.QMainWindow):
             data = pickle.load(f)
         col = data['MODULE_SETTINGS']['columns']
         path = data['MODULE_SETTINGS']['path']
-        self.child_linear.comboBox.addItems(col)
+        if self.radioButtonLogit.isChecked():
+            self.child_linear.comboBox.addItems(get_binary_columns(path))
+        else:
+            self.child_linear.comboBox.addItems(col)
         self.child_roc.comboBox.addItems(col)
         self.child_tree.comboBox.addItems(get_class_columns(path, 11))
         if self.radioButtonLinear.isChecked() or self.radioButtonLogit.isChecked() or self.radioButtonPol.isChecked():
