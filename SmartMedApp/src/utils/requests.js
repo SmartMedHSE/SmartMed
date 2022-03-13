@@ -1,6 +1,6 @@
 'use strict';
 
-export const API = 'http://127.0.0.1:13000';
+export const API = 'http://127.0.0.1:13000/api/';
 
 export const fetchGet = (
     path = '/',

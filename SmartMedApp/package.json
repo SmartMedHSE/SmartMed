@@ -1,5 +1,5 @@
 {
-  "name": "smartmed-desktop",
+  "name": "Smart-Медицина",
   "version": "0.0.1",
   "description": "Cross-platform version for SmartMed Desktop",
   "main": "src/electron.js",
@@ -7,7 +7,10 @@
   "license": "MIT",
   "keywords": [
     "js",
-    "electorn"
+    "electron",
+    "python",
+    "ML",
+    "Медицина"
   ],
   "build": {
     "directories": {
@@ -23,8 +26,8 @@
     "nsis": {
       "runAfterFinish": false
     },
-    "productName": "SmartMed",
-    "appId": "test.SmartMed",
+    "productName": "Smart-Медицина",
+    "appId": "test.SmartМедицина",
     "mac": {
       "icon": "build/images/icon.png"
     },
@@ -81,7 +84,10 @@
     "thread-loader": "^3.0.1",
     "url-loader": "^4.1.1",
     "webpack": "^4.42.1",
-    "webpack-cli": "^4.9.1",
+    "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^3.11.0"
+  },
+  "directories": {
+    "test": "tests"
   }
 }

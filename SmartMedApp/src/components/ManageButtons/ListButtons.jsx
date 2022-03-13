@@ -11,7 +11,7 @@ import * as s from './ListButtons.scss';
  * @returns {JSX.Element}
  * @constructor
  */
-export const ListButtons = ({onClick}) => {
+export const ListButtons = ({onClick, nextText}) => {
     return (
         <div className={s.listButtons}>
             <span>
@@ -21,7 +21,7 @@ export const ListButtons = ({onClick}) => {
                 </Button>
                 <Button className={cn(s.listButtons__btn)} size="small"
                         onClick={() => onClick(true)}>
-                    Продолжить
+                    {nextText()}
                 </Button>
             </span>
         </div>

@@ -6,7 +6,7 @@ import {DataDownload} from '../DataDownload';
 import {ListButtons} from '../ManageButtons';
 import {DataPreparation} from '../DataPreparation/DataPreparation.jsx';
 import {Checkbox, FormControlLabel, FormGroup} from '@material-ui/core';
-import {fetchPost} from '../../utils';
+import {fetchPost, selectUnselectCheckbox} from '../../utils';
 
 const DATA_PREP_OPTIONS = ['Средним/модой (численные/категориальные значения)',
     'Введенным значением (требуется ввод для каждого столбца отдельно)',
@@ -23,14 +23,6 @@ const METRICS = [
     'Квантили 25, 50, 75',
 ];
 
-const Page = (props) => (
-    <div>
-        <h2>{props.title}</h2>
-        <div>{props?.description || ''}</div>
-        {props.children}
-    </div>
-);
-
 const GRAPH_TYPE = [
     'Матрица корреляций (в виде диаграммы рассеяния)',
     'Гистограмма / столбцовая диаграмма',
@@ -45,34 +37,62 @@ const GRAPH_TYPE = [
     'Множественная гистограмма',
 ];
 
-export class DescriptiveAnalysis extends React.Component {
+const Page = (props) => (
+    <div>
+        <h2>{props.title}</h2>
+        <div>{props?.description || ''}</div>
+        {props.children}
+    </div>
+);
 
+let metricsDict = {};
+let graphicsDict = {};
+
+for (let key in METRICS) {
+    metricsDict[key] = true;
+}
+
+for (let key in GRAPH_TYPE) {
+    graphicsDict[key] = true;
+}
+
+export class DescriptiveAnalysis extends React.Component {
     state = {
         currentPage: 0,
         maxPage: 3,
-        dataPrepOptionId: -1,
-        file: null,
+        nextText: "Продолжить"
     };
 
     settings = {
-        data: '',
+        filePath: '',
         dataPrepOption: 0,
-        metrics: [],
-        graphics: [],
+        metrics: metricsDict,
+        graphics: graphicsDict,
     };
 
     paginate = (goNext) => {
         const {currentPage, maxPage} = this.state;
+        console.log(this.settings.dataPrepOption)
+        console.log(this.settings.metrics)
+        console.log(this.settings.graphics)
         if (goNext) {
             if (currentPage < maxPage) {
                 this.setState({currentPage: currentPage + 1});
             } else {
-                const {dataPrepOptionId, file} = this.state;
-                this.settings.dataPrepOption = dataPrepOptionId;
-                console.log(file);
-                this.settings.data = file.path;
-                void fetchPost('api/descriptive', this.settings);
+                void fetchPost('descriptive', this.settings);
                 this.setState({currentPage: 1});
+
+                for (let key in METRICS) {
+                    metricsDict[key] = true;
+                }
+                for (let key in GRAPH_TYPE) {
+                    graphicsDict[key] = true;
+                }
+
+                this.settings = {
+                    filePath: '',
+                    dataPrepOption: 0,
+                };
                 this.props.onExit();
             }
         } else {
@@ -84,30 +104,21 @@ export class DescriptiveAnalysis extends React.Component {
         }
     };
 
-    selectDataPrepType = (id) => this.setState({dataPrepOptionId: id});
-
-    onDataLoad = (event) => {
-        if (event.target.files && event.target.files[0]) {
-            this.setState({file: event.target.files[0]});
-            this.readDataFromFile(event.target.files[0]);
+    getNextText = () => {
+        if (this.state.currentPage < this.state.maxPage) {
+            return "Продолжить";
+        } else {
+            return "Завершить";
         }
     };
 
-    readDataFromFile = (path) => {
-        // const FR = new FileReader();
-        // console.log(path);
-        // FR.addEventListener('load', (event) => {
-        //     this.settings.data = event.target.result;
-        // });
-        // FR.readAsText(path, 'UTF-8');
+    selectDataPrepType = (id) => {
+        this.settings.dataPrepOption = id;
     };
 
-    selectUnselect = (item, field = '') => {
-        const index = this.settings[field].indexOf(item);
-        if (index !== -1) {
-            this.settings[field].splice(index, 1);
-        } else {
-            this.settings[field].push(item);
+    onDataLoad = (event) => {
+        if (event.target.files && event.target.files[0]) {
+            this.settings.filePath = event.target.files[0].path;
         }
     };
 
@@ -127,7 +138,11 @@ export class DescriptiveAnalysis extends React.Component {
                     <div className={s.selectDataPrepType__text}>
                         Выберите опции предварительной обработки данных
                     </div>
-                    <DataPreparation onClick={this.selectDataPrepType} options={DATA_PREP_OPTIONS} labelName={"Выбор опции"}/>
+                    <DataPreparation onClick={this.selectDataPrepType}
+                                     options={DATA_PREP_OPTIONS}
+                                     labelName={"Выбор опции"}
+                                     defaultValue={parseInt(this.settings.dataPrepOption)}
+                    />
                 </Page>);
             case 2:
                 return (
@@ -139,9 +154,14 @@ export class DescriptiveAnalysis extends React.Component {
                                 <FormControlLabel
                                     className={s.choseStatisticMetrics__item}
                                     key={`m-${item}`}
-                                    control={<Checkbox onClick={() => {
-                                        this.selectUnselect(idx, 'metrics');
-                                    }}/>}
+                                    control={
+                                        <Checkbox
+                                            defaultChecked={this.settings.metrics[idx]}
+                                            onClick={() => {
+                                                selectUnselectCheckbox(this, idx, 'metrics');
+                                            }}
+                                        />
+                                    }
                                     label={item}
                                 />
                             ))}
@@ -158,10 +178,15 @@ export class DescriptiveAnalysis extends React.Component {
                                 <FormControlLabel
                                     className={s.descriptiveAnalysis__item}
                                     key={`g-${item}`}
-                                    control={<Checkbox onClick={() => {
-                                        this.selectUnselect(idx, 'graphics');
-                                    }}/>}
                                     label={item}
+                                    control={
+                                        <Checkbox
+                                            defaultChecked={this.settings.graphics[idx]}
+                                            onClick={() => {
+                                                selectUnselectCheckbox(this, idx, 'graphics');
+                                            }}
+                                        />
+                                    }
                                 />
                             ))}
                         </FormGroup>
@@ -176,7 +201,7 @@ export class DescriptiveAnalysis extends React.Component {
         return (
             <div className="ListButtons">
                 {this.openCurrentPage()}
-                <ListButtons onClick={this.paginate}/>
+                <ListButtons onClick={this.paginate} nextText={this.getNextText}/>
             </div>
         );
     }
