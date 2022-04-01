@@ -1880,9 +1880,9 @@ class TreeDashboard(Dashboard):
                                   dash.dependencies.Input('predict_table', 'data'),
                                   dash.dependencies.Input('btn_ok', 'n_clicks'))(get_data)
 
-        return html.Div([html.Div(html.H3(children='Работа с исходной таблицей для получения пресказательных занчений'),
+        return html.Div([html.Div(html.H3(children='Работа с исходной таблицей для получения предсказательных значений'),
                                   style={'text-align': 'center'}),
-                         dcc.Markdown(children='Вы можете изменить исходные данные и оценить предсказание'),
+                         dcc.Markdown(children='Вы можете изменить исходные данные и оценить предсказанное значение'),
                          html.Div([dash_table.DataTable(
                              id='predict_table',
                              columns=[{"name": i, "id": i} for i in df.columns],
