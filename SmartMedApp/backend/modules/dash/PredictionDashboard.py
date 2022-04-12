@@ -42,6 +42,7 @@ from .Dashboard import Dashboard
 from ..models.LinearRegressionModel import *
 from ..models.LogisticRegressionModel import *
 from ..models.TreeModel import *
+from ..dataprep.PandasPreprocessor import read_file
 
 
 class PredictionDashboard(Dashboard):
@@ -1695,13 +1696,7 @@ class TreeDashboard(Dashboard):
         fig = plt.figure(figsize=(11, 11), dpi=800)
         columns = self.predict.df_X_test.columns
         # Classes
-        init_df = read_file(self.predict.settings['path'])
-        init_y_values = init_df[self.predict.settings['y']].to_list()
-        init_unique_y_values = np.unique(init_y_values)
-        number_class = []
-        for name in init_unique_y_values:
-            number_class.append(self.predict.df_Y[init_y_values.index(name)])
-        dict_classes = dict(zip(number_class, init_unique_y_values))
+        dict_classes = self.predict.settings['classes']
         classes = list(dict_classes.values())
 
         tree.plot_tree(self.predict.model.model, fontsize=6, filled=True, feature_names=columns, class_names=classes)
@@ -1712,34 +1707,35 @@ class TreeDashboard(Dashboard):
         return html.Div([html.Div(html.H3(children='Графическое представление дерева'), style={'text-align': 'center'}),
                          html.Div([html.Div(html.Img(src=image,
                                                      style={'width': '100%', 'display': 'inline-block'})),
-                                   html.Div(dcc.Markdown(markdown_tree_graph))])
-                         ],
-                        style={'border-color': 'rgb(192, 192, 192)',
-                                         'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
+                                   html.Div(dcc.Markdown(markdown_tree_graph))])],
+                        style={'border-color': 'rgb(192, 192, 192)', 'border-style': 'solid',
+                               'padding': '5px', 'margin': '50px'})
 
     def _generate_table(self):
         df_Y = self.predict.df_Y_test
         predict_Y = TreeModel.predict(self.predict.model, self.predict.df_X_test)
+        df_Y_new = []
+        predict_Y_new = []
+        classes = self.predict.settings['classes']
+        for i in range(len(df_Y)):
+            df_Y_new.append(classes[df_Y[i]])
+            predict_Y_new.append(classes[predict_Y[i]])
+
         df = pd.DataFrame(
-            {'Наблюдаемые показатели': df_Y,
-             'Предсказание': predict_Y
-             })
+            {'Наблюдаемые показатели': df_Y_new,
+             'Предсказание': predict_Y_new})
 
         return html.Div([html.Div([
-            html.Div(html.H3(children='Классификационная таблица'),
-                     style={'text-align': 'center'}),
+            html.Div(html.H3(children='Классификационная таблица'), style={'text-align': 'center'}),
             html.Div([
                 html.Div(dash_table.DataTable(
                     id='table_results_1',
                     columns=[{"name": i, "id": i}
                              for i in df.columns],
                     data=df.to_dict('records'),
-                    export_format='xlsx'
-                ), style={'text-align': 'center', 'width': str(len(df.columns) * 10 - 10) + '%',
-                          'display': 'inline-block'}),
+                    export_format='xlsx'), style={'text-align': 'center', 'display': 'inline-block'}),
                 html.Div(dcc.Markdown(markdown_results_table))])
-        ], style={'border-color': 'rgb(192, 192, 192)',
-                              'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
+        ], style={'border-color': 'rgb(192, 192, 192)', 'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
         ])
 
     def _generate_indicators(self):
@@ -1804,7 +1800,6 @@ class TreeDashboard(Dashboard):
                   'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
         ])
 
-
     def _generate_class_distributions(self):
         predict_Y = TreeModel.predict(self.predict.model, self.predict.df_X_test)
         df = pd.DataFrame.copy(self.predict.df_X_test)
@@ -1823,6 +1818,7 @@ class TreeDashboard(Dashboard):
         for num in predict_Y:
             class_names.append(dict_classes[num])
         df['class_names'] = class_names
+
         def update_graph(x_name, y_name):
             fig_graph = px.scatter(df, x=x_name, y=y_name, color="class_names")
             return fig_graph
@@ -1830,7 +1826,6 @@ class TreeDashboard(Dashboard):
         self.predict.app.callback(dash.dependencies.Output('graph_distributions', 'figure'),
                                   dash.dependencies.Input('x_name', 'value'),
                                   dash.dependencies.Input('y_name', 'value'))(update_graph)
-
 
         return html.Div([html.H3(children='График распределения классов', style={'text-align': 'center'}),
                          html.Div([
@@ -1868,9 +1863,15 @@ class TreeDashboard(Dashboard):
             if 'btn_ok' in changed_id:
                 predict_Y = TreeModel.predict(self.predict.model, data)
                 df_Y = self.predict.df_Y_test
+                df_Y_new = []
+                predict_Y_new = []
+                classes = self.predict.settings['classes']
+                for i in range(len(df_Y)):
+                    df_Y_new.append(classes[df_Y[i]])
+                    predict_Y_new.append(classes[predict_Y[i]])
                 df_res = pd.DataFrame(
-                    {'Наблюдаемые значения': df_Y,
-                     'Предсказанные значения': predict_Y
+                    {'Наблюдаемые значения': df_Y_new,
+                     'Предсказанные значения': predict_Y_new
                      })
                 return df_res.to_dict('records')
             else:
