@@ -1730,13 +1730,17 @@ class TreeDashboard(Dashboard):
             html.Div([
                 html.Div(dash_table.DataTable(
                     id='table_results_1',
-                    columns=[{"name": i, "id": i}
-                             for i in df.columns],
+                    columns=[{"name": i, "id": i} for i in df.columns],
+                    style_cell={'textAlign': 'center'},
                     data=df.to_dict('records'),
-                    export_format='xlsx'), style={'text-align': 'center', 'display': 'inline-block'}),
+                    fixed_rows={'headers': True},
+                    style_table={'overflowX': 'scroll', 'height': 450},
+                    export_format='xlsx'),
+                    style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
+                           'text-align': 'center', 'display': 'inline-block', 'width': '50%'}),
                 html.Div(dcc.Markdown(markdown_results_table))])
         ], style={'border-color': 'rgb(192, 192, 192)', 'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
-        ])
+        ], style={'text-align': 'center'})
 
     def _generate_indicators(self):
         predict_Y = TreeModel.predict(self.predict.model, self.predict.df_X_test)
@@ -1790,8 +1794,7 @@ class TreeDashboard(Dashboard):
             html.Div([
                 html.Div(dash_table.DataTable(
                     id='table_quality',
-                    columns=[{"name": i, "id": i}
-                             for i in df.columns],
+                    columns=[{"name": i, "id": i} for i in df.columns],
                     data=df.to_dict('records'),
                     export_format='csv'
                 )),
@@ -1888,22 +1891,39 @@ class TreeDashboard(Dashboard):
                              id='predict_table',
                              columns=[{"name": i, "id": i} for i in df.columns],
                              data=df.to_dict('records'),
-                             style_table={'overflowX': 'scroll'},
+                             fixed_rows={'headers': True},
+                             style_table={'overflowX': 'scroll', 'height': 450},
                              export_format='xlsx',
                              editable=True),
                          ]),
-                         html.Button('Предсказать', id='btn_ok', n_clicks=0),
+                         html.Div(html.Button('Предсказать', id='btn_ok', n_clicks=0), style={'padding': '20px'}),
                          dcc.Markdown(children='Полученное предсказание'),
                          html.Div([dash_table.DataTable(
                              id='predict_results',
                              columns=[{"name": i, "id": i} for i in results_columns],
+                             style_cell={'textAlign': 'center'},
+                             fixed_rows={'headers': True},
+                             style_table={'overflowX': 'scroll', 'height': 450},
                              data=df.to_dict('records'),
-                             export_format='xlsx',
-                             editable=True)],
-                             style={'text-align': 'center', 'width': str(len(results_columns) * 10 - 10) + '%',
-                                    'display': 'inline-block'})
-                         ], style={'border-color': 'rgb(192, 192, 192)',
-                                   'border-style': 'solid', 'padding': '5px', 'margin': '50px'}
-                        )
+                             export_format='xlsx')],
+                             style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
+                                    'text-align': 'center', 'display': 'inline-block', 'width': '50%'})
+                         ], style={'border-color': 'rgb(192, 192, 192)', 'text-align': 'center',
+                                   'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
+
+    # return html.Div([html.Div([
+    #     html.Div(html.H3(children='Классификационная таблица'), style={'text-align': 'center'}),
+    #     html.Div([
+    #         html.Div(dash_table.DataTable(
+    #             id='table_results_1',
+    #             columns=[{"name": i, "id": i} for i in df.columns],
+    #             style_cell={'textAlign': 'center'},
+    #             data=df.to_dict('records'),
+    #             export_format='xlsx'),
+    #             style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
+    #                    'text-align': 'center', 'display': 'inline-block', 'width': '50%'}),
+    #         html.Div(dcc.Markdown(markdown_results_table))])
+    # ], style={'border-color': 'rgb(192, 192, 192)', 'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
+    # ], style={'text-align': 'center'})
 
 

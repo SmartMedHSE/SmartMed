@@ -296,9 +296,6 @@ class PredictionModule(Module, PredictionDashboard):
                 self.settings['features_count'] = None
             extra_param = np.array([self.settings['tree_depth'], self.settings['samples'],
                                     self.settings['features_count']])
-            if self.settings['tree_depth'] and self.settings['samples'] and self.settings['features_count'] is not None:
-                extra_param = extra_param.astype(int)
-
             self.model = ModelManipulator(
                 x=self.df_X_train, y=self.df_Y_train, model_type='tree', extra_param=extra_param).create()
             self.model.fit()
