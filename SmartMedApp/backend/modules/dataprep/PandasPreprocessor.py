@@ -54,7 +54,7 @@ class PandasPreprocessor:
     @debug
     def fillna(self):
         value = self.settings['preprocessing']['fillna']
-        print("value = ", value)
+
         if value == 'mean':
             for col in self.df.columns:
                 if self.df[col].dtype in self.numerics_list:
