@@ -29,7 +29,7 @@ class WrappedTreeFeaturesWindow(TreeFeaturesWindow, QtWidgets.QMainWindow):
         self.pushButtonNext.clicked.connect(self.next)
         self.pushButtonBack.clicked.connect(self.back)
         self.checkBox.clicked.connect(self.sort)
-        self.setWindowTitle(' ')
+        self.setWindowTitle('Выбор параметров дерева')
 
     def back(self):
         self.hide()

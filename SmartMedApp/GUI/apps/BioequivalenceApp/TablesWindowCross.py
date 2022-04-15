@@ -18,7 +18,7 @@ class TablesWindowCross(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(70, 20, 461, 71))
+        self.label_2.setGeometry(QtCore.QRect(70, 20, 500, 71))
         self.label_2.setObjectName("label_2")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(100, 130, 449, 181))
@@ -52,7 +52,7 @@ class TablesWindowCross(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt;\">Выберите нужные таблицы</span></p></body></html>"))
+        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:17pt;\">Выберите нужные таблицы</span></p></body></html>"))
         self.checkBoxCriteria.setText(_translate("MainWindow", "  Средние площади под графиком по каждому препарату "))
         self.checkBoxFeatures.setText(_translate("MainWindow", "  Результаты двухфакторного дисперсионного анализа"))
         self.checkBoxStat.setText(_translate("MainWindow", "  Данные описательной статистики"))
