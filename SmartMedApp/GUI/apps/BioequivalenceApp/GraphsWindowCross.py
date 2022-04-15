@@ -18,7 +18,7 @@ class GraphsWindowCross(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(70, 30, 500, 51))
+        self.label_2.setGeometry(QtCore.QRect(70, 30, 461, 51))
         self.label_2.setObjectName("label_2")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(100, 130, 510, 181))
@@ -49,7 +49,7 @@ class GraphsWindowCross(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:17pt;\">Выберите графики для визуализации</span></p></body></html>"))
+        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt;\">Выберите графики для визуализации</span></p></body></html>"))
         self.checkBoxLogAllinGroup.setText(_translate("MainWindow", "  Индивидуальные графики для пациентов \n"
 "  c концентрациями обоих препаратов"))
         self.checkBoxAllinGroup.setText(_translate("MainWindow", "  Графики со средними концентрациями \n"

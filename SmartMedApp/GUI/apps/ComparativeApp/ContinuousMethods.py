@@ -11,7 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class TreeVisualWindow(object):
+class ContinuousMethods(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(600, 480)
@@ -26,24 +26,31 @@ class TreeVisualWindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.checkBoxTree = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxTree.setObjectName("checkBoxTree")
-        self.verticalLayout.addWidget(self.checkBoxTree)
-        self.checkBoxTablr = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxTablr.setObjectName("checkBoxTablr")
-        self.verticalLayout.addWidget(self.checkBoxTablr)
-        self.checkBoxValue = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxValue.setObjectName("checkBoxValue")
-        self.verticalLayout.addWidget(self.checkBoxValue)
-        self.checkBoxDistributions = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxDistributions.setObjectName("checkBoxDistributions")
-        self.verticalLayout.addWidget(self.checkBoxDistributions)
-        self.checkBoxPrediction = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxPrediction.setObjectName("checkBoxPrediction")
-        self.verticalLayout.addWidget(self.checkBoxPrediction)
+
+        self.checkBoxKolmSmirn= QtWidgets.QCheckBox(self.verticalLayoutWidget)
+        self.checkBoxKolmSmirn.setObjectName("checkBoxKolmSmirn")
+        self.verticalLayout.addWidget(self.checkBoxKolmSmirn)
+
+        self.checkBoxStudentDepend = QtWidgets.QCheckBox(self.verticalLayoutWidget)
+        self.checkBoxStudentDepend.setObjectName("checkBoxStudentDepend")
+        self.verticalLayout.addWidget(self.checkBoxStudentDepend)
+
+        self.checkBoxStudentIndepend = QtWidgets.QCheckBox(self.verticalLayoutWidget)
+        self.checkBoxStudentIndepend.setObjectName("checkBoxStudentIndepend")
+        self.verticalLayout.addWidget(self.checkBoxStudentIndepend)
+
+        self.checkBoxMannWhitney = QtWidgets.QCheckBox(self.verticalLayoutWidget)
+        self.checkBoxMannWhitney.setObjectName("checkBoxMannWhitney")
+        self.verticalLayout.addWidget(self.checkBoxMannWhitney)
+
+        self.checkBoxWilcoxon = QtWidgets.QCheckBox(self.verticalLayoutWidget)
+        self.checkBoxWilcoxon.setObjectName("checkBoxWilcoxon")
+        self.verticalLayout.addWidget(self.checkBoxWilcoxon)
+
         self.pushButtonDone = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonDone.setGeometry(QtCore.QRect(460, 420, 113, 32))
         self.pushButtonDone.setObjectName("pushButtonDone")
+
         self.pushButtonBack = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonBack.setGeometry(QtCore.QRect(330, 420, 113, 32))
         self.pushButtonBack.setObjectName("pushButtonBack")
@@ -55,12 +62,11 @@ class TreeVisualWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt;\">Выберите таблицы и графики </span></p><p><span style=\" font-size:18pt;\"></span></p></body></html>"))
-        self.checkBoxTree.setText(_translate("MainWindow", "  Графическое преставление дерева"))
-        self.checkBoxTablr.setText(_translate("MainWindow", "  Классификационная таблица, в которой наблюдаемые показатели\n  "
-"противопоставляются предсказанным "))
-        self.checkBoxValue.setText(_translate("MainWindow", "  Показатели построенного дерева"))
-        self.checkBoxDistributions.setText(_translate("MainWindow", "  График распределения классов"))
-        self.checkBoxPrediction.setText(_translate("MainWindow", "  Блок по предсказанию"))
+        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt;\">Выберите метод сравнения </span></p><p><span style=\" font-size:18pt;\"></span></p></body></html>"))
+        self.checkBoxKolmSmirn.setText(_translate("MainWindow", "  Тест Колмогорова Смирнова"))
+        self.checkBoxStudentIndepend.setText(_translate("MainWindow", "  T-критерий Стьюдента для независимых переменных"))
+        self.checkBoxStudentDepend.setText(_translate("MainWindow", "  T-критерий Стьюдента для зависимых переменных"))
+        self.checkBoxMannWhitney.setText(_translate("MainWindow", " U-критерий Манна-Уитни"))
+        self.checkBoxWilcoxon.setText(_translate("MainWindow", "  T-критерий Уилкоксона"))
         self.pushButtonDone.setText(_translate("MainWindow", "Завершить"))
         self.pushButtonBack.setText(_translate("MainWindow", "Назад"))
