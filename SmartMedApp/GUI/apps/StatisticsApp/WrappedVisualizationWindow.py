@@ -8,7 +8,7 @@ from .VisualizationWindow import VisualizationWindow
 from ..WaitingSpinnerWidget import QtWaitingSpinner
 from ..utils import remove_if_exists
 
-from backend import ModuleManipulator
+from SmartMedApp.backend import ModuleManipulator
 
 
 class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):

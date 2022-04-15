@@ -26,7 +26,6 @@ import plotly.express as px
 import matplotlib.pyplot as plt
 from PIL import Image
 import os
-from GUI.apps.PredictionApp.utils import read_file
 
 from .text.linear_text import *
 from .text.roc_text import *
@@ -39,7 +38,7 @@ from ..models.LinearRegressionModel import *
 from ..models.LogisticRegressionModel import *
 from ..models.TreeModel import *
 
-from GUI.apps.PredictionApp.utils import read_file
+from ..dataprep.PandasPreprocessor import read_file
 
 
 

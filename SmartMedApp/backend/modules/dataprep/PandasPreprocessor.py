@@ -4,6 +4,7 @@ import pathlib
 import sys
 
 import pandas as pd
+import numpy as np
 
 from sklearn import preprocessing
 
@@ -97,3 +98,57 @@ class PandasPreprocessor:
 
     def get_categorical_df(self, df):
         return df.select_dtypes(exclude=self.numerics_list)
+
+
+def get_categorical_col(data):
+    cat_list = []
+    for col in data.columns:
+        if data[col].nunique() < 10:
+            cat_list.append(col)
+    return cat_list
+
+
+def read_file(path):
+    ext = pathlib.Path(path).suffix
+
+    if ext == '.csv':
+        df = pd.read_csv(path)
+
+        if len(df.columns) <= 1:
+            df = pd.read_csv(path, sep=';')
+
+    elif ext == '.xlsx' or ext == '.xls':
+        df = pd.read_excel(path)
+
+    elif ext == '.tcv':
+        df = pd.read_excel(path, sep='\t')
+
+    else:
+        df = pd.DataFrame()
+    return df
+
+
+def get_confusion_matrix(true_values, pred_values):
+    tp = fn = tn = fp = 0
+    for i in range(len(true_values)):
+        if true_values[i] == 1 and pred_values[i] == 1:
+            tp += 1
+        if true_values[i] == 1 and pred_values[i] == 0:
+            fn += 1
+        if true_values[i] == 0 and pred_values[i] == 0:
+            tn += 1
+        if true_values[i] == 0 and pred_values[i] == 1:
+            fp += 1
+    return [[tp, fn], [fp, tn]]
+
+
+def get_class_names(group_var, path, data):
+    init_df = read_file(path)
+    init_unique_values = np.unique(init_df[group_var])
+    number_class = []
+    data_col = data[group_var].tolist()
+    for name in init_unique_values:
+        number_class.append(data_col[list(init_df[group_var]).index(name)])
+    dict_classes = dict(zip(number_class, init_unique_values))
+    return dict_classes
+

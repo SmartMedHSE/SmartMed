@@ -3,3 +3,4 @@
 from .StatisticsDashboard import StatisticsDashboard
 from .BioequivalenceDashboard import BioequivalenceDashboard
 from .PredictionDashboard import PredictionDashboard
+from .ComparativeDashboard import ComparativeDashboard

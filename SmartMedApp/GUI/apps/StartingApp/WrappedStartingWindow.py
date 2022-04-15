@@ -8,6 +8,7 @@ from .StartingWindow import *
 from ..StatisticsApp.StatisticsAppController import StatisticsApp
 from ..BioequivalenceApp.BioequivalenceAppController import BioequivalenceApp
 from ..PredictionApp.PredictionAppController import PredictionApp
+from ..ComparativeApp.ComparativeAppController import ComparativeApp
 
 
 class WrappedStartingWindow(StartingWindow, QtWidgets.QMainWindow):
@@ -25,6 +26,7 @@ class WrappedStartingWindow(StartingWindow, QtWidgets.QMainWindow):
         self.pushButtonStat.clicked.connect(self.button_stats)
         self.pushButtonPred.clicked.connect(self.button_prediction)
         self.pushButtonBioeq.clicked.connect(self.button_bioeq)
+        self.pushButtonComp.clicked.connect(self.button_comparative)
         self.pushButtonDone.clicked.connect(self.done)
 
     def done(self):
@@ -46,4 +48,9 @@ class WrappedStartingWindow(StartingWindow, QtWidgets.QMainWindow):
     def button_bioeq(self):
         self.hide()
         app = BioequivalenceApp(menu_window=self)
+        app.start()
+
+    def button_comparative(self):
+        self.hide()
+        app = ComparativeApp(menu_window=self)
         app.start()
