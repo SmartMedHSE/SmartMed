@@ -1,17 +1,16 @@
 import pickle
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import (
+    QWidget, QToolTip, QPushButton, QApplication, QMessageBox, QTableWidget)
+from .PreprocessingWindow import PreprocessingWindow
 
-from .PrepWindow import RadioWindow
 
-
-class WrappedRadioWindow(RadioWindow, QtWidgets.QMainWindow):
+class WrappedPreprocessingWindow(PreprocessingWindow, QtWidgets.QMainWindow):
 
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.__build_buttons()
-        self.setWindowTitle('Предобработка данных')
         self.__build_buttons()
         self.setWindowTitle('Предобработка данных')
         self.comboBox.addItems(["Средним/модой (численные/категориальные значения)",
@@ -36,17 +35,17 @@ class WrappedRadioWindow(RadioWindow, QtWidgets.QMainWindow):
 
     def next(self):
         value_na = self.comboBox.currentText()
-        if value_na == 'Средним/модой (численные/категориальные значения)':
-            self.settings['fillna'] = 'mean'
-        elif value_na == 'Введенным значением (требуется ввод для каждого столбца отдельно)':
-            self.settings['fillna'] = 'exact_value'
-        elif value_na == 'Удаление строк с пропущенными значениями':
-            self.settings['fillna'] = 'dropna'
+        if value_na == 'средним/модой (аналогично)':
+            self.settings['preprocessing'] = 'mean'
+        elif value_na == 'заданным значием (требуется ввод для каждого столбца отдельно)':
+            self.settings['preprocessing'] = 'exact_value'
+        elif value_na == 'откидывание строк с пропущенными значениями':
+            self.settings['preprocessing'] = 'dropna'
         else:
-            self.settings['fillna'] = 'median'
+            self.settings['preprocessing'] = 'median'
         with open('settings.py', 'rb') as f:
             data = pickle.load(f)
-        data['MODULE_SETTINGS']['data'].update(self.settings)
+        data['MODULE_SETTINGS'].update(self.settings)
         with open('settings.py', 'wb') as f:
             pickle.dump(data, f)
         self.hide()

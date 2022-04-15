@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'TablesWindow.ui'
+# Form implementation generated from reading ui file 'RockValue.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.0
 #
@@ -11,33 +11,34 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class TablesWindowCross(object):
+class VariablesTypeWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(600, 480)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(70, 30, 351, 51))
+        self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(70, 20, 461, 71))
+        self.label_2.setGeometry(QtCore.QRect(140, 150, 341, 41))
         self.label_2.setObjectName("label_2")
+
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(100, 130, 449, 181))
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(110, 140, 600, 200))
         self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.checkBoxCriteria = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxCriteria.setObjectName("checkBoxCriteria")
-        self.verticalLayout.addWidget(self.checkBoxCriteria)
-        self.checkBoxFeatures = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxFeatures.setObjectName("checkBoxFeatures")
-        self.verticalLayout.addWidget(self.checkBoxFeatures)
-        self.checkBoxStat = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxStat.setObjectName("checkBoxStat")
-        self.verticalLayout.addWidget(self.checkBoxStat)
-        self.checkBox = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBox.setObjectName("checkBox")
-        self.verticalLayout.addWidget(self.checkBox)
+
+        self.radioButton_continuous = QtWidgets.QRadioButton(self.verticalLayoutWidget)
+        self.radioButton_continuous.setObjectName("radioButton_cross")
+        self.verticalLayout.addWidget(self.radioButton_continuous)
+
+        self.radioButton_categorical = QtWidgets.QRadioButton(self.verticalLayoutWidget)
+        self.radioButton_categorical.setObjectName("radioButton_parall")
+        self.verticalLayout.addWidget(self.radioButton_categorical)
+
         self.pushButtonNext = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonNext.setGeometry(QtCore.QRect(460, 420, 113, 32))
         self.pushButtonNext.setObjectName("pushButtonNext")
@@ -52,10 +53,8 @@ class TablesWindowCross(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt;\">Выберите нужные таблицы</span></p></body></html>"))
-        self.checkBoxCriteria.setText(_translate("MainWindow", "  Средние площади под графиком по каждому препарату "))
-        self.checkBoxFeatures.setText(_translate("MainWindow", "  Результаты двухфакторного дисперсионного анализа"))
-        self.checkBoxStat.setText(_translate("MainWindow", "  Данные описательной статистики"))
-        self.checkBox.setText(_translate("MainWindow", "  Результаты оценки биоэквивалентности"))
+        self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:18pt;\">Выберите тип переменных:</span></p></body></html>"))
         self.pushButtonNext.setText(_translate("MainWindow", "Вперед"))
         self.pushButtonBack.setText(_translate("MainWindow", "Назад"))
+        self.radioButton_continuous.setText(_translate("MainWindow", "  Непрерывные"))
+        self.radioButton_categorical.setText(_translate("MainWindow", "  Категориальные"))

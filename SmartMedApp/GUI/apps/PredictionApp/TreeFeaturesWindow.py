@@ -18,7 +18,7 @@ class TreeFeaturesWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(70, 30, 500, 51))
+        self.label_2.setGeometry(QtCore.QRect(70, 30, 301, 51))
         self.label_2.setObjectName("label_2")
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
         self.label_3.setGeometry(QtCore.QRect(70, 160, 231, 16))
@@ -42,21 +42,15 @@ class TreeFeaturesWindow(object):
         self.label_5 = QtWidgets.QLabel(self.centralwidget)
         self.label_5.setGeometry(QtCore.QRect(70, 280, 221, 21))
         self.label_5.setObjectName("label_5")
-
-        self.comboBoxDepth = QtWidgets.QComboBox(self.centralwidget)
-        self.comboBoxDepth.setGeometry(QtCore.QRect(350, 110, 113, 21))
-        self.comboBoxDepth.setObjectName("comboBoxDepth")
-
-        self.comboBoxMinSample = QtWidgets.QComboBox(self.centralwidget)
-        self.comboBoxMinSample.setGeometry(QtCore.QRect(350, 160, 113, 21))
-        self.comboBoxMinSample.setObjectName("comboBoxMinSample")
-        # self.lineEdit_3 = QtWidgets.QLineEdit(self.centralwidget)
-        # self.lineEdit_3.setGeometry(QtCore.QRect(350, 210, 113, 21))
-        # self.lineEdit_3.setObjectName("lineEdit_3")
-
-        self.comboBoxFeatureCount = QtWidgets.QComboBox(self.centralwidget)
-        self.comboBoxFeatureCount.setGeometry(QtCore.QRect(350, 210, 113, 21))
-        self.comboBoxFeatureCount.setObjectName("comboBoxFeatureCount")
+        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit.setGeometry(QtCore.QRect(350, 110, 113, 21))
+        self.lineEdit.setObjectName("lineEdit")
+        self.lineEdit_2 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_2.setGeometry(QtCore.QRect(350, 160, 113, 21))
+        self.lineEdit_2.setObjectName("lineEdit_2")
+        self.lineEdit_3 = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit_3.setGeometry(QtCore.QRect(350, 210, 113, 21))
+        self.lineEdit_3.setObjectName("lineEdit_3")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -65,7 +59,7 @@ class TreeFeaturesWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:17pt;\">Выберите значения параметров:</span></p></body></html>"))
+        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt;\">Выберите значения параметров:</span></p></body></html>"))
         self.label_3.setText(_translate("MainWindow", "<html><head/><body><p>минимальное количество выборок:</p></body></html>"))
         self.label_4.setText(_translate("MainWindow", "<html><head/><body><p>число признаков для поиска лучшей </p><p>точки разбиения:</p><p><br/></p></body></html>"))
         self.label.setText(_translate("MainWindow", "<html><head/><body><p>максимальная глубина дерева:<br/></p></body></html>"))

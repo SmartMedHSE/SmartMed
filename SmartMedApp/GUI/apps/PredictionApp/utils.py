@@ -25,8 +25,3 @@ def read_file(path):
 def get_class_columns(path, num):
     df = read_file(path)
     return df.loc[:, df.nunique() < num].columns
-
-
-def get_binary_columns(path):
-    df = read_file(path)
-    return df.loc[:, df.nunique() == 2].columns

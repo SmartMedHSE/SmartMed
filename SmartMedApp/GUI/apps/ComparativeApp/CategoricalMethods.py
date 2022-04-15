@@ -11,7 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class TreeVisualWindow(object):
+class CategoricalMethods(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(600, 480)
@@ -26,24 +26,27 @@ class TreeVisualWindow(object):
         self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.checkBoxTree = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxTree.setObjectName("checkBoxTree")
-        self.verticalLayout.addWidget(self.checkBoxTree)
-        self.checkBoxTablr = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxTablr.setObjectName("checkBoxTablr")
-        self.verticalLayout.addWidget(self.checkBoxTablr)
-        self.checkBoxValue = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxValue.setObjectName("checkBoxValue")
-        self.verticalLayout.addWidget(self.checkBoxValue)
-        self.checkBoxDistributions = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxDistributions.setObjectName("checkBoxDistributions")
-        self.verticalLayout.addWidget(self.checkBoxDistributions)
-        self.checkBoxPrediction = QtWidgets.QCheckBox(self.verticalLayoutWidget)
-        self.checkBoxPrediction.setObjectName("checkBoxPrediction")
-        self.verticalLayout.addWidget(self.checkBoxPrediction)
+
+        self.checkBoxPearson = QtWidgets.QCheckBox(self.verticalLayoutWidget)
+        self.checkBoxPearson.setObjectName("checkBoxPearson")
+        self.verticalLayout.addWidget(self.checkBoxPearson)
+
+        self.checkBoxSeSp = QtWidgets.QCheckBox(self.verticalLayoutWidget)
+        self.checkBoxSeSp.setObjectName("checkBoxSeSp")
+        self.verticalLayout.addWidget(self.checkBoxSeSp)
+
+        self.checkBoxOddsRatio = QtWidgets.QCheckBox(self.verticalLayoutWidget)
+        self.checkBoxOddsRatio.setObjectName("checkBoxOddsRatio")
+        self.verticalLayout.addWidget(self.checkBoxOddsRatio)
+
+        self.checkBoxRiskRatio = QtWidgets.QCheckBox(self.verticalLayoutWidget)
+        self.checkBoxRiskRatio.setObjectName("checkBoxRiskRatio")
+        self.verticalLayout.addWidget(self.checkBoxRiskRatio)
+
         self.pushButtonDone = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonDone.setGeometry(QtCore.QRect(460, 420, 113, 32))
         self.pushButtonDone.setObjectName("pushButtonDone")
+
         self.pushButtonBack = QtWidgets.QPushButton(self.centralwidget)
         self.pushButtonBack.setGeometry(QtCore.QRect(330, 420, 113, 32))
         self.pushButtonBack.setObjectName("pushButtonBack")
@@ -55,12 +58,10 @@ class TreeVisualWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt;\">Выберите таблицы и графики </span></p><p><span style=\" font-size:18pt;\"></span></p></body></html>"))
-        self.checkBoxTree.setText(_translate("MainWindow", "  Графическое преставление дерева"))
-        self.checkBoxTablr.setText(_translate("MainWindow", "  Классификационная таблица, в которой наблюдаемые показатели\n  "
-"противопоставляются предсказанным "))
-        self.checkBoxValue.setText(_translate("MainWindow", "  Показатели построенного дерева"))
-        self.checkBoxDistributions.setText(_translate("MainWindow", "  График распределения классов"))
-        self.checkBoxPrediction.setText(_translate("MainWindow", "  Блок по предсказанию"))
+        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt;\">Выберите метод сравнения </span></p><p><span style=\" font-size:18pt;\"></span></p></body></html>"))
+        self.checkBoxPearson.setText(_translate("MainWindow", "  Хи-квадрат Пирсона"))
+        self.checkBoxSeSp.setText(_translate("MainWindow", " Чувствительность и специфичность"))
+        self.checkBoxOddsRatio.setText(_translate("MainWindow", "  Подсчет отношения шансов"))
+        self.checkBoxRiskRatio.setText(_translate("MainWindow", "  Подсчет отношения рисков"))
         self.pushButtonDone.setText(_translate("MainWindow", "Завершить"))
         self.pushButtonBack.setText(_translate("MainWindow", "Назад"))

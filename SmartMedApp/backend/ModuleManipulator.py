@@ -1,6 +1,6 @@
 from typing import Dict
 
-from SmartMedApp.backend.modules import *
+from .modules import *
 
 
 class ModuleChoiceException(Exception):
@@ -20,6 +20,8 @@ class ModuleManipulator:
             module = PredictionModule(self.settings['MODULE_SETTINGS'])
         elif self.settings['MODULE'] == 'BIOEQ':
             module = BioequivalenceModule(self.settings['MODULE_SETTINGS'])
+        elif self.settings['MODULE'] == 'COMPARATIVE':
+            module = ComparativeModule(self.settings['MODULE_SETTINGS'])
         else:
             raise ModuleChoiceException
 

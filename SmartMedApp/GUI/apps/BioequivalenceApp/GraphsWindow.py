@@ -18,7 +18,7 @@ class GraphsWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(35, 25, 500, 71))
+        self.label_2.setGeometry(QtCore.QRect(35, 25, 461, 71))
         self.label_2.setObjectName("label_2")
         self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(110, 140, 421, 181))
@@ -52,7 +52,7 @@ class GraphsWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:17pt;\">Выберите графики для визуализации</span></p></body></html>"))
+        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:18pt;\">Выберите графики для визуализации</span></p></body></html>"))
         self.checkBoxLogAllinGroup.setText(_translate("MainWindow", "  Прологорифмированный график зависимости концентрации \n"
 " препарата от времени для всех пациентов в каждой группе"))
         self.checkBoxAllinGroup.setText(_translate("MainWindow", "  График зависимости концентрации препарата от времени \n"
