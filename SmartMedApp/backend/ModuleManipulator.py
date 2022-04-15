@@ -16,7 +16,6 @@ class ModuleManipulator:
         if self.settings['MODULE'] == 'STATS':
             module = StatisticsModule(self.settings['MODULE_SETTINGS'])
         elif self.settings['MODULE'] == 'PREDICT':
-            print(self.settings['MODULE_SETTINGS'])
             module = PredictionModule(self.settings['MODULE_SETTINGS'])
         elif self.settings['MODULE'] == 'BIOEQ':
             module = BioequivalenceModule(self.settings['MODULE_SETTINGS'])
@@ -26,3 +25,4 @@ class ModuleManipulator:
             raise ModuleChoiceException
 
         module.run()
+        return module

@@ -1,7 +1,5 @@
-from typing import Dict
-
 import pathlib
-import sys
+from typing import Dict
 
 import pandas as pd
 import numpy as np
@@ -9,7 +7,8 @@ import numpy as np
 from sklearn import preprocessing
 
 # logging decorator
-from SmartMedApp.logs.logger import debug
+from logs.logger import debug
+from sklearn import preprocessing
 
 
 class ExtentionFileException(Exception):

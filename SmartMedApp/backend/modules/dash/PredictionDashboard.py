@@ -1,10 +1,6 @@
 import re
-import numpy as np
-
-import pylatex
 
 import dash
-import dash_table
 import dash_core_components as dcc
 import dash_html_components as html
 from dash import callback_context
@@ -14,7 +10,10 @@ from dash.dependencies import Input, Output, State
 import sklearn.metrics as sm
 from sklearn import tree
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 import scipy.stats as sps
+import sklearn.metrics as sm
 from scipy.sparse import issparse
 from sklearn.feature_selection import chi2
 from sklearn.metrics import accuracy_score
@@ -33,7 +32,8 @@ from .text.tree_text import *
 
 from .DashExceptions import ModelChoiceException
 from .Dashboard import Dashboard
-
+from .text.linear_text import *
+from .text.roc_text import *
 from ..models.LinearRegressionModel import *
 from ..models.LogisticRegressionModel import *
 from ..models.TreeModel import *

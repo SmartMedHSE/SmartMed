@@ -4,11 +4,11 @@ import threading
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTimer, QEventLoop
 
+from SmartMedApp.backend.ModuleManipulator import ModuleManipulator
+
 from .VisualizationWindow import VisualizationWindow
 from ..WaitingSpinnerWidget import QtWaitingSpinner
 from ..utils import remove_if_exists
-
-from SmartMedApp.backend import ModuleManipulator
 
 
 class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
@@ -79,7 +79,7 @@ class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
         self.spinner = QtWaitingSpinner(self)
         self.layout().addWidget(self.spinner)
         self.spinner.start()
-        #QTimer.singleShot(10000, self.spinner.stop)
+        # QTimer.singleShot(10000, self.spinner.stop)
         loop = QEventLoop()
         QTimer.singleShot(10000, loop.quit)
         loop.exec_()
