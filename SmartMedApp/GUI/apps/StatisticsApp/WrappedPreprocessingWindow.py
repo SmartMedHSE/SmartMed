@@ -24,13 +24,12 @@ class WrappedPreprocessingWindow(PreprocessingWindow, QtWidgets.QMainWindow):
         }
         self.__build_buttons()
         self.setWindowTitle('Загрузка данных')
-        '''
-        self.comboBox1.addItems(["Средним/модой (численные/категориальные значения)",
-                                 "Введенным значением (требуется ввод для каждого столбца отдельно)",
-                                 "Удаление строк с пропущенными значениями",
-                                 "Медианной/модой (численные/категориальные значения)"
-                                 ])
-'''
+
+        # self.comboBox1.addItems(["Средним/модой (численные/категориальные значения)",
+        #                          "Введенным значением (требуется ввод для каждого столбца отдельно)",
+        #                          "Удаление строк с пропущенными значениями",
+        #                          "Медианной/модой (численные/категориальные значения)"
+        #                          ])
 
     def __build_buttons(self):
         self.pushButtonNext.clicked.connect(self.next)
@@ -52,18 +51,18 @@ class WrappedPreprocessingWindow(PreprocessingWindow, QtWidgets.QMainWindow):
             msg.exec_()
             return
 
-            '''
-        value_na = self.comboBox1.currentText()
 
-        if value_na == 'средним/модой (аналогично)':
-            self.settings['MODULE_SETTINGS']['data']['fillna'] = 'mean'
-        elif value_na == 'заданным значием (требуется ввод для каждого столбца отдельно)':
-            self.settings['MODULE_SETTINGS']['data']['fillna'] = 'exact_value'
-        elif value_na == 'откидывание строк с пропущенными значениями':
-            self.settings['MODULE_SETTINGS']['data']['fillna'] = 'dropna'
-        else:
-            self.settings['MODULE_SETTINGS']['data']['fillna'] = 'median'
-        '''
+        # value_na = self.comboBox1.currentText()
+        #
+        # if value_na == 'средним/модой (аналогично)':
+        #     self.settings['MODULE_SETTINGS']['data']['fillna'] = 'mean'
+        # elif value_na == 'заданным значием (требуется ввод для каждого столбца отдельно)':
+        #     self.settings['MODULE_SETTINGS']['data']['fillna'] = 'exact_value'
+        # elif value_na == 'откидывание строк с пропущенными значениями':
+        #     self.settings['MODULE_SETTINGS']['data']['fillna'] = 'dropna'
+        # else:
+        #     self.settings['MODULE_SETTINGS']['data']['fillna'] = 'median'
+
         with open('settings.py', 'wb') as f:
             pickle.dump(self.settings, f)
 

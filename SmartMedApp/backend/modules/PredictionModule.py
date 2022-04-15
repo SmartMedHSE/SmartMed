@@ -14,7 +14,8 @@ from .dataprep import PandasPreprocessor
 class PredictionModule(Module, PredictionDashboard):
 
     def _prepare_data(self):
-        prep = {'fillna': self.settings['preprocessing'],
+
+        prep = {'fillna': self.settings['preprocessing']['fillna'],
                 'encoding': 'label_encoding',
                 'scaling': False}
         dict_pp = {

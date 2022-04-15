@@ -37,13 +37,13 @@ class WrappedRadioWindow(RadioWindow, QtWidgets.QMainWindow):
     def next(self):
         value_na = self.comboBox.currentText()
         if value_na == 'Средним/модой (численные/категориальные значения)':
-            self.settings['fillna'] = 'mean'
+            self.settings['preprocessing']['fillna'] = 'mean'
         elif value_na == 'Введенным значением (требуется ввод для каждого столбца отдельно)':
-            self.settings['fillna'] = 'exact_value'
+            self.settings['preprocessing']['fillna'] = 'exact_value'
         elif value_na == 'Удаление строк с пропущенными значениями':
-            self.settings['fillna'] = 'dropna'
+            self.settings['preprocessing']['fillna'] = 'dropna'
         else:
-            self.settings['fillna'] = 'median'
+            self.settings['preprocessing']['fillna'] = 'median'
         with open('settings.py', 'rb') as f:
             data = pickle.load(f)
         data['MODULE_SETTINGS']['data'].update(self.settings)
