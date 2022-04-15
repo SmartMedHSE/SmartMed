@@ -119,6 +119,7 @@ export class BioequivalenceAnalysis extends React.Component {
             this.settings[field] = file.path;
             this.state[field + "Name"] = file.name;
         }
+
     };
 
     selectRadio = (id, field) => {
@@ -129,36 +130,38 @@ export class BioequivalenceAnalysis extends React.Component {
         const {currentPage} = this.state;
         switch (currentPage) {
             case 0:
-                return (<Page
-                    title="Укажите, с какой выборкой проводится работа"
-                >
-                    <FormControl component="fieldset">
-                        <RadioGroup
-                            name="radio-buttons-group"
-                            defaultValue={PLAN_SELECTION[this.settings.plan]}
-                        >
-                            {PLAN_SELECTION.map((item, idx) => (
-                                <FormControlLabel
-                                    key={`m-${item}`}
-                                    control={
-                                        <Radio
-                                            onClick={() => {
-                                                this.selectRadio(idx, 'plan');
-                                            }}
-                                        />
-                                    }
-                                    label={item}
-                                    value={item}
-                                />
-                            ))}
-                        </RadioGroup>
-                    </FormControl>
-                </Page>);
+                return (
+                    <Page
+                        title="Укажите, с какой выборкой проводится работа"
+                    >
+                        <FormControl component="fieldset">
+                            <RadioGroup
+                                name="radio-buttons-group"
+                                defaultValue={PLAN_SELECTION[this.settings.plan]}
+                            >
+                                {PLAN_SELECTION.map((item, idx) => (
+                                    <FormControlLabel
+                                        key={`m-${item}`}
+                                        control={
+                                            <Radio
+                                                onClick={() => {
+                                                    this.selectRadio(idx, 'plan');
+                                                }}
+                                            />
+                                        }
+                                        label={item}
+                                        value={item}
+                                    />
+                                ))}
+                            </RadioGroup>
+                        </FormControl>
+                    </Page>
+                );
             case 1:
                 return (<Page
                     title="Загрузка данных"
                 >
-                    Данные должны быть загружены в формате ".хlsx"".хs" или ".сsv".
+                    Данные должны быть загружены в формате ".хlsx", ".хs" или ".сsv".
                     <br/>
                     <br/>
                     Необходима загрузка двух файлов.

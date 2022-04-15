@@ -22,7 +22,7 @@ class Dashboard(ABC):
     in daemon thread
 
     '''
-    port = 40000
+    port = 15001
 
     @debug
     def __init__(self):
@@ -33,7 +33,10 @@ class Dashboard(ABC):
 
         # create Dash(Flask) server
         self.app = dash.Dash(
-            server=True, external_stylesheets=external_stylesheets, external_scripts=external_scripts)
+            server=True,
+            external_stylesheets=external_stylesheets,
+            external_scripts=external_scripts
+        )
 
         # increase port
         # address already in use fix
@@ -57,7 +60,7 @@ class Dashboard(ABC):
         port = Dashboard.port
 
         # open dashboard
-        webbrowser.open(f"http://127.0.0.1:{port}/")
+        webbrowser.open(f"http://127.0.0.1:15001/dash1/")
 
         # run dashboard
-        self.app.run_server(debug=debug, port=port)
+        # self.app.run_server(port=port, dev_tools_silence_routes_logging=True, debug=False)

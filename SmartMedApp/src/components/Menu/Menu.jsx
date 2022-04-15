@@ -18,6 +18,16 @@ export const MAIN_MENU = [
         description: 'Построение статистических и предсказательных моделей, ROC-анализ',
         id: 'PredictiveAnalysis',
     },
+    {
+        title: 'Сравнительный анализ',
+        description: 'Получение результатов различных методов сравнения двух выборок или табличных данных',
+        id: 'ComparativeAnalysis',
+    },
+    {
+        title: 'Кластерный анализ',
+        description: 'Кластеризации (в процессе реализации)',
+        id: 'ClusterAnalysis',
+    },
 ];
 
 /**
@@ -36,6 +46,7 @@ export const Menu = ({onClick}) => (
                 <div key={item.id}>
                     <div className={s.menu__item}>
                         <button
+                            id={item.id}
                             className="menu__button button button_size-xx button_color_grey"
                             onClick={(e) => {
                                 e.preventDefault();

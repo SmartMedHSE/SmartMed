@@ -4,6 +4,11 @@ import {DataDownload} from '../DataDownload';
 import {Checkbox, FormControl, FormControlLabel, FormGroup, Radio, RadioGroup} from '@material-ui/core';
 import {fetchPost} from '../../utils';
 import {DataPreparation} from '../DataPreparation/DataPreparation.jsx';
+import {MultipleRegression} from '../MultipleRegression/MultipleRegression.jsx';
+
+export const REGRESSION_MODELS = {
+    MultipleRegression: 1,
+};
 
 const DATA_PREP_OPTIONS = ['Средним/модой (численные/категориальные значения)',
     'Введенным значением (требуется ввод для каждого столбца отдельно)',
@@ -48,21 +53,20 @@ export class PredictiveAnalysis extends React.Component {
     state = {
         currentPage: 0,
         maxPage: 4,
-        dataPrepOptionId: -1,
-        fileOne: null,
-        fileTwo: null,
+        nextText: "Продолжить"
     };
 
     settings = {
-        data: '',
+        filePath: '',
         dataPrepOption: 0,
-        metrics: [],
-        graphics: [],
+        regression_model: 0
     };
 
     paginate = (goNext) => {
         const {currentPage, maxPage} = this.state;
         if (goNext) {
+            console.log(this.settings)
+
             if (currentPage < maxPage) {
                 this.setState({currentPage: currentPage + 1});
             } else {
@@ -82,7 +86,27 @@ export class PredictiveAnalysis extends React.Component {
         }
     };
 
-    selectDataPrepType = (id) => this.setState({dataPrepOptionId: id});
+    getNextText = () => {
+        if (this.state.currentPage < this.state.maxPage) {
+            return "Продолжить";
+        } else {
+            return "Завершить";
+        }
+    };
+
+    selectRadio = (id, field) => {
+        this.settings[field] = id;
+    };
+
+    selectDataPrepType = (id) => {
+        this.settings.dataPrepOption = id;
+    };
+
+    onDataLoad = (event) => {
+        if (event.target.files && event.target.files[0]) {
+            this.settings.filePath = event.target.files[0].path;
+        }
+    };
 
     selectUnselect = (item, field = '') => {
         const index = this.settings[field].indexOf(item);
@@ -107,20 +131,31 @@ export class PredictiveAnalysis extends React.Component {
                     title="Предварительная обработка данных"
                 >
                     <div>Выберите опции предварительной обработки данных</div>
-                    <DataPreparation onClick={this.selectDataPrepType} options={DATA_PREP_OPTIONS}/>
+                    <DataPreparation onClick={this.selectDataPrepType}
+                                     options={DATA_PREP_OPTIONS}
+                                     labelName={"Выбор опции"}
+                                     defaultValue={parseInt(this.settings.dataPrepOption)}
+                    />
                 </Page>);
             case 2:
                 return (<Page
                     title="Для начала основного этапа выберите одну из регрессивных моделей"
                 >
                     <FormControl component="fieldset">
-                        <RadioGroup name="radio-buttons-group">
+                        <RadioGroup
+                            name="radio-buttons-group"
+                            defaultValue={REGRESSION_MODELS_OPTIONS[this.settings.regression_model]}
+                        >
                             {REGRESSION_MODELS_OPTIONS.map((item, idx) => (
                                 <FormControlLabel
                                     key={`m-${item}`}
-                                    control={<Radio onClick={() => {
-                                        this.selectUnselect(idx, 'metrics');
-                                    }}/>}
+                                    control={
+                                        <Radio
+                                            onClick={() => {
+                                                this.selectRadio(idx, 'regression_model');
+                                            }}
+                                        />
+                                    }
                                     label={item}
                                     value={item}
                                 />
@@ -129,11 +164,13 @@ export class PredictiveAnalysis extends React.Component {
                     </FormControl>
                 </Page>);
             case 3:
-                return (<Page
-                    title="Выберите зависимую переменную из списка"
-                >
-                    <DataPreparation onClick={this.selectDataPrepType} options={DEPENDENT_PARAMS_OPTIONS}/>
-                </Page>);
+                return (
+                    <Page title="Выберите зависимую переменную из списка">
+                        <DataPreparation onClick={this.selectDataPrepType}
+                                         options={DEPENDENT_PARAMS_OPTIONS}
+                        />
+                    </Page>
+                );
             case 4:
                 return (
                     <Page
@@ -161,7 +198,7 @@ export class PredictiveAnalysis extends React.Component {
         return (
             <div>
                 {this.openCurrentPage()}
-                <ListButtons onClick={this.paginate}/>
+                <ListButtons onClick={this.paginate} nextText={this.getNextText}/>
             </div>
         );
     }

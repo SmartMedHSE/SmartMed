@@ -3,6 +3,15 @@
 .menu {
   display: block;
 
+  #ClusterAnalysis {
+    background-color: #d3d3d3;
+    cursor: default;
+  }
+  #ClusterAnalysis:hover {
+    background-color: #d3d3d3;
+    box-shadow: 0 0 0 0 #d3d3d3;
+  }
+
   &__title {
     font-family: $base-font;
     font-size: 20px;

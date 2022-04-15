@@ -25,3 +25,4 @@ class ModuleManipulator:
             raise ModuleChoiceException
 
         module.run()
+        return module

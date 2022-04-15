@@ -5,6 +5,8 @@ import {Container} from '@material-ui/core';
 import {DescriptiveAnalysis} from './components/DescriptiveAnalysis';
 import {BioequivalenceAnalysis} from './components/Bioequivalence';
 import {PredictiveAnalysis} from './components/PredictiveAnalysis';
+import {ComparativeAnalysis} from './components/ComparativeAnalysis';
+import {ClusterAnalysis} from './components/ClusterAnalysis';
 
 import {Menu} from './components/Menu';
 
@@ -14,6 +16,8 @@ export const PAGES = {
     DescriptiveAnalysis: 1,
     BioequivalenceAnalysis: 2,
     PredictiveAnalysis: 3,
+    ComparativeAnalysis: 4,
+    // ClusterAnalysis: 5
 };
 
 export class App extends React.Component {
@@ -35,6 +39,10 @@ export class App extends React.Component {
                 return <BioequivalenceAnalysis onExit={() => this.setState({openPage: 0})}/>;
             case PAGES.PredictiveAnalysis:
                 return <PredictiveAnalysis onExit={() => this.setState({openPage: 0})}/>;
+            case PAGES.ComparativeAnalysis:
+                return <ComparativeAnalysis onExit={() => this.setState({openPage: 0})}/>;
+            // case PAGES.ClusterAnalysis:
+            //     return <ClusterAnalysis onExit={() => this.setState({openPage: 0})}/>;
             default:
                 return (
                     <Menu
