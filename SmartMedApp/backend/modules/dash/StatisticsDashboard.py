@@ -12,11 +12,12 @@ import pandas as pd
 import numpy as np
 from scipy.stats import variation
 
+from .Dashboard import Dashboard
+
 from .text.markdown_stats import *
 
 
 class StatisticsDashboard(Dashboard):
-
     def _generate_layout(self):
         # metrics inludings is checked inside method
         graph_list = [self._generate_table()]
@@ -63,7 +64,7 @@ class StatisticsDashboard(Dashboard):
                              ], style={'margin': '50px'}
                             )
         else:
-            return html.Div([html.Div(html.H1(children='Описательная таблица'), 
+            return html.Div([html.Div(html.H1(children='Описательная таблица'),
                 style={'text-align':'center'}),
                 dcc.Markdown(children=markdown_text_table),
                     html.Div([dash_table.DataTable(
@@ -155,7 +156,7 @@ class StatisticsDashboard(Dashboard):
                     id='scatter_matrix'
                 ), style={'width': '78%', 'display': 'inline-block',
                 'border-color':'rgb(220, 220, 220)','border-style': 'solid','padding':'5px'}),
-                html.Div(dcc.Markdown(children=markdown_text_scatter), 
+                html.Div(dcc.Markdown(children=markdown_text_scatter),
                     style={'width': '18%', 'float': 'right', 'display': 'inline-block'})])
             ], style={'margin':'100px'})
 

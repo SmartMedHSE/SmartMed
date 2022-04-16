@@ -13,6 +13,7 @@ from .WrappedTreeValueWindow import WrappedTreeValueWindow
 from.WrappedRocAnyl import WrappedRocAnyl
 from .WrappedRocCurvesWindow import WrappedRocCurvesWindow
 from .WrappedRocGraphsWindow import WrappedRocGraphsWindow
+from .WrappedValueWindow import WrappedValueWindow
 
 
 # from..StartingApp.WrappedStartingWindow import WrappedStartingWindow
