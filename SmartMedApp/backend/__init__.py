@@ -1,1 +1,1 @@
-from SmartMedApp.backend.ModuleManipulator import ModuleManipulator
+from backend.ModuleManipulator import ModuleManipulator

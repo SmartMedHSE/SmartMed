@@ -29,70 +29,6 @@ def change_cache(key, val):
 def get_cache_val(key):
     return cache[key]
 
-@server.route('/api/comparative', methods=['POST'])
-def get_comparative_params():
-    if request.method == 'POST':
-        data_json = request.json
-        print(f"{data_json=}\n\n")
-
-        file_path = data_json['filePath']
-        categorial_methods_dict = data_json['categorial_methods']
-        continuous_methods_dict = data_json['continuous_methods']
-        data_prep_option = DATA_PREP_OPTIONS[data_json['dataPrepOption']]
-
-        # prepared_data = {
-        #     "MODULE": "STATS",
-        #     "MODULE_SETTINGS":
-        #         {
-        #             "metrics":
-        #                 {
-        #                     "count": metrics_dict['0'],
-        #                     "mean": metrics_dict['1'],
-        #                     "std": metrics_dict['2'],
-        #                     "max": metrics_dict['3'],
-        #                     "min": metrics_dict['4'],
-        #                     "25%": metrics_dict['5'],
-        #                     "50%": metrics_dict['5'],
-        #                     "75%": metrics_dict['5']
-        #                 },
-        #             "graphs":
-        #                 {
-        #                     "scatter": graphs_dict['0'],
-        #                     "hist": graphs_dict['1'],
-        #                     "corr": graphs_dict['2'],
-        #                     "heatmap": graphs_dict['3'],
-        #                     "dotplot": graphs_dict['4'],
-        #                     "linear": graphs_dict['5'],
-        #                     "box": graphs_dict['6'],
-        #                     "piechart": graphs_dict['8'],
-        #                     "log": graphs_dict['9'],
-        #                     "multihist": graphs_dict['10']
-        #                 },
-        #             "data":
-        #                 {
-        #                     "preprocessing":
-        #                         {
-        #                             "fillna": data_prep_option,
-        #                             "encoding": "label_encoding",
-        #                             "scaling": False
-        #                         },
-        #                     "path": file_path,
-        #                     "fillna": data_prep_option
-        #                 }
-        #         }
-        # }
-        #
-        # print(f"{prepared_data=}")
-        #
-        #
-        # change_cache(key='data', val=prepared_data)
-
-        try:
-            change_cache(key='cnt', val=get_cache_val("cnt") + 1)
-        except:
-            change_cache(key='cnt', val=0)
-
-        return run_dash(get_cache_val("cnt"))
 
 @server.route('/api/comparative', methods=['POST'])
 def get_comparative_params():
@@ -160,7 +96,7 @@ def get_comparative_params():
         return run_dash(get_cache_val("cnt"))
 
 
-@server.route('/dash<dash_count>/')
+@server.route('/dash/<dash_count>')
 def run_dash(dash_count):
     data = get_cache_val("data")
     module = ModuleManipulator(data).start()

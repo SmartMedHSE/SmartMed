@@ -15,14 +15,9 @@ def is_port_in_use(port):
 
 class Dashboard(ABC):
     '''
-
     Dashboard Interface
-
-    Each ConcreteDashboar inreases port number 
-    and Dashboar_i is opened on localhost with port = 8000 + i
-    in daemon thread
-
     '''
+
     port = 15001
 
     @debug
@@ -61,7 +56,7 @@ class Dashboard(ABC):
         port = Dashboard.port
 
         # open dashboard
-        webbrowser.open(f"http://127.0.0.1:15001/dash1/")
+        webbrowser.open(f"http://127.0.0.1:15001/dash/1")
 
         # run dashboard
         # self.app.run_server(port=port, dev_tools_silence_routes_logging=True, debug=False)
