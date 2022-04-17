@@ -1,9 +1,9 @@
 import numpy as np
+import pandas as pd
 import sklearn.metrics as sm
 from scipy import stats
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.linear_model import LogisticRegression
 
 from .ModelInterface import Model
 
@@ -15,8 +15,6 @@ class BaseModel(Model):
         if math_model_class == DecisionTreeClassifier:
             self.model = math_model_class(max_depth=extra_param[0], min_samples_split=extra_param[1],
                                           max_features=extra_param[2])
-        elif extra_param == 'logreg':
-            self.model = math_model_class
         else:
             self.model = math_model_class()
         self.math_model_class = math_model_class
@@ -68,7 +66,7 @@ class BaseModel(Model):
         return def_ESS
 
     def get_R(self, def_df_Y, def_predict_Y):  # коэффицент множественной корреляции
-        return abs(sm.r2_score(def_df_Y, def_predict_Y)) ** 0.5
+        return sm.r2_score(def_df_Y, def_predict_Y) ** 0.5
 
     def get_deg_fr(self, def_df_X):  # степени свободы в списке
         k1 = def_df_X.shape[1]
@@ -76,7 +74,7 @@ class BaseModel(Model):
         return [k1, k2]
 
     def get_st_err(self, def_RSS, def_de_fr):  # стандартная ошибка оценки уравнения
-        return (def_RSS / (def_de_fr[0] - 2)) ** 0.5
+        return (def_RSS / (def_de_fr[1] - 2)) ** 0.5
 
     def get_cov_matrix(self, def_df_X):  # обратная ковариационная матрица
         df2_X = def_df_X.copy()
@@ -97,7 +95,7 @@ class BaseModel(Model):
                 def_st += ' + ' + str(round(def_b[i], 3)) + 'X(' + str(i) + ')'
             else:
                 def_st += ' - ' + \
-                    str(round(abs(def_b[i]), 3)) + 'X(' + str(i) + ')'
+                          str(round(abs(def_b[i]), 3)) + 'X(' + str(i) + ')'
         def_st += ', где:'  # \nX(0)-константа'
         uravlist = [def_st]
         uravlist.append('\n')
@@ -145,7 +143,7 @@ class BaseModel(Model):
 
     def get_R2_adj(self, def_df_X, def_df_Y, def_predict_Y):  # R^2 adjusted
         return 1 - (1 - sm.r2_score(def_df_Y, def_predict_Y)) * (
-            (len(def_df_X) - 1) / (len(def_df_X) - def_df_X.shape[1] - 1))
+                (len(def_df_X) - 1) / (len(def_df_X) - def_df_X.shape[1] - 1))
 
     def get_Fst(self, def_df_X, def_df_Y, def_predict_Y):  # F-статистика
         r2 = sm.r2_score(def_df_Y, def_predict_Y)
@@ -153,9 +151,7 @@ class BaseModel(Model):
 
     def p_values(self, def_df_X, def_t_stat):
         newX = pd.DataFrame(
-            {"Constant": np.ones(def_df_X.shape[0])}).join(def_df_X.reset_index(drop=True))
-        # newX = def_df_X
-        # newX['constant'] = np.ones(def_df_X.shape[0])
+            {"Constant": np.ones(def_df_X.shape[0])}).join(def_df_X)
         p_values = [2 * (1 - stats.t.cdf(np.abs(i), (len(newX) -
                                                      len(newX.columns) - 1))) for i in def_t_stat]
         return p_values

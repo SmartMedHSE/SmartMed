@@ -1,8 +1,8 @@
 import pickle
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox, )
+    QMessageBox, )
 
 from SmartMedApp.GUI.apps.utils import check_first_group_cross, check_group_column
 
@@ -40,8 +40,8 @@ class WrappedDownloadWindowCross(DownloadWindowCross, QtWidgets.QMainWindow):
 
             return
 
-        while check_group_column(self.settings['path_test']) is False or\
-                check_group_column(self.settings['path_ref']) is False:
+        while ~check_group_column(self.settings['path_test'])\
+            or ~check_group_column(self.settings['path_ref']):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
             msg.setText("Ошибка")
@@ -50,9 +50,10 @@ class WrappedDownloadWindowCross(DownloadWindowCross, QtWidgets.QMainWindow):
             msg.exec_()
 
             return
+        
 
-        while check_first_group_cross(self.settings['path_test']) != 'T' or\
-                check_first_group_cross(self.settings['path_ref']) != 'R':
+        while (check_first_group_cross(self.settings['path_test']) != 'T' \
+            or check_first_group_cross(self.settings['path_ref']) != 'R'):
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Warning)
             msg.setText("Ошибка")

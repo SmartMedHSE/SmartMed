@@ -1,10 +1,9 @@
 import pickle
+
 import numpy as np
 import threading
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox, )
+from PyQt5 import QtWidgets
 
 from .TreeFeaturesWindow import TreeFeaturesWindow
 
@@ -44,6 +43,7 @@ class WrappedTreeFeaturesWindow(TreeFeaturesWindow, QtWidgets.QMainWindow):
             self.settings['sort'] = False
 
     def next(self):
+      
         depth = self.comboBoxDepth.currentText()
         min_sample_number = self.comboBoxMinSample.currentText()
         features_count = self.comboBoxFeatureCount.currentText()
@@ -65,6 +65,7 @@ class WrappedTreeFeaturesWindow(TreeFeaturesWindow, QtWidgets.QMainWindow):
             data = pickle.load(f)
             col = data['MODULE_SETTINGS']['columns'].to_list()
             if features_count is not None:
+
                 if int(features_count) > len(col) - 1:
                     features_count = int(len(col) - 1)
             data['MODULE_SETTINGS'].update({'tree_depth': depth,
@@ -73,6 +74,5 @@ class WrappedTreeFeaturesWindow(TreeFeaturesWindow, QtWidgets.QMainWindow):
             data['MODULE_SETTINGS'].update(self.settings)
         with open('settings.py', 'wb') as f:
             pickle.dump(data, f)
-
         self.hide()
         self.child.show()
