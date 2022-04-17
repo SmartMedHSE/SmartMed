@@ -1,10 +1,10 @@
 import pickle
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox, )
+    QMessageBox, )
 
-from GUI.apps.utils import check_group_column
+from SmartMedApp.GUI.apps.utils import check_group_column
 
 from .DownloadWindow import DownloadWindow
 

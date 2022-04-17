@@ -1,9 +1,12 @@
-from .WrappedRadioWindow import WrappedRadioWindow
-from .WrappedDownloadWindow import WrappedDownloadWindow
+# logging decorator
+from SmartMedApp.logs.logger import debug
 from .WrappedChoiceWindow import WrappedChoiceWindow
-from .WrappedValueWindow import WrappedValueWindow
-from .WrappedRocValueWindow import WrappedRocValueWindow
+from .WrappedDownloadWindow import WrappedDownloadWindow
 from .WrappedLinearGraphWindow import WrappedLinearGraphWindow
+from .WrappedRadioWindow import WrappedRadioWindow
+from .WrappedRocAnyl import WrappedRocAnyl
+from .WrappedRocGraphsWindow import WrappedRocGraphsWindow
+from .WrappedRocValueWindow import WrappedRocValueWindow
 from .WrappedTreeFeaturesWindow import WrappedTreeFeaturesWindow
 from .WrappedTreeVisualWindow import WrappedTreeVisualWindow
 from .WrappedTreeValueWindow import WrappedTreeValueWindow
@@ -11,10 +14,8 @@ from.WrappedRocAnyl import WrappedRocAnyl
 from .WrappedRocCurvesWindow import WrappedRocCurvesWindow
 from .WrappedRocGraphsWindow import WrappedRocGraphsWindow
 
-#from..StartingApp.WrappedStartingWindow import WrappedStartingWindow
 
-# logging decorator
-from SmartMedApp.logs.logger import debug
+# from..StartingApp.WrappedStartingWindow import WrappedStartingWindow
 
 
 class PredictionApp():
@@ -29,7 +30,7 @@ class PredictionApp():
         self.value_window = WrappedValueWindow()
         self.roc_value_window = WrappedRocValueWindow()
         self.roc_anyl_window = WrappedRocAnyl()
-        #self.roc_curves_window = WrappedRocCurvesWindow()
+        # self.roc_curves_window = WrappedRocCurvesWindow()
         self.roc_graphs_window = WrappedRocGraphsWindow()
         self.linear_graph_window = WrappedLinearGraphWindow()
         self.tree_features_window = WrappedTreeFeaturesWindow()
@@ -41,7 +42,6 @@ class PredictionApp():
 
     @debug
     def __build_connections(self, ordered_windows):
-
         ordered_windows[0].child = ordered_windows[1]
         ordered_windows[0].parent = ordered_windows[-1]
 
@@ -74,11 +74,11 @@ class PredictionApp():
         self.tree_visual_window.parent = self.tree_features_window
         self.tree_visual_window.child = self.menu_window
 
-        #self.choice_window.child_regression = self.regression_value_window
-        #self.regression_value_window.parent_regression = self.choice_window
-        #self.choice_window.child_rock = self.rock_value_window
-        #self.rock_value_window.parent_rock = self.choice_window
-        #self.regression_value_window.child_linear = self.linear_graph_window
+        # self.choice_window.child_regression = self.regression_value_window
+        # self.regression_value_window.parent_regression = self.choice_window
+        # self.choice_window.child_rock = self.rock_value_window
+        # self.rock_value_window.parent_rock = self.choice_window
+        # self.regression_value_window.child_linear = self.linear_graph_window
         # self.linear_graph_window.parent_linear = self.
 
     @debug

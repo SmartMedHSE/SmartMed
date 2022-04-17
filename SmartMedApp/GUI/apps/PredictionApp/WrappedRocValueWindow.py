@@ -1,8 +1,6 @@
 import pickle
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox, QTableWidget)
+from PyQt5 import QtWidgets
 
 from .RocValueWindow import RocValueWindow
 

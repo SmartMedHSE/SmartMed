@@ -183,4 +183,3 @@ class QtWaitingSpinner(QWidget):
 
     def setMinimumTrailOpacity(self, minimumTrailOpacity):
         self.mMinimumTrailOpacity = minimumTrailOpacity
-

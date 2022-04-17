@@ -1,11 +1,12 @@
-from .WrappedPreprocessingWindow import WrappedPreprocessingWindow
-from .WrappedMetricsWindow import WrappedMetricsWindow
-from .WrappedVisualizationWindow import WrappedVisualizationWindow
-from .WrappedPrepWindow import WrappedRadioWindow
-#from..StartingApp.WrappedStartingWindow import WrappedStartingWindow
-
 # logging decorator
-from logs.logger import debug
+from SmartMedApp.logs.logger import debug
+from .WrappedMetricsWindow import WrappedMetricsWindow
+from .WrappedPrepWindow import WrappedRadioWindow
+from .WrappedPreprocessingWindow import WrappedPreprocessingWindow
+from .WrappedVisualizationWindow import WrappedVisualizationWindow
+
+
+# from..StartingApp.WrappedStartingWindow import WrappedStartingWindow
 
 
 class StatisticsApp():
@@ -24,7 +25,6 @@ class StatisticsApp():
 
     @debug
     def __build_connections(self, ordered_windows):
-
         ordered_windows[0].child = ordered_windows[1]
         ordered_windows[0].parent = ordered_windows[-1]
 

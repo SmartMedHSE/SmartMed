@@ -1,9 +1,9 @@
 import pickle
+
+import numpy as np
 import threading
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox, )
+from PyQt5 import QtWidgets
 
 from .TreeFeaturesWindow import TreeFeaturesWindow
 
@@ -16,6 +16,13 @@ class WrappedTreeFeaturesWindow(TreeFeaturesWindow, QtWidgets.QMainWindow):
         self.__build_buttons()
         self.settings = {'sort': True}
         self.checkBox.setChecked(True)
+        num = list(np.array(np.arange(0, 100)).astype(str))
+        num[0] = 'По умолчанию'
+        num_samples = list(np.array(np.arange(1, 100)).astype(str))
+        num_samples[0] = 'По умолчанию'
+        self.comboBoxDepth.addItems(num)
+        self.comboBoxMinSample.addItems(num_samples)
+        self.comboBoxFeatureCount.addItems(num)
 
     def __build_buttons(self):
         self.pushButtonNext.clicked.connect(self.next)
@@ -36,13 +43,29 @@ class WrappedTreeFeaturesWindow(TreeFeaturesWindow, QtWidgets.QMainWindow):
             self.settings['sort'] = False
 
     def next(self):
-        depth = self.lineEdit.text()
-        min_sample_number = self.lineEdit_2.text()
-        features_count = self.lineEdit_3.text()
+      
+        depth = self.comboBoxDepth.currentText()
+        min_sample_number = self.comboBoxMinSample.currentText()
+        features_count = self.comboBoxFeatureCount.currentText()
+
+        if depth == 'По умолчанию':
+            depth = None
+        else:
+            depth = int(depth)
+        if min_sample_number == 'По умолчанию':
+            min_sample_number = 2
+        else:
+            min_sample_number = int(min_sample_number)
+        if features_count == 'По умолчанию':
+            features_count = None
+        else:
+            features_count = int(features_count)
+
         with open('settings.py', 'rb') as f:
             data = pickle.load(f)
             col = data['MODULE_SETTINGS']['columns'].to_list()
-            if features_count != '':
+            if features_count is not None:
+
                 if int(features_count) > len(col) - 1:
                     features_count = int(len(col) - 1)
             data['MODULE_SETTINGS'].update({'tree_depth': depth,
