@@ -8,6 +8,7 @@ from .ModelManipulator import ModelManipulator
 from .ModuleInterface import Module
 from .dash import PredictionDashboard
 from .dataprep import PandasPreprocessor
+from .dataprep.PandasPreprocessor import read_file
 
 
 class PredictionModule(Module, PredictionDashboard):
@@ -273,6 +274,13 @@ class PredictionModule(Module, PredictionDashboard):
                 labelencoder = sp.LabelEncoder()
                 self.df_Y = labelencoder.fit_transform(self.df_Y)
 
+            init_df = read_file(self.settings['path'])
+            init_unique_values = np.unique(init_df[self.settings['variable']])
+            number_class = []
+            for name in init_unique_values:
+                number_class.append(self.df_Y[list(init_df[self.settings['variable']]).index(name)])
+            dict_classes = dict(zip(number_class, init_unique_values))
+
             dfX_train, dfX_test, dfY_train, dfY_test = sm.train_test_split(self.df_X, self.df_Y, test_size=0.3,
                                                                            random_state=42)
             self.df_X_train = dfX_train
@@ -288,9 +296,6 @@ class PredictionModule(Module, PredictionDashboard):
                 self.settings['features_count'] = None
             extra_param = np.array([self.settings['tree_depth'], self.settings['samples'],
                                     self.settings['features_count']])
-            if self.settings['tree_depth'] and self.settings['samples'] and self.settings['features_count'] is not None:
-                extra_param = extra_param.astype(int)
-
             self.model = ModelManipulator(
                 x=self.df_X_train, y=self.df_Y_train, model_type='tree', extra_param=extra_param).create()
             self.model.fit()
@@ -303,6 +308,7 @@ class PredictionModule(Module, PredictionDashboard):
             settings['features'] = []
             settings['y'] = []
             settings['x'] = self.pp.df.columns.tolist()
+            settings['classes'] = dict_classes
 
             for metric in self.settings.keys():
                 if metric == 'model':
