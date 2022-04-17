@@ -4,9 +4,9 @@ from abc import ABC, abstractmethod
 import socket
 
 import dash
-from logs.logger import debug
 
 from logs.logger import debug
+
 
 def is_port_in_use(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -29,11 +29,11 @@ class Dashboard(ABC):
 
         # create Dash(Flask) server
         self.app = dash.Dash(
+            __name__,
             server=True,
             external_stylesheets=external_stylesheets,
             external_scripts=external_scripts
         )
-
         # increase port
         # address already in use fix
         while is_port_in_use(Dashboard.port):
@@ -56,7 +56,7 @@ class Dashboard(ABC):
         port = Dashboard.port
 
         # open dashboard
-        webbrowser.open(f"http://127.0.0.1:15001/dash/1")
+        # webbrowser.open(f"http://127.0.0.1:15001/dash/1")
 
         # run dashboard
-        # self.app.run_server(port=port, dev_tools_silence_routes_logging=True, debug=False)
+        # self.app.run_server(port=port+2, dev_tools_silence_routes_logging=True, debug=False)

@@ -1,6 +1,11 @@
 import os
 import sys
 
+import dash
+import dash_html_components as html
+from werkzeug import run_simple
+import dash_table
+from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from dash import Dash
 from flask import Flask, request
 
@@ -10,7 +15,9 @@ BASE_DIR = os.path.abspath(os.curdir)
 sys.path.append(BASE_DIR)
 
 server = Flask(__name__)
-server.suppress_callback_exceptions = True
+# server.suppress_callback_exceptions = True
+
+application = DispatcherMiddleware(server, {})
 
 DATA_PREP_OPTIONS = {
     0: 'mean',
@@ -96,22 +103,49 @@ def get_comparative_params():
         return run_dash(get_cache_val("cnt"))
 
 
-@server.route('/dash/<dash_count>')
+# @server.route('/dash/<dash_count>')
 def run_dash(dash_count):
     data = get_cache_val("data")
     module = ModuleManipulator(data).start()
-    # app = module.app
-    app = Dash(__name__, server=server, url_base_pathname=f"/dash{dash_count}/")
+
+    external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+    external_scripts = [
+        'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML']
+
+    app = Dash(__name__, server=server, url_base_pathname=f"/dash{dash_count}/",
+               external_stylesheets=external_stylesheets, external_scripts=external_scripts)
+
     app.layout = module.app.layout
-    # app.server = server
-    # app.url_base_pathname = f'/dash{dash_count}/'
-    app.suppress_callback_exceptions = True
-    # app.config.update(dict(
-    #     routes_pathname_prefix=f'/dash{dash_count}/',
-    #     requests_pathname_prefix=f'/dash{dash_count}/',
-    # ))
-    print(app.__dict__)
-    return app.index()
+
+    print(f"/dash{dash_count}/")
+    # print(f"{dir(app)=}")
+    print(f"{dir(module.app)=}")
+    #
+    # print(app.callback_map)
+    # print(app.scripts)
+    # print(app.routes)
+    # print(app.config)
+    # print(app.serve_layout())
+    # print(app.serve_reload_hash())
+    # print(app.registered_paths)
+
+    # module.app.registered_paths = app.registered_paths
+    # app = module.app
+    print()
+    # print(app.callback_map)
+    # print(app.scripts)
+    # print(app.routes)
+    # print(app.config)
+    # print(app.serve_layout())
+    # print(app.serve_reload_hash())
+    # print(app.registered_paths)
+
+    application.mounts[f"/app{dash_count}"] = app.server
+    print(application.mounts)
+
+    # app.suppress_callback_exceptions = True
+
+    # return app.index()
 
 
 @server.route('/api/descriptive', methods=['POST'])
@@ -177,9 +211,11 @@ def get_descriptive_params():
         except:
             change_cache(key='cnt', val=0)
 
-        # return flask.redirect(f'/dash{get_cache_val("cnt")}/')
-        return run_dash(get_cache_val("cnt"))
+        run_dash(get_cache_val("cnt"))
+        # return run_dash(get_cache_val("cnt"))
+        return "good"
 
 
 if __name__ == '__main__':
-    server.run(port=15001, debug=False)
+    run_simple("localhost", 15001, application, use_debugger=True, use_reloader=True, threaded=True)
+    # server.run(port=15001, debug=False)
