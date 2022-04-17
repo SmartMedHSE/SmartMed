@@ -26,6 +26,12 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import os
 
+from scipy.stats import binomtest
+from scipy.stats import f
+from statsmodels.stats.proportion import proportion_confint
+from GUI.apps.PredictionApp.utils import read_file
+
+
 from .text.linear_text import *
 from .text.roc_text import *
 from .text.tree_text import *
@@ -1045,6 +1051,25 @@ class ROC(Dashboard):
             html.Div(metrics_list)])
 
     def _generate_metrics(self, ind):
+        def dov_int_clopper(k, n):
+            v1_lcl = 2 * (n - k + 1)
+            v2_lcl = 2 * k
+            v1_ucl = 2 * (k + 1)
+            v2_ucl = 2 * (n - k)
+
+            df_lcl = f.isf((1 - 0.95) / 2, v1_lcl, v2_lcl)
+            df_ucl = f.isf((1 - 0.95) / 2, v1_ucl, v2_ucl)
+
+            dov_int_l = k / (k + (n - k + 1) * df_lcl)
+            dov_int_u = (k + 1) * df_ucl / (n - k + (k + 1) * df_ucl)
+            return dov_int_l, dov_int_u
+
+        def dov_int_wilson(k, n):
+            p = k / n
+            result = binomtest(k=k, n=n, p=p)
+            dov_int = result.proportion_ci(confidence_level=0.95, method='wilson')
+            return dov_int
+        # metrics
         threshold = 1
         t_ind = 0
         for i in range(len(self.se_list[ind])):
@@ -1068,17 +1093,49 @@ class ROC(Dashboard):
             auc += (self.se_list[ind][i] + self.se_list[ind][i + 1]) * (
                     self.inv_sp_list[ind][i + 1] - self.inv_sp_list[ind][i]) / 2
         auc = round(abs(auc), 3)
-        dov_int = (np.var(self.se_list[ind]) /
-                   (len(self.se_list[ind]) * (len(self.se_list[ind]) - 1))) ** 0.5
-        dov_int_1 = round((self.se_list[ind][t_ind] - 1.96 * dov_int), 3)
-        dov_int_2 = round((self.se_list[ind][t_ind] + 1.96 * dov_int), 3)
         df_ost_2 = pd.DataFrame(
-            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота', 'Специфичность',
-                     'Точность', 'Accuracy', 'F-мера', 'Доверительный интервал', 'AUC'])
+            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Чувствительность', 'Специфичность', 'Точность',
+                     'Accuracy', 'F-мера', 'AUC'])
         df_ost_2.loc[1] = ['Значение', threshold, round(self.dx_list[ind][t_ind], 3), TPR, specificity, PPV, accuracy,
-                           f_measure, str(str(dov_int_1) + ';' + str(dov_int_2)), auc]
+                           f_measure, auc]
 
-        return df_ost_2
+        # dov int
+        # Se
+        di_se_clopper = dov_int_clopper(self.tp_list[ind][t_ind], self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind])
+        di_se_wilson = dov_int_wilson(self.tp_list[ind][t_ind], self.tp_list[ind][t_ind] + self.fn_list[ind][t_ind])
+        # Sp
+        di_sp_clopper = dov_int_clopper(self.tn_list[ind][t_ind], self.tn_list[ind][t_ind] + self.fp_list[ind][t_ind])
+        di_sp_wilson = dov_int_wilson(self.tn_list[ind][t_ind], self.tn_list[ind][t_ind] + self.fp_list[ind][t_ind])
+        # Precision
+        di_prec_clopper = dov_int_clopper(self.tp_list[ind][t_ind], self.tp_list[ind][t_ind] + self.fp_list[ind][t_ind])
+        di_prec_wilson = dov_int_wilson(self.tp_list[ind][t_ind], self.tp_list[ind][t_ind] + self.fp_list[ind][t_ind])
+        # Accuracy
+        di_accur_clopper = dov_int_clopper(self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind], self.tp_list[ind][t_ind]
+                                           + self.fn_list[ind][t_ind] + self.tn_list[ind][t_ind]
+                                           + self.fp_list[ind][t_ind])
+        di_accur_wilson = dov_int_wilson(self.tp_list[ind][t_ind] + self.tn_list[ind][t_ind], self.tp_list[ind][t_ind]
+                                         + self.fn_list[ind][t_ind] + self.tn_list[ind][t_ind]
+                                         + self.fp_list[ind][t_ind])
+        # AUC
+        di_auc = (np.var(self.se_list[ind]) /
+                   (len(self.se_list[ind]) * (len(self.se_list[ind]) - 1))) ** 0.5
+        di_auc_1 = round((self.se_list[ind][t_ind] - 1.96 * di_auc), 3)
+        di_auc_2 = round((self.se_list[ind][t_ind] + 1.96 * di_auc), 3)
+        df_dov_int = pd.DataFrame(
+            columns=['Метод', 'Чувствительность', 'Специфичность', 'Точность', 'Accuracy', 'AUC'])
+        df_dov_int.loc[1] = ['Пирсона-Клоппера',
+                             str(round(di_se_clopper[0], 3)) + '; ' + str(round(di_se_clopper[1], 3)),
+                             str(round(di_sp_clopper[0], 3)) + '; ' + str(round(di_sp_clopper[1], 3)),
+                             str(round(di_prec_clopper[0], 3)) + '; ' + str(round(di_prec_clopper[1], 3)),
+                             str(round(di_accur_clopper[0], 3)) + '; ' + str(round(di_accur_clopper[1], 3)),
+                             str(di_auc_1) + '; ' + str(di_auc_2)]
+        df_dov_int.loc[2] = ['Вилсона', str(round(di_se_wilson[0], 3)) + '; ' + str(round(di_se_wilson[1], 3)),
+                             str(round(di_sp_wilson[0], 3)) + '; ' + str(round(di_sp_wilson[1], 3)),
+                             str(round(di_prec_wilson[0], 3)) + '; ' + str(round(di_prec_wilson[1], 3)),
+                             str(round(di_accur_wilson[0], 3)) + '; ' + str(round(di_accur_wilson[1], 3)),
+                             str(di_auc_1) + '; ' + str(di_auc_2)]
+
+        return df_ost_2, df_dov_int
 
     def _generate_graphs(self):
         # df_ost_2 = pd.DataFrame(
@@ -1227,7 +1284,8 @@ class ROC(Dashboard):
         df_dots = self._generate_dots(0)
 
         # таблица метрик
-        df_metrics = self._generate_metrics(0)
+        df_metrics = self._generate_metrics(0)[0]
+        df_dov_int = self._generate_metrics(0)[1]
 
         metric_list = self.predict.settings['metrics']
         for item in reversed(df_metrics.columns.tolist()):
@@ -1237,16 +1295,18 @@ class ROC(Dashboard):
                 df_metrics.pop(item)
             if item == 'Accuracy' and 'accuracy' not in metric_list:
                 df_metrics.pop(item)
+                df_dov_int.pop(item)
             if item == 'Точность' and 'precision' not in metric_list:
                 df_metrics.pop(item)
+                df_dov_int.pop(item)
             if item == 'F-мера' and 'F' not in metric_list:
                 df_metrics.pop(item)
-            if item == 'Полнота' and 'recall' not in metric_list:
+            if item == 'Чувствительность' and 'sensitivity' not in metric_list:
                 df_metrics.pop(item)
-            if item == 'Доверительный интервал' and 'confidence' not in metric_list:
-                df_metrics.pop(item)
+                df_dov_int.pop(item)
             if item == 'Специфичность' and 'specificity' not in metric_list:
                 df_metrics.pop(item)
+                df_dov_int.pop(item)
 
         # ROC-кривая
         fig_roc = go.Figure()
@@ -1266,6 +1326,7 @@ class ROC(Dashboard):
                           dov_int for i in range(len(self.se_list[ind]))]
             dov_list_2 = [self.se_list[ind][i] + 1.96 *
                           dov_int for i in range(len(self.se_list[ind]))]
+
             fig_roc.add_trace(
                 go.Scatter(
                     x=self.inv_sp_list[ind],
@@ -1379,11 +1440,19 @@ class ROC(Dashboard):
 
         def update_metrics(column_name):
             ind = columns_list.tolist().index(column_name)
-            df = self._generate_metrics(ind)
+            df = self._generate_metrics(ind)[0]
             return df.to_dict('records')
 
         self.predict.app.callback(dash.dependencies.Output('table_metrics', 'data'),
                                   dash.dependencies.Input('metric_name', 'value'))(update_metrics)
+
+        def update_dov_int(column_name):
+            ind = columns_list.tolist().index(column_name)
+            df = self._generate_metrics(ind)[1]
+            return df.to_dict('records')
+
+        self.predict.app.callback(dash.dependencies.Output('table_dov_int_1', 'data'),
+                                  dash.dependencies.Input('metric_name', 'value'))(update_dov_int)
 
         div_markdown = html.Div([
             dcc.Markdown(children="Выберите группирующую переменную:"),
@@ -1419,6 +1488,21 @@ class ROC(Dashboard):
                 html.Div(dcc.Markdown(roc_table_metrics))])
         ], style={'margin': '50px'})
 
+        div_dov_int = html.Div([
+            html.Div(html.H4(children='Таблица доверительных интервалов'),
+                     style={'text-align': 'center'}),
+            html.Div([
+                html.Div(dash_table.DataTable(
+                    id='table_dov_int_1',
+                    columns=[{"name": i, "id": i}
+                             for i in df_dov_int.columns],
+                    data=df_dov_int.to_dict('records'),
+                    export_format='csv'
+                ), style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'text-align': 'center',
+                          'width': str(len(df_dov_int.columns) * 10 - 10) + '%', 'display': 'inline-block'}),
+                html.Div(dcc.Markdown(" "))])
+        ], style={'margin': '50px'})
+
         div_dot = html.Div([
             html.Div(html.H4(children='Таблица точек ROC'),
                      style={'text-align': 'center'}),
@@ -1443,7 +1527,7 @@ class ROC(Dashboard):
                 html.Div(dcc.Markdown(roc_inter_graph))])
         ], style={'margin': '50px'})
 
-        div_list = [div_markdown, div_roc, div_metrics, div_dot, div_inter]
+        div_list = [div_markdown, div_roc, div_metrics, div_dov_int, div_dot, div_inter]
 
         if len(df_metrics.columns.tolist()) == 2 or 'metrics_table' not in metric_list:
             div_list.remove(div_metrics)
@@ -1470,12 +1554,20 @@ class ROC(Dashboard):
         fig_roc_2 = go.Figure()
 
         sum_table = pd.DataFrame(
-            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Полнота', 'Специфичность', 'Точность',
-                     'Accuracy', 'F-мера', 'Доверительный интервал', 'AUC'])
+            columns=['Параметр', 'Threshold', 'Оптимальный порог', 'Чувствительность', 'Специфичность', 'Точность',
+                     'Accuracy', 'F-мера', 'AUC'])
+
+        sum_table_di = pd.DataFrame(
+            columns=['Группирующая переменная', 'Метод', 'Чувствительность', 'Специфичность', 'Точность', 'Accuracy',
+                     'AUC'])
 
         for i in range(len(columns_list)):
-            temp_df = self._generate_metrics(i)
+            temp_df = self._generate_metrics(i)[0]
             sum_table = pd.concat([sum_table, temp_df], ignore_index=True)
+
+            temp_df_di = self._generate_metrics(i)[1]
+            temp_df_di['Группирующая переменная'] = [columns_list[i], columns_list[i]]
+            sum_table_di = pd.concat([sum_table_di, temp_df_di], ignore_index=True)
         sum_table.rename(
             columns={'Параметр': 'Группирующая переменная'}, inplace=True)
         sum_table['Группирующая переменная'] = [item for item in columns_list]
@@ -1553,7 +1645,7 @@ class ROC(Dashboard):
                     id='group_param_2',
                     options=[{'label': i, 'value': i}
                              for i in columns_list],
-                    value=columns_list[1]
+                    value=columns_list[0]
                 )
             ], style={'width': '48%', 'float': 'right', 'display': 'inline-block'})
         ], style={'padding': '5px'})
@@ -1583,7 +1675,22 @@ class ROC(Dashboard):
                 html.Div(dcc.Markdown(roc_comp_metrics))])
         ], style={'margin': '50px'})
 
-        div_2_list = [div_2_title, div_2_markdown, div_2_roc, div_2_metrics]
+        div_2_dov_int = html.Div([
+            html.Div(html.H4(children='Таблица доверительных интервалов'),
+                     style={'text-align': 'center'}),
+            html.Div([
+                html.Div(dash_table.DataTable(
+                    id='table_dov_int_2',
+                    columns=[{"name": i, "id": i}
+                             for i in sum_table_di.columns],
+                    data=sum_table_di.to_dict('records'),
+                    export_format='csv'
+                ), style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid', 'text-align': 'center',
+                          'width': str(len(sum_table_di.columns) * 10 - 10) + '%', 'display': 'inline-block'}),
+                html.Div(dcc.Markdown(" "))])
+        ], style={'margin': '50px'})
+
+        div_2_list = [div_2_title, div_2_markdown, div_2_roc, div_2_metrics, div_2_dov_int]
 
         return html.Div(div_2_list, style={'margin': '50px'})
 
