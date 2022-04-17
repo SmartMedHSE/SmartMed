@@ -1,5 +1,5 @@
 # logging decorator
-from SmartMedApp.logs.logger import debug
+from logs.logger import debug
 from .WrappedChoiceWindow import WrappedChoiceWindow
 from .WrappedDownloadWindow import WrappedDownloadWindow
 from .WrappedLinearGraphWindow import WrappedLinearGraphWindow

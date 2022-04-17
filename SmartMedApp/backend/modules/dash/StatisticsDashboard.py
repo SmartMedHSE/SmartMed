@@ -10,6 +10,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 import numpy as np
+from dash.exceptions import PreventUpdate
 from scipy.stats import variation
 
 from .Dashboard import Dashboard

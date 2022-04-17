@@ -324,11 +324,13 @@ export class PredictiveAnalysis extends React.Component {
                                        helperText="Максимальная глубина дерева"
                                        variant="outlined"
                                        size="small"
+                                       defaultValue="1000"
                                    />
                                     <TextField
                                            helperText="Минимальное количество выборок"
                                            variant="outlined"
                                            size="small"
+                                           defaultValue="5"
                                     />
                                 </div>
                                 <div>
@@ -336,6 +338,7 @@ export class PredictiveAnalysis extends React.Component {
                                            helperText="Число признаков для поиска лучшей точки разбиениия"
                                            variant="outlined"
                                            size="small"
+                                           defaultValue="5"
                                     />
                                 </div>
 
