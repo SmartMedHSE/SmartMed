@@ -23,6 +23,8 @@ from sklearn.preprocessing import KBinsDiscretizer
 import plotly.graph_objects as go
 import plotly.express as px
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from PIL import Image
 import os
@@ -47,7 +49,6 @@ from ..models.TreeModel import *
 from ..dataprep.PandasPreprocessor import read_file
 
 from ..dataprep.PandasPreprocessor import read_file
-
 
 
 class PredictionDashboard(Dashboard):

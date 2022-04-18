@@ -29,7 +29,6 @@
     "copy-webpack-plugin": "^6.3.2",
     "css-loader": "^5.0.1",
     "electron": "^15.2.0",
-    "electron-is-dev": "^2.0.0",
     "electron-webpack": "^2.8.2",
     "eslint": "^7.14.0",
     "html-webpack-plugin": "^4.5.2",

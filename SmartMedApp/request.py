@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 
@@ -5,7 +6,7 @@ from werkzeug import run_simple
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 from flask import Flask, request
 
-from GUI.apps.utils import read_file
+from GUI.apps.utils import read_file, get_class_columns
 from backend.ModuleManipulator import ModuleManipulator
 
 BASE_DIR = os.path.abspath(os.curdir)
@@ -260,6 +261,161 @@ def get_bioequivalence_params():
                     "server": server,
                     "url_count": get_cache_val('cnt'),
                 }
+            }
+        print(f"{prepared_data=}")
+
+        change_cache(key='data', val=prepared_data)
+
+        run_dash(get_cache_val("cnt"))
+
+        return "good"
+
+
+@server.route('/api/predictive/get_class_columns', methods=['POST'])
+def class_columns_api():
+    if request.method == 'POST':
+        data_json = request.json
+        print(data_json)
+        file_path = data_json['filePath']
+
+        index_columns = get_class_columns(file_path, 11)
+
+        return (json.dumps(list(index_columns)), 200)
+
+
+@server.route('/api/predictive', methods=['POST'])
+def get_predictive_params():
+    if request.method == 'POST':
+        data_json = request.json
+        print(f"{data_json=}")
+
+        dependent_val = data_json['dependent_val']
+        data_prep_option = DATA_PREP_OPTIONS[data_json['dataPrepOption']]
+        file_path = data_json['filePath']
+        table_and_graph_options = data_json['table_and_graph_options']
+        regression_model = data_json['regression_model']
+        log_reg_table_and_graph_options = data_json['table_and_graph_options']
+        roc_metrics = data_json['roc_metrics']
+        roc_graphics_and_tables = data_json['roc_graphics_and_tables']
+        poly_reg_table_and_graph_options = data_json['table_and_graph_options']
+        tree_graphics_and_tables = data_json['tree_graphics_and_tables']
+
+        try:
+            change_cache(key='cnt', val=get_cache_val("cnt") + 1)
+        except:
+            change_cache(key='cnt', val=0)
+
+        if regression_model == 0:
+            prepared_data = {
+                "MODULE": "PREDICT",
+                "MODULE_SETTINGS":
+                {
+                    "server": server,
+                    "url_count": get_cache_val('cnt'),
+
+                    'path': file_path,
+                    'preprocessing': data_prep_option,
+                    'model': 'linreg',
+                    'variable': dependent_val,
+
+                    'distrib_resid': table_and_graph_options['4'],
+                    'equation': table_and_graph_options['2'],
+                    'model_quality': table_and_graph_options['0'],
+                    'resid': table_and_graph_options['3'],
+                    'signif': table_and_graph_options['1'],
+                }
+            }
+        elif regression_model == 1:
+            prepared_data = {
+                "MODULE": "PREDICT",
+                "MODULE_SETTINGS":
+                    {
+                        "server": server,
+                        "url_count": get_cache_val('cnt'),
+
+                        'path': file_path,
+                        'preprocessing': data_prep_option,
+                        'model': 'logreg',
+                        'variable': dependent_val,
+
+                        'distrib_resid': log_reg_table_and_graph_options['4'],
+                        'equation': log_reg_table_and_graph_options['2'],
+                        'model_quality': log_reg_table_and_graph_options['0'],
+                        'resid': log_reg_table_and_graph_options['3'],
+                        'signif': log_reg_table_and_graph_options['1'],
+                    }
+            }
+        elif regression_model == 2:
+            prepared_data = {
+                "MODULE": "PREDICT",
+                "MODULE_SETTINGS":
+                    {
+                        "server": server,
+                        "url_count": get_cache_val('cnt'),
+
+                        'path': file_path,
+                        'preprocessing': data_prep_option,
+                        'model': 'tree',
+                        'variable': dependent_val,
+
+                        'tree_depth': 5,
+                        'samples': 5,
+                        'features_count': 2,
+                        'sort': True,
+                        'tree': tree_graphics_and_tables['0'],
+                        'table': tree_graphics_and_tables['1'],
+                        'indicators': tree_graphics_and_tables['2'],
+                        'distributions': tree_graphics_and_tables['3'],
+                        'prediction': tree_graphics_and_tables['4']
+                    }
+            }
+        elif regression_model == 3:
+            prepared_data = {
+                "MODULE": "PREDICT",
+                "MODULE_SETTINGS":
+                    {
+                        "server": server,
+                        "url_count": get_cache_val('cnt'),
+
+                        'path': file_path,
+                        'preprocessing': data_prep_option,
+                        'model': 'roc',
+                        'variable': dependent_val,
+
+                        'accuracy': roc_metrics['3'],
+                        'confidence': roc_metrics['5'],
+                        'F': roc_metrics['4'],
+                        'precision': roc_metrics['2'],
+                        'sensitivity': roc_metrics['1'],
+                        'trashhold': roc_metrics['0'],
+                        'specificity': roc_metrics['6'],
+
+                        'points_table': roc_graphics_and_tables['0'],
+                        'metrics_table': roc_graphics_and_tables['1'],
+                        'spec_and_sens': roc_graphics_and_tables['2'],
+                        'spec_and_sens_table': roc_graphics_and_tables['3'],
+                        'classificators_comparison': roc_graphics_and_tables['4']
+                    }
+            }
+        elif regression_model == 4:
+            prepared_data = {
+                "MODULE": "PREDICT",
+                "MODULE_SETTINGS":
+                    {
+                        "server": server,
+                        "url_count": get_cache_val('cnt'),
+
+                        'path': file_path,
+                        'preprocessing': data_prep_option,
+                        'model': 'polynomreg',
+                        'variable': dependent_val,
+
+                        'distrib_resid': poly_reg_table_and_graph_options['4'],
+                        'equation': poly_reg_table_and_graph_options['2'],
+                        'model_quality': poly_reg_table_and_graph_options['0'],
+                        'resid': poly_reg_table_and_graph_options['3'],
+                        'signif': poly_reg_table_and_graph_options['1'],
+                    }
             }
         print(f"{prepared_data=}")
 

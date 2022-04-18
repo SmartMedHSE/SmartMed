@@ -1,9 +1,9 @@
 {
-  "name": "Smart-Медицина",
+  "name": "Smart-Medicina",
   "version": "0.0.1",
   "description": "Cross-platform version for SmartMed Desktop",
   "main": "src/electron.js",
-  "author": "SmartMedHSE",
+  "author": "SmartMedicinaHSE",
   "license": "MIT",
   "keywords": [
     "js",
@@ -13,10 +13,14 @@
     "Медицина"
   ],
   "build": {
+    "extends": null,
     "directories": {
       "buildResources": "build",
       "output": "release"
     },
+    "extraFiles": [
+      "dist/js/*"
+    ],
     "files": [
       "src/electron.js",
       "**/*",
@@ -72,7 +76,6 @@
     "css-loader": "^5.0.1",
     "electron": "^17.1.2",
     "electron-builder": "^22.14.5",
-    "electron-is-dev": "^2.0.0",
     "eslint": "^7.14.0",
     "html-webpack-plugin": "^4.5.2",
     "mini-css-extract-plugin": "^1.3.1",
@@ -90,8 +93,5 @@
   },
   "resolutions": {
     "glob-parent": "^5.1.2"
-  },
-  "directories": {
-    "test": "tests"
   }
 }

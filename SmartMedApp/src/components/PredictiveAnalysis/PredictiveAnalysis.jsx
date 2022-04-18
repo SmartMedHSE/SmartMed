@@ -2,7 +2,7 @@ import * as React from 'react';
 import {ListButtons} from '../ManageButtons';
 import {DataDownload} from '../DataDownload';
 import {Box, Checkbox, FormControl, FormControlLabel, FormGroup, Radio, RadioGroup, TextField} from '@material-ui/core';
-import {fetchPost, selectUnselectCheckbox} from '../../utils';
+import {fetchGet, fetchPost, selectUnselectCheckbox} from '../../utils';
 import {DataPreparation} from '../DataPreparation/DataPreparation.jsx';
 
 export const REGRESSION_MODELS = {
@@ -23,12 +23,8 @@ const REGRESSION_MODELS_OPTIONS = [
     "Полиномиальная регрессия",
 ];
 
-const DEPENDENT_PARAMS_OPTIONS = [
-    "ПЗ: до лечения",
-    "ПЗ: 6 месяцев после лечения",
-    "ВГД: до лечения",
-    "ВГД: 6 месяцев после лечения",
-    "Тип операции",
+let DEPENDENT_PARAMS_OPTIONS = [
+    "",
 ];
 
 const TABLES_AND_GRAPHICS_OPTIONS = [
@@ -41,7 +37,7 @@ const TABLES_AND_GRAPHICS_OPTIONS = [
 
 const ROC_METRICS = [
     "Оптимальный порог отсечения",
-    "Полнота",
+    "Чувствительность",
     "Точность",
     "Доля верных ответов",
     "F-мера",
@@ -102,6 +98,7 @@ export class PredictiveAnalysis extends React.Component {
     settings = {
         filePath: '',
         dependent_val_lin_reg: 0,
+        dependent_val: DEPENDENT_PARAMS_OPTIONS[0],
         dataPrepOption: 0,
         regression_model: 0,
         table_and_graph_options: tablesAndGraphOptDict,
@@ -116,6 +113,8 @@ export class PredictiveAnalysis extends React.Component {
             console.log(this.settings)
 
             if (currentPage < maxPage) {
+                this.setState({currentPage: currentPage + 1});
+
                 if (this.settings.regression_model == 0) {
                     this.state.maxPage = 4
                 } else if
@@ -133,13 +132,14 @@ export class PredictiveAnalysis extends React.Component {
                 else {
                     this.state.maxPage = 4
                 }
-                this.setState({currentPage: currentPage + 1});
             } else {
-                const {dataPrepOptionId, file} = this.state;
+                void fetchPost('predictive', this.settings);
 
-                this.settings.dataPrepOption = dataPrepOptionId;
-                this.settings.data = file.path;
+                this.settings.dataPrepOption = 0;
                 this.settings.dependent_val_lin_reg = 0;
+                this.settings.filePath = '';
+                this.settings.regression_model = 0;
+                this.settings.dependent_val = DEPENDENT_PARAMS_OPTIONS[0];
 
                 for (let key in TABLES_AND_GRAPHICS_OPTIONS) {
                     tablesAndGraphOptDict[key] = true;
@@ -153,8 +153,6 @@ export class PredictiveAnalysis extends React.Component {
                 for (let key in TREE_GRAPHICS_AND_TABLES) {
                     treeGraphicsAndTablesDict[key] = true;
                 }
-
-                void fetchPost('api/predictive', this.settings);
 
                 this.props.onExit();
             }
@@ -185,12 +183,32 @@ export class PredictiveAnalysis extends React.Component {
 
     selectDependentValLinReg = (id) => {
         this.settings.dependent_val_lin_reg = id;
+        this.settings.dependent_val = DEPENDENT_PARAMS_OPTIONS[id]
     }
 
     onDataLoad = (event) => {
         if (event.target.files && event.target.files[0]) {
             this.settings.filePath = event.target.files[0].path;
         }
+
+        const API = 'http://127.0.0.1:15001/api';
+        const result = fetch(API + '/predictive/get_class_columns', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+            },
+            body: JSON.stringify(this.settings)
+        })
+        result
+            .then((response) => {
+                return response.json()
+            })
+            .then((data) => {
+                DEPENDENT_PARAMS_OPTIONS = Object.values(data)
+            })
+            .catch((error) => {
+                console.log('error', error);
+            })
     };
 
     selectUnselect = (item, field = '') => {
@@ -251,7 +269,6 @@ export class PredictiveAnalysis extends React.Component {
             case 3:
                 return (
                     <Page title="Выберите зависимую переменную из списка">
-                        <div>Выберите опции предварительной обработки данных</div>
                         <DataPreparation onClick={this.selectDependentValLinReg}
                                          options={DEPENDENT_PARAMS_OPTIONS}
                                          labelName={"Выбор переменной"}

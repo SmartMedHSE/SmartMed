@@ -14,13 +14,10 @@ def is_port_in_use(port):
 
 
 class Dashboard(ABC):
-    '''
-    Dashboard Interface
-    '''
+    """Dashboard Interface"""
 
     port = 15001
     url_count = 0
-
 
     @debug
     def __init__(self):
@@ -32,19 +29,25 @@ class Dashboard(ABC):
             'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML'
         ]
 
-        Dashboard.url_count = self.settings['url_count']
+        try:
+            settings = self.settings
+        except Exception as e:
+            print(e)
 
-        # create Dash(Flask) server
-        self.app = dash.Dash(
-            __name__,
-            server=self.settings['server'], url_base_pathname=f"/dash{Dashboard.url_count}/",
-            external_stylesheets=external_stylesheets,
-            external_scripts=external_scripts
-        )
-        # increase port
-        # address already in use fix
-        # while is_port_in_use(Dashboard.port):
-        #     Dashboard.port += 1
+        try:
+            Dashboard.url_count = settings['url_count']
+        except Exception as e:
+            print(e)
+
+        try:
+            self.app = dash.Dash(
+                __name__,
+                server=settings['server'], url_base_pathname=f"/dash{Dashboard.url_count}/",
+                external_stylesheets=external_stylesheets,
+                external_scripts=external_scripts
+            )
+        except Exception as e:
+            print(e)
 
     @debug
     @abstractmethod
@@ -59,11 +62,5 @@ class Dashboard(ABC):
         # generate layout
         self.app.layout = self._generate_layout()
 
-        # set port
-        # port = Dashboard.port
-
         # open dashboard
         webbrowser.open(f"http://localhost:15001/dash{Dashboard.url_count}/")
-
-        # run dashboard
-        # self.app.run_server(port=14000, dev_tools_silence_routes_logging=True, debug=False)
