@@ -4,7 +4,7 @@ from .WrappedVariablesTypeWindow import WrappedVariablesTypeWindow
 from .WrappedContinuousMethods import WrappedContinuousMethods
 from .WrappedCategoricalMethods import WrappedCategoricalMethods
 
-from SmartMedApp.logs.logger import debug
+from logs.logger import debug
 
 
 class ComparativeApp():

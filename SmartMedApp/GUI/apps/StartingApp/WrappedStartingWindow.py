@@ -1,4 +1,5 @@
 from .StartingWindow import *
+from ..StatisticsApp.StatisticsAppController import StatisticsApp
 from ..BioequivalenceApp.BioequivalenceAppController import BioequivalenceApp
 from ..PredictionApp.PredictionAppController import PredictionApp
 from ..ComparativeApp.ComparativeAppController import ComparativeApp

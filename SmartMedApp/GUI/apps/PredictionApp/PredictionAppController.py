@@ -1,18 +1,16 @@
 # logging decorator
-from SmartMedApp.logs.logger import debug
+from logs.logger import debug
 from .WrappedChoiceWindow import WrappedChoiceWindow
 from .WrappedDownloadWindow import WrappedDownloadWindow
 from .WrappedLinearGraphWindow import WrappedLinearGraphWindow
 from .WrappedRadioWindow import WrappedRadioWindow
-from .WrappedRocAnyl import WrappedRocAnyl
-from .WrappedRocGraphsWindow import WrappedRocGraphsWindow
 from .WrappedRocValueWindow import WrappedRocValueWindow
 from .WrappedTreeFeaturesWindow import WrappedTreeFeaturesWindow
 from .WrappedTreeVisualWindow import WrappedTreeVisualWindow
 from .WrappedTreeValueWindow import WrappedTreeValueWindow
 from.WrappedRocAnyl import WrappedRocAnyl
-from .WrappedRocCurvesWindow import WrappedRocCurvesWindow
 from .WrappedRocGraphsWindow import WrappedRocGraphsWindow
+from .WrappedValueWindow import WrappedValueWindow
 
 
 # from..StartingApp.WrappedStartingWindow import WrappedStartingWindow
@@ -30,7 +28,6 @@ class PredictionApp():
         self.value_window = WrappedValueWindow()
         self.roc_value_window = WrappedRocValueWindow()
         self.roc_anyl_window = WrappedRocAnyl()
-        # self.roc_curves_window = WrappedRocCurvesWindow()
         self.roc_graphs_window = WrappedRocGraphsWindow()
         self.linear_graph_window = WrappedLinearGraphWindow()
         self.tree_features_window = WrappedTreeFeaturesWindow()

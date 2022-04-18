@@ -4,6 +4,7 @@ from abc import ABC, abstractmethod
 import socket
 
 import dash
+
 from logs.logger import debug
 
 
@@ -13,35 +14,40 @@ def is_port_in_use(port):
 
 
 class Dashboard(ABC):
-    '''
+    """Dashboard Interface"""
 
-    Dashboard Interface
-
-    Each ConcreteDashboar inreases port number 
-    and Dashboar_i is opened on localhost with port = 8000 + i
-    in daemon thread
-
-    '''
     port = 15001
+    url_count = 0
 
     @debug
     def __init__(self):
         # include general styleshits and scripts
-        external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+        external_stylesheets = [
+            'https://codepen.io/chriddyp/pen/bWLwgP.css'
+        ]
         external_scripts = [
-            'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML']
+            'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-MML-AM_CHTML'
+        ]
 
-        # create Dash(Flask) server
-        self.app = dash.Dash(
-            server=True,
-            external_stylesheets=external_stylesheets,
-            external_scripts=external_scripts
-        )
+        try:
+            settings = self.settings
+        except Exception as e:
+            print(e)
 
-        # increase port
-        # address already in use fix
-        while is_port_in_use(Dashboard.port):
-            Dashboard.port += 1
+        try:
+            Dashboard.url_count = settings['url_count']
+        except Exception as e:
+            print(e)
+
+        try:
+            self.app = dash.Dash(
+                __name__,
+                server=settings['server'], url_base_pathname=f"/dash{Dashboard.url_count}/",
+                external_stylesheets=external_stylesheets,
+                external_scripts=external_scripts
+            )
+        except Exception as e:
+            print(e)
 
     @debug
     @abstractmethod
@@ -56,11 +62,5 @@ class Dashboard(ABC):
         # generate layout
         self.app.layout = self._generate_layout()
 
-        # set port
-        port = Dashboard.port
-
         # open dashboard
-        webbrowser.open(f"http://127.0.0.1:15001/dash1/")
-
-        # run dashboard
-        # self.app.run_server(port=port, dev_tools_silence_routes_logging=True, debug=False)
+        webbrowser.open(f"http://localhost:15001/dash{Dashboard.url_count}/")

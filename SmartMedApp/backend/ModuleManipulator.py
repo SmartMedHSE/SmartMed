@@ -13,6 +13,10 @@ class ModuleManipulator:
         self.settings = settings
 
     def start(self):
+        print('START settings')
+        print(self.settings)
+        print('END settings')
+
         if self.settings['MODULE'] == 'STATS':
             module = StatisticsModule(self.settings['MODULE_SETTINGS'])
         elif self.settings['MODULE'] == 'PREDICT':

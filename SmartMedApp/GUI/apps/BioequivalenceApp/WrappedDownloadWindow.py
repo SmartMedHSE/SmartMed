@@ -4,7 +4,7 @@ from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (
     QMessageBox, )
 
-from SmartMedApp.GUI.apps.utils import check_group_column
+from GUI.apps.utils import check_group_column
 
 from .DownloadWindow import DownloadWindow
 

@@ -4,7 +4,7 @@ import threading
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTimer, QEventLoop
 
-from SmartMedApp.backend.ModuleManipulator import ModuleManipulator
+from backend.ModuleManipulator import ModuleManipulator
 
 from .VisualizationWindow import VisualizationWindow
 from ..WaitingSpinnerWidget import QtWaitingSpinner

@@ -3,6 +3,7 @@ import re
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_table
 from dash import callback_context
 from dash.exceptions import PreventUpdate
 from dash.dependencies import Input, Output, State
@@ -22,6 +23,8 @@ from sklearn.preprocessing import KBinsDiscretizer
 import plotly.graph_objects as go
 import plotly.express as px
 
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from PIL import Image
 import os
@@ -46,7 +49,6 @@ from ..models.TreeModel import *
 from ..dataprep.PandasPreprocessor import read_file
 
 from ..dataprep.PandasPreprocessor import read_file
-
 
 
 class PredictionDashboard(Dashboard):
@@ -1944,20 +1946,3 @@ class TreeDashboard(Dashboard):
                                     'text-align': 'center', 'display': 'inline-block', 'width': '50%'})
                          ], style={'border-color': 'rgb(192, 192, 192)', 'text-align': 'center',
                                    'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
-
-    # return html.Div([html.Div([
-    #     html.Div(html.H3(children='Классификационная таблица'), style={'text-align': 'center'}),
-    #     html.Div([
-    #         html.Div(dash_table.DataTable(
-    #             id='table_results_1',
-    #             columns=[{"name": i, "id": i} for i in df.columns],
-    #             style_cell={'textAlign': 'center'},
-    #             data=df.to_dict('records'),
-    #             export_format='xlsx'),
-    #             style={'border-color': 'rgb(220, 220, 220)', 'border-style': 'solid',
-    #                    'text-align': 'center', 'display': 'inline-block', 'width': '50%'}),
-    #         html.Div(dcc.Markdown(markdown_results_table))])
-    # ], style={'border-color': 'rgb(192, 192, 192)', 'border-style': 'solid', 'padding': '5px', 'margin': '50px'})
-    # ], style={'text-align': 'center'})
-
-

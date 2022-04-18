@@ -1,10 +1,9 @@
 import * as React from 'react';
 import {ListButtons} from '../ManageButtons';
 import {DataDownload} from '../DataDownload';
-import {Checkbox, FormControl, FormControlLabel, FormGroup, Radio, RadioGroup} from '@material-ui/core';
-import {fetchPost} from '../../utils';
+import {Box, Checkbox, FormControl, FormControlLabel, FormGroup, Radio, RadioGroup, TextField} from '@material-ui/core';
+import {fetchGet, fetchPost, selectUnselectCheckbox} from '../../utils';
 import {DataPreparation} from '../DataPreparation/DataPreparation.jsx';
-import {MultipleRegression} from '../MultipleRegression/MultipleRegression.jsx';
 
 export const REGRESSION_MODELS = {
     MultipleRegression: 1,
@@ -24,12 +23,8 @@ const REGRESSION_MODELS_OPTIONS = [
     "Полиномиальная регрессия",
 ];
 
-const DEPENDENT_PARAMS_OPTIONS = [
-    "ПЗ: до лечения",
-    "ПЗ: 6 месяцев после лечения",
-    "ВГД: до лечения",
-    "ВГД: 6 месяцев после лечения",
-    "Тип операции",
+let DEPENDENT_PARAMS_OPTIONS = [
+    "",
 ];
 
 const TABLES_AND_GRAPHICS_OPTIONS = [
@@ -39,6 +34,50 @@ const TABLES_AND_GRAPHICS_OPTIONS = [
     "Таблица с анализами остатков",
     "Графики распределения остатков",
 ];
+
+const ROC_METRICS = [
+    "Оптимальный порог отсечения",
+    "Чувствительность",
+    "Точность",
+    "Доля верных ответов",
+    "F-мера",
+    "Доверительный интервал",
+    "Специфичность"
+]
+
+const ROC_GRAPHICS_AND_TABLES = [
+    "Таблица со значениями каждой точки, по которым строились кривые",
+    "Таблица со значениями AUC и остальными метриками, выбранными ранее",
+    "График пересечения чувствительности и специфичности",
+    "Таблица с точками построения графика пересечения чувствительности и специфичности",
+    "Сравнение классификаторов"
+]
+
+const TREE_GRAPHICS_AND_TABLES = [
+    "Графическое представление дерева",
+    "Классификационная таблица, в которой наблюдаемые показатели противопоставляются предсказанным",
+    "Показатели построенного дерева",
+    "График распределения классов",
+    "Блок по предсказанию"
+]
+
+let tablesAndGraphOptDict = {}
+let rocMetricsDict = {}
+let rocGraphicsAndTablesDict = {}
+let treeGraphicsAndTablesDict = {}
+
+for (let key in TABLES_AND_GRAPHICS_OPTIONS) {
+    tablesAndGraphOptDict[key] = true;
+}
+for (let key in ROC_METRICS) {
+    rocMetricsDict[key] = true;
+}
+for (let key in ROC_GRAPHICS_AND_TABLES) {
+    rocGraphicsAndTablesDict[key] = true;
+}
+for (let key in TREE_GRAPHICS_AND_TABLES) {
+    treeGraphicsAndTablesDict[key] = true;
+}
 
 const Page = (props) => (
     <div>
@@ -58,8 +97,14 @@ export class PredictiveAnalysis extends React.Component {
 
     settings = {
         filePath: '',
+        dependent_val_lin_reg: 0,
+        dependent_val: DEPENDENT_PARAMS_OPTIONS[0],
         dataPrepOption: 0,
-        regression_model: 0
+        regression_model: 0,
+        table_and_graph_options: tablesAndGraphOptDict,
+        roc_metrics: rocMetricsDict,
+        roc_graphics_and_tables: rocGraphicsAndTablesDict,
+        tree_graphics_and_tables: treeGraphicsAndTablesDict,
     };
 
     paginate = (goNext) => {
@@ -69,12 +114,46 @@ export class PredictiveAnalysis extends React.Component {
 
             if (currentPage < maxPage) {
                 this.setState({currentPage: currentPage + 1});
+
+                if (this.settings.regression_model == 0) {
+                    this.state.maxPage = 4
+                } else if
+                (this.settings.regression_model == 1) {
+                    this.state.maxPage = 4
+                }
+                else if
+                (this.settings.regression_model == 2) {
+                    this.state.maxPage = 5
+                }
+                else if
+                (this.settings.regression_model == 3) {
+                    this.state.maxPage = 5
+                }
+                else {
+                    this.state.maxPage = 4
+                }
             } else {
-                const {dataPrepOptionId, file} = this.state;
-                this.settings.dataPrepOption = dataPrepOptionId;
-                console.log(file);
-                this.settings.data = file.path;
-                void fetchPost('api/predictive', this.settings);
+                void fetchPost('predictive', this.settings);
+
+                this.settings.dataPrepOption = 0;
+                this.settings.dependent_val_lin_reg = 0;
+                this.settings.filePath = '';
+                this.settings.regression_model = 0;
+                this.settings.dependent_val = DEPENDENT_PARAMS_OPTIONS[0];
+
+                for (let key in TABLES_AND_GRAPHICS_OPTIONS) {
+                    tablesAndGraphOptDict[key] = true;
+                }
+                for (let key in ROC_METRICS) {
+                    rocMetricsDict[key] = true;
+                }
+                for (let key in ROC_GRAPHICS_AND_TABLES) {
+                    rocGraphicsAndTablesDict[key] = true;
+                }
+                for (let key in TREE_GRAPHICS_AND_TABLES) {
+                    treeGraphicsAndTablesDict[key] = true;
+                }
+
                 this.props.onExit();
             }
         } else {
@@ -102,10 +181,34 @@ export class PredictiveAnalysis extends React.Component {
         this.settings.dataPrepOption = id;
     };
 
+    selectDependentValLinReg = (id) => {
+        this.settings.dependent_val_lin_reg = id;
+        this.settings.dependent_val = DEPENDENT_PARAMS_OPTIONS[id]
+    }
+
     onDataLoad = (event) => {
         if (event.target.files && event.target.files[0]) {
             this.settings.filePath = event.target.files[0].path;
         }
+
+        const API = 'http://127.0.0.1:15001/api';
+        const result = fetch(API + '/predictive/get_class_columns', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json; charset=utf-8',
+            },
+            body: JSON.stringify(this.settings)
+        })
+        result
+            .then((response) => {
+                return response.json()
+            })
+            .then((data) => {
+                DEPENDENT_PARAMS_OPTIONS = Object.values(data)
+            })
+            .catch((error) => {
+                console.log('error', error);
+            })
     };
 
     selectUnselect = (item, field = '') => {
@@ -166,29 +269,202 @@ export class PredictiveAnalysis extends React.Component {
             case 3:
                 return (
                     <Page title="Выберите зависимую переменную из списка">
-                        <DataPreparation onClick={this.selectDataPrepType}
+                        <DataPreparation onClick={this.selectDependentValLinReg}
                                          options={DEPENDENT_PARAMS_OPTIONS}
+                                         labelName={"Выбор переменной"}
+                                         defaultValue={parseInt(this.settings.dependent_val_lin_reg)}
                         />
                     </Page>
                 );
             case 4:
-                return (
-                    <Page
-                        title="Выберите нужные таблицы"
-                    >
-                        <FormGroup>
-                            {TABLES_AND_GRAPHICS_OPTIONS.map((item, idx) => (
-                                <FormControlLabel
-                                    key={`m-${item}`}
-                                    control={<Checkbox onClick={() => {
-                                        this.selectUnselect(idx, 'metrics');
-                                    }}/>}
-                                    label={item}
-                                />
-                            ))}
-                        </FormGroup>
-                    </Page>
-                );
+                if (this.settings.regression_model == 0) {
+                    return (
+                        <Page
+                            title="Выберите нужные таблицы и графики"
+                        >
+                            <FormGroup>
+                                {TABLES_AND_GRAPHICS_OPTIONS.map((item, idx) => (
+                                    <FormControlLabel
+                                        key={`m-${item}`}
+                                        control={
+                                            <Checkbox
+                                                defaultChecked={this.settings.table_and_graph_options[idx]}
+                                                onClick={() => {
+                                                    selectUnselectCheckbox(this, idx, 'table_and_graph_options');
+                                                }}
+                                            />
+                                        }
+                                        label={item}
+                                    />
+                                ))}
+                            </FormGroup>
+                        </Page>
+                    );
+                } else if (this.settings.regression_model == 1) {
+                    return (
+                        <Page
+                            title="Выберите нужные таблицы и графики"
+                        >
+                            <FormGroup>
+                                {TABLES_AND_GRAPHICS_OPTIONS.map((item, idx) => (
+                                    <FormControlLabel
+                                        key={`m-${item}`}
+                                        control={
+                                            <Checkbox
+                                                defaultChecked={this.settings.table_and_graph_options[idx]}
+                                                onClick={() => {
+                                                    selectUnselectCheckbox(this, idx, 'table_and_graph_options');
+                                                }}
+                                            />
+                                        }
+                                        label={item}
+                                    />
+                                ))}
+                            </FormGroup>
+                        </Page>
+                    );
+                } else if (this.settings.regression_model == 2) {
+                    return (
+                        <Page
+                            title="Укажите значения параметров"
+                        >
+                            <Box
+                              component="form"
+                              sx={{
+                                '& .MuiTextField-root': { m: 1, width: '25ch' },
+                              }}
+                              noValidate
+                              autoComplete="off"
+                            >
+                                <div>
+                                   <TextField
+                                       helperText="Максимальная глубина дерева"
+                                       variant="outlined"
+                                       size="small"
+                                       defaultValue="1000"
+                                   />
+                                    <TextField
+                                           helperText="Минимальное количество выборок"
+                                           variant="outlined"
+                                           size="small"
+                                           defaultValue="5"
+                                    />
+                                </div>
+                                <div>
+                                    <TextField
+                                           helperText="Число признаков для поиска лучшей точки разбиениия"
+                                           variant="outlined"
+                                           size="small"
+                                           defaultValue="5"
+                                    />
+                                </div>
+
+                                <FormGroup>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox defaultChecked />
+                                        }
+                                        label="Предварительная сортировка"
+                                    />
+                                </FormGroup>
+                            </Box>
+                        </Page>
+                    );
+                } else if (this.settings.regression_model == 4) {
+                    return (
+                        <Page
+                            title="Выберите нужные таблицы и графики"
+                        >
+                            <FormGroup>
+                                {TABLES_AND_GRAPHICS_OPTIONS.map((item, idx) => (
+                                    <FormControlLabel
+                                        key={`m-${item}`}
+                                        control={
+                                            <Checkbox
+                                                defaultChecked={this.settings.table_and_graph_options[idx]}
+                                                onClick={() => {
+                                                    selectUnselectCheckbox(this, idx, 'table_and_graph_options');
+                                                }}
+                                            />
+                                        }
+                                        label={item}
+                                    />
+                                ))}
+                            </FormGroup>
+                        </Page>
+                    );
+                } else if (this.settings.regression_model == 3) {
+                    return (
+                        <Page
+                            title="Выберите нужные таблицы и графики"
+                        >
+                            <FormGroup>
+                                {ROC_METRICS.map((item, idx) => (
+                                    <FormControlLabel
+                                        key={`m-${item}`}
+                                        control={
+                                            <Checkbox
+                                                defaultChecked={this.settings.roc_metrics[idx]}
+                                                onClick={() => {
+                                                    selectUnselectCheckbox(this, idx, 'roc_metrics');
+                                                }}
+                                            />
+                                        }
+                                        label={item}
+                                    />
+                                ))}
+                            </FormGroup>
+                        </Page>
+                    );
+                }
+            case 5:
+                if (this.settings.regression_model == 2) {
+                    return (
+                        <Page
+                            title="Выберите нужные таблицы и графики"
+                        >
+                            <FormGroup>
+                                {TREE_GRAPHICS_AND_TABLES.map((item, idx) => (
+                                    <FormControlLabel
+                                        key={`m-${item}`}
+                                        control={
+                                            <Checkbox
+                                                defaultChecked={this.settings.tree_graphics_and_tables[idx]}
+                                                onClick={() => {
+                                                    selectUnselectCheckbox(this, idx, 'tree_graphics_and_tables');
+                                                }}
+                                            />
+                                        }
+                                        label={item}
+                                    />
+                                ))}
+                            </FormGroup>
+                        </Page>
+                    );
+                } else if (this.settings.regression_model == 3) {
+                    return (
+                        <Page
+                            title="Выберите нужные таблицы и графики"
+                        >
+                            <FormGroup>
+                                {ROC_GRAPHICS_AND_TABLES.map((item, idx) => (
+                                    <FormControlLabel
+                                        key={`m-${item}`}
+                                        control={
+                                            <Checkbox
+                                                defaultChecked={this.settings.roc_graphics_and_tables[idx]}
+                                                onClick={() => {
+                                                    selectUnselectCheckbox(this, idx, 'roc_graphics_and_tables');
+                                                }}
+                                            />
+                                        }
+                                        label={item}
+                                    />
+                                ))}
+                            </FormGroup>
+                        </Page>
+                    );
+                }
             default:
                 console.error(`unknown page: ${currentPage}`);
         }

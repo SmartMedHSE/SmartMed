@@ -10,7 +10,7 @@ from .DownloadWindow import DownloadWindow
 from ..Notification import NotificationWindow
 from ..utils import *
 
-from SmartMedApp.backend.modules.dataprep import PandasPreprocessor
+from backend.modules.dataprep import PandasPreprocessor
 
 
 class WrappedDownloadWindow(DownloadWindow, QtWidgets.QMainWindow):

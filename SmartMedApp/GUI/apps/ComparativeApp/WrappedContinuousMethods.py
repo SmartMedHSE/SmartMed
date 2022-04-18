@@ -8,7 +8,7 @@ from .ContinuousMethods import ContinuousMethods
 from ..WaitingSpinnerWidget import QtWaitingSpinner
 from ..utils import remove_if_exists
 
-from SmartMedApp.backend import ModuleManipulator
+from backend import ModuleManipulator
 
 
 class WrappedContinuousMethods(ContinuousMethods, QtWidgets.QMainWindow):
