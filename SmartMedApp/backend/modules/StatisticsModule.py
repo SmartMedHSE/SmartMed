@@ -50,7 +50,8 @@ class StatisticsModule(Module, StatisticsDashboard):
             'dotplot': self._generate_dotplot,
             'piechart': self._generate_piechart,
             'boxhist': self._generate_box_hist,
-            'multihist': self._generate_multi_hist
+            'multihist': self._generate_multi_hist,
+            'before_after': self._generate_before_after
         }
 
         settings['data'] = self.data

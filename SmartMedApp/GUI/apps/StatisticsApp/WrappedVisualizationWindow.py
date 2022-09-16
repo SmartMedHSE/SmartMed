@@ -4,11 +4,11 @@ import threading
 from PyQt5 import QtWidgets
 from PyQt5.QtCore import QTimer, QEventLoop
 
-from SmartMedApp.backend.ModuleManipulator import ModuleManipulator
-
 from .VisualizationWindow import VisualizationWindow
 from ..WaitingSpinnerWidget import QtWaitingSpinner
 from ..utils import remove_if_exists
+
+from backend import ModuleManipulator
 
 
 class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
@@ -28,6 +28,7 @@ class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
             'piechart': True,
             'dotplot': True,
             'multihist': True,
+            'before_after':True
         }
         self.checkBoxPie.setChecked(True)
         self.checkBoxLinear.setChecked(True)
@@ -40,6 +41,7 @@ class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
         self.checkBoxDot.setChecked(True)
         self.checkBoxBar.setChecked(True)
         self.checkMultiHist.setChecked(True)
+        self.checkBeforeAfter.setChecked(True)
         self.__build_buttons()
 
     def __build_buttons(self):
@@ -55,6 +57,7 @@ class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
         self.checkBoxBox.clicked.connect(self.check_box)
         self.checkBoxDot.clicked.connect(self.check_dot)
         self.checkMultiHist.clicked.connect(self.check_multi_hist)
+        self.checkBeforeAfter.clicked.connect(self.check_before_after)
 
     def back(self):
 
@@ -79,7 +82,7 @@ class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
         self.spinner = QtWaitingSpinner(self)
         self.layout().addWidget(self.spinner)
         self.spinner.start()
-        # QTimer.singleShot(10000, self.spinner.stop)
+        #QTimer.singleShot(10000, self.spinner.stop)
         loop = QEventLoop()
         QTimer.singleShot(10000, loop.quit)
         loop.exec_()
@@ -168,3 +171,10 @@ class WrappedVisualizationWindow(VisualizationWindow, QtWidgets.QMainWindow):
         else:
             self.checkMultiHist.setChecked(False)
             self.settings['multihist'] = False
+    def check_before_after(self):
+        if self.checkMultiHist.isChecked():
+            self.checkMultiHist.setChecked(True)
+            self.settings['before_after'] = True
+        else:
+            self.checkMultiHist.setChecked(False)
+            self.settings['before_after'] = False
