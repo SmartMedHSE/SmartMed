@@ -1,0 +1,49 @@
+.customBold {
+  color: #000000;
+  font-weight: 500;
+}
+
+.dataDownload {
+  &__download_btns_and_texts {
+    display: flex;
+    flex-direction: row;
+    height: 120px;
+  }
+
+  &__download_btns {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    height: 90px;
+    width: 120px;
+    align-content: space-between;
+  }
+
+  &__download_file_texts {
+    margin-left: 40px;
+    margin-top: 5px;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+
+    width: 400px;
+  }
+
+  &__download_file_text {
+  }
+
+  &__download_text {
+    width: 400px;
+  }
+
+  &__download_btn_text {
+    text-align: center;
+  }
+
+  &__download_btn {
+    height: 40px;
+    width: 120px;
+  }
+}

@@ -1,11 +1,10 @@
 import pickle
-import os
 
 from PyQt5 import  QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 
 from .PreprocessingWindow import PreprocessingWindow
-from ..utils import get_columns, remove_if_exists
+from ..utils import read_file, remove_if_exists
 
 
 class WrappedPreprocessingWindow(PreprocessingWindow, QtWidgets.QMainWindow):

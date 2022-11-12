@@ -1,10 +1,7 @@
-import pandas as pd
 import numpy as np
 import pandas as pd
-
-from sklearn.metrics import auc
 from scipy import stats
-from math import e
+from sklearn.metrics import auc
 
 
 class BioquivalenceMathsModel:
@@ -50,12 +47,13 @@ class BioquivalenceMathsModel:
         return np.polyfit(x[-3:], y[-3:], deg=1)[0]
 
     def get_anova(self, x: np.array, y: np.array, z: np.array) -> tuple:
-        ssb = x.size * (np.mean(x) - np.mean(z))**2 + \
-            y.size * (np.mean(y) - np.mean(z))**2
-        sse = np.sum((x - np.mean(x))**2) + np.sum((y - np.mean(y))**2)
-        sst = np.sum((z - np.mean(z))**2)
+        ssb = x.size * (np.mean(x) - np.mean(z)) ** 2 + \
+              y.size * (np.mean(y) - np.mean(z)) ** 2
+        sse = np.sum((x - np.mean(x)) ** 2) + np.sum((y - np.mean(y)) ** 2)
+        sst = np.sum((z - np.mean(z)) ** 2)
         data = {'SS': [ssb, sse, sst], 'df': [1, z.size - 2, z.size - 1], 'MS': [ssb, sse / (z.size - 2), '-'],
-                'F': [ssb / (sse / (z.size - 2)), '-', '-'], 'F крит.': [stats.f.ppf(1 - self.alpha, 1, z.size - 2), '-', '-']}
+                'F': [ssb / (sse / (z.size - 2)), '-', '-'],
+                'F крит.': [stats.f.ppf(1 - self.alpha, 1, z.size - 2), '-', '-']}
         df = pd.DataFrame(data)
         res = ssb / (sse / (z.size - 2)) < stats.f.ppf(1 -
                                                        self.alpha, 1, z.size - 2)
@@ -64,20 +62,20 @@ class BioquivalenceMathsModel:
     def get_oneside_eq(self, x: np.array, y: np.array, df: pd.DataFrame) -> tuple:
         dft = stats.t.ppf(1 - self.alpha, x.size + y.size - 2)
         left = float(np.mean(x) - np.mean(y) - dft *
-                     (4 * df.iloc[1, 2] / (x.size + y.size))**(1 / 2))
+                     (4 * df.iloc[1, 2] / (x.size + y.size)) ** (1 / 2))
         right = float(np.mean(x) - np.mean(y) + dft *
-                      (4 * df.iloc[1, 2] / (x.size + y.size))**(1 / 2))
+                      (4 * df.iloc[1, 2] / (x.size + y.size)) ** (1 / 2))
         return left, right
 
     def get_oneside_noteq(self, x: np.array, y: np.array, df: pd.DataFrame) -> tuple:
         dft = stats.t.ppf(1 - self.alpha / 2, x.size + y.size - 2)
         left = float(np.mean(x) - np.mean(y) - dft *
-                     (4 * df.iloc[1, 2] / (x.size + y.size))**(1 / 2))
+                     (4 * df.iloc[1, 2] / (x.size + y.size)) ** (1 / 2))
         right = float(np.mean(x) - np.mean(y) + dft *
-                      (4 * df.iloc[1, 2] / (x.size + y.size))**(1 / 2))
+                      (4 * df.iloc[1, 2] / (x.size + y.size)) ** (1 / 2))
         return left, right
 
-    def create_auc(self, df: pd.DataFrame) ->np.array:
+    def create_auc(self, df: pd.DataFrame) -> np.array:
         time = np.array(df.columns)
         aucс = df.apply(lambda row: pd.Series({'auc': auc(time, row)}), axis=1)
         return np.array(aucс)
@@ -118,39 +116,44 @@ class BioquivalenceMathsModel:
         x_a2_b2_mean = np.mean(r_2)
         x = np.concatenate([t_1, r_1, t_2, r_2])
         x.ravel()
-        ss = sum([(i - np.mean(x))**2 for i in x])
+        ss = sum([(i - np.mean(x)) ** 2 for i in x])
         ss_a = (n / 2) * ((x_a1_mean - np.mean(x))
-                          ** 2 + (x_a2_mean - np.mean(x))**2)
+                          ** 2 + (x_a2_mean - np.mean(x)) ** 2)
         ss_b = (n / 2) * ((x_b1_mean - np.mean(x))
-                          ** 2 + (x_b2_mean - np.mean(x))**2)
-        ss_ab = (n / 4) * ((x_a1_b1_mean - x_a1_mean - x_b1_mean + np.mean(x))**2 +
-                           (x_a2_b1_mean - x_a2_mean - x_b1_mean + np.mean(x))**2 +
-                           (x_a1_b2_mean - x_a1_mean - x_b2_mean + np.mean(x))**2 +
-                           (x_a2_b2_mean - x_a2_mean - x_b2_mean + np.mean(x))**2)
-        ss_e = (sum([(i - x_a1_b1_mean)**2 for i in t_1]) +
-                sum([(i - x_a2_b1_mean)**2 for i in r_1]) +
-                sum([(i - x_a1_b2_mean)**2 for i in t_2]) +
-                sum([(i - x_a2_b2_mean)**2 for i in r_2]))
+                          ** 2 + (x_b2_mean - np.mean(x)) ** 2)
+        ss_ab = (n / 4) * ((x_a1_b1_mean - x_a1_mean - x_b1_mean + np.mean(x)) ** 2 +
+                           (x_a2_b1_mean - x_a2_mean - x_b1_mean + np.mean(x)) ** 2 +
+                           (x_a1_b2_mean - x_a1_mean - x_b2_mean + np.mean(x)) ** 2 +
+                           (x_a2_b2_mean - x_a2_mean - x_b2_mean + np.mean(x)) ** 2)
+        ss_e = (sum([(i - x_a1_b1_mean) ** 2 for i in t_1]) +
+                sum([(i - x_a2_b1_mean) ** 2 for i in r_1]) +
+                sum([(i - x_a1_b2_mean) ** 2 for i in t_2]) +
+                sum([(i - x_a2_b2_mean) ** 2 for i in r_2]))
         ms_e = ss_e / (n / 4 - 1)
         data = {'SS': [ss_a, ss_b, ss_ab, ss_e, ss], 'df': [1, 1, 1, len(t_1) - 1, n - 1],
                 'MS': [ss_a, ss_b, ss_ab, ms_e, '-'], 'F': [ss_a / ms_e, ss_b / ms_e, ss_ab / ms_e, '-', '-'],
-                'F крит.': [stats.f.ppf(1 - self.alpha, 1, 4 * (len(t_1) - 1)), stats.f.ppf(1 - self.alpha, 1, 4 * (len(t_1) - 1)),
+                'F крит.': [stats.f.ppf(1 - self.alpha, 1, 4 * (len(t_1) - 1)),
+                            stats.f.ppf(1 - self.alpha, 1, 4 * (len(t_1) - 1)),
                             stats.f.ppf(1 - self.alpha, 1, 4 * (len(t_1) - 1)), '-', '-']}
         df = pd.DataFrame(data)
         return df
 
     def get_crossover_oneside_eq(self, x: np.array, y: np.array, df: pd.DataFrame) -> tuple:
         left = float(np.mean(x) - np.mean(y) - stats.t.ppf(1 - self.alpha,
-                                                           df.iloc[3, 1]) * (2 * df.iloc[3, 2] / (x.size + y.size))**(1 / 2))
+                                                           df.iloc[3, 1]) * (2 * df.iloc[3, 2] / (x.size + y.size)) ** (
+                                 1 / 2))
         right = float(np.mean(x) - np.mean(y) + stats.t.ppf(1 - self.alpha,
-                                                            df.iloc[3, 1]) * (2 * df.iloc[3, 2] / (x.size + y.size))**(1 / 2))
+                                                            df.iloc[3, 1]) * (
+                                  2 * df.iloc[3, 2] / (x.size + y.size)) ** (1 / 2))
         return left, right
 
     def get_crossover_oneside_noteq(self, x: np.array, y: np.array, df: pd.DataFrame) -> tuple:
         left = float(np.mean(x) - np.mean(y) - stats.t.ppf(1 - self.alpha / 2,
-                                                           df.iloc[3, 1]) * (2 * df.iloc[3, 2] / (x.size + y.size))**(1 / 2))
+                                                           df.iloc[3, 1]) * (2 * df.iloc[3, 2] / (x.size + y.size)) ** (
+                                 1 / 2))
         right = float(np.mean(x) - np.mean(y) + stats.t.ppf(1 - self.alpha / 2,
-                                                            df.iloc[3, 1]) * (2 * df.iloc[3, 2] / (x.size + y.size))**(1 / 2))
+                                                            df.iloc[3, 1]) * (
+                                  2 * df.iloc[3, 2] / (x.size + y.size)) ** (1 / 2))
         return left, right
 
     def __init__(self, settings: dict, data: dict):
@@ -364,7 +367,8 @@ class BioquivalenceMathsModel:
             self.anova = self.two_factor_anova(
                 self.auc_t_1, self.auc_r_1, self.auc_t_2, self.auc_r_2)
             self.oneside_eq = self.get_crossover_oneside_eq(np.concatenate((self.auc_t_1, self.auc_t_2)).ravel(),
-                                                            np.concatenate((self.auc_r_1, self.auc_r_2)).ravel(), self.anova)
+                                                            np.concatenate((self.auc_r_1, self.auc_r_2)).ravel(),
+                                                            self.anova)
             self.oneside_noteq = self.get_crossover_oneside_noteq(np.concatenate((self.auc_t_1, self.auc_t_2)).ravel(),
                                                                   np.concatenate((self.auc_r_1, self.auc_r_2)).ravel(), self.anova)
                                                                 

@@ -1,20 +1,19 @@
-import unittest
+import argparse
 import os
 import re
 import sys
-import argparse
-
+import unittest
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--bp", help="/Users/aleksandrgrikurov/Documents/GitHub/SmartMed/SmartMedApp/", type=str)
 
-
 args = parser.parse_args()
 sys.path.append(args.bp)
 
+
 def get_module_name_by_path(path):
     curdir = os.getcwd()
-    return path[len(curdir) + 1 : -3].replace("/", ".")
+    return path[len(curdir) + 1: -3].replace("/", ".")
 
 
 def run_all_tests(base_dir):
