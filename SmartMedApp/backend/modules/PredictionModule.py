@@ -1,14 +1,14 @@
-import pandas as pd
 import numpy as np
-
+import pandas as pd
 import sklearn.model_selection as sm
 import sklearn.preprocessing as sp
-
 from sklearn.preprocessing import KBinsDiscretizer
+
+from .ModelManipulator import ModelManipulator
 from .ModuleInterface import Module
 from .dash import PredictionDashboard
-from .ModelManipulator import ModelManipulator
 from .dataprep import PandasPreprocessor
+from .dataprep.PandasPreprocessor import read_file
 
 
 class PredictionModule(Module, PredictionDashboard):
@@ -31,17 +31,11 @@ class PredictionModule(Module, PredictionDashboard):
     def _init_settings(self, model_type: str) -> dict:
         if model_type != 'linreg' and model_type != 'logreg':
             return {}
-        if self.settings['bin'] is not None:
-            n_bins = self.settings['bin']
-            selected_features = self.df_X.columns[:1]  # todo: fix me
-            X = self.df_X[selected_features]
-            t = KBinsDiscretizer(n_bins=n_bins, encode='onehot-dense')
-            self.df_X = pd.concat([self.df_X.reset_index(), pd.DataFrame(t.fit_transform(X))], axis=1).drop(
-                selected_features, axis=1)
-            self.df_X = self.df_X.drop('index', axis=1)
-            # self.df_Y = self.df_Y.reset_index()
+    #if self.settings['bin'] is not None:
 
-        dfX_train, dfX_test, dfY_train, dfY_test = sm.train_test_split(self.df_X, self.df_Y, test_size=0.3, random_state=42)
+
+        dfX_train, dfX_test, dfY_train, dfY_test = sm.train_test_split(self.df_X, self.df_Y, test_size=0.3,
+                                                                       random_state=42)
         self.df_X_train = dfX_train
         self.df_X_test = dfX_test
         self.df_Y_train = dfY_train
@@ -107,9 +101,9 @@ class PredictionModule(Module, PredictionDashboard):
             settings = self._init_settings('linreg')
         elif self.settings['model'] == 'logreg':
             numerics_list = {'int16', 'int32', 'int', 'float', 'bool',
-                                  'int64', 'float16', 'float32', 'float64'}
+                             'int64', 'float16', 'float32', 'float64'}
 
-            #self.df_Y = self.pp.df[self.settings['variable']]
+            # self.df_Y = self.pp.df[self.settings['variable']]
             df_Y = self.pp.df[self.settings['variable']]
             #print('first', type(df_Y), df_Y.dtype, df_Y.nunique())
             #print(df_Y)
@@ -135,29 +129,29 @@ class PredictionModule(Module, PredictionDashboard):
             settings = self._init_settings('logreg')
         elif self.settings['model'] == 'roc':
             numerics_list = {'int16', 'int32', 'int', 'float', 'bool',
-                                  'int64', 'float16', 'float32', 'float64'}
+                             'int64', 'float16', 'float32', 'float64'}
             df_Y = self.pp.df[self.settings['variable']]
-            #print('first', type(df_Y), df_Y.dtype, df_Y.nunique())
-            #print(df_Y)
+            # print('first', type(df_Y), df_Y.dtype, df_Y.nunique())
+            # print(df_Y)
             if df_Y.nunique() == 2:
-                #print('12')
+                # print('12')
                 self.df_Y = df_Y
             else:
                 if df_Y.dtype not in numerics_list:
-                    #print('23')
+                    # print('23')
                     labelencoder = sp.LabelEncoder()
                     df_Y = labelencoder.fit_transform(df_Y)
                 mean_Y = df_Y.mean()
                 df_Y1 = df_Y
-                #print('type', type(df_Y1))
+                # print('type', type(df_Y1))
                 for i in range(len(df_Y)):
                     if df_Y[i] < mean_Y:
                         df_Y1[i] = 0
                     else:
                         df_Y1[i] = 1
                 self.df_Y = pd.Series(df_Y1)
-                #print('second', type(self.df_Y), self.df_Y.dtype, self.df_Y.nunique())
-                #print(self.df_Y)
+                # print('second', type(self.df_Y), self.df_Y.dtype, self.df_Y.nunique())
+                # print(self.df_Y)
 
             # prepare metrics as names list from str -> bool
             settings['path'] = []
@@ -182,9 +176,9 @@ class PredictionModule(Module, PredictionDashboard):
                     settings['x'].remove(self.settings['variable'])
                 elif metric == 'auc' or metric == 'diff_graphics' or metric == 'paint':
                     settings['graphs'].append(metric)
-                #elif metric == 'spec_and_sens':
+                # elif metric == 'spec_and_sens':
                 #    settings['spec_and_sens'] = self.settings['spec_and_sens']
-                #elif metric == 'spec_and_sens_table':
+                # elif metric == 'spec_and_sens_table':
                 #    settings['spec_and_sens_table'] = self.settings[
                 #        'spec_and_sens_table']
                 elif self.settings[metric]:
@@ -215,7 +209,7 @@ class PredictionModule(Module, PredictionDashboard):
 
             self.df_Y = self.pp.df[self.settings['variable']]
             numerics_list = {'int16', 'int32', 'int', 'float', 'bool',
-                                  'int64', 'float16', 'float32', 'float64'}
+                             'int64', 'float16', 'float32', 'float64'}
 
             if self.df_Y.dtype not in numerics_list:
                 labelencoder = sp.LabelEncoder()
@@ -273,6 +267,13 @@ class PredictionModule(Module, PredictionDashboard):
                 labelencoder = sp.LabelEncoder()
                 self.df_Y = labelencoder.fit_transform(self.df_Y)
 
+            init_df = read_file(self.settings['path'])
+            init_unique_values = np.unique(init_df[self.settings['variable']])
+            number_class = []
+            for name in init_unique_values:
+                number_class.append(self.df_Y[list(init_df[self.settings['variable']]).index(name)])
+            dict_classes = dict(zip(number_class, init_unique_values))
+
             dfX_train, dfX_test, dfY_train, dfY_test = sm.train_test_split(self.df_X, self.df_Y, test_size=0.3,
                                                                            random_state=42)
             self.df_X_train = dfX_train
@@ -288,9 +289,6 @@ class PredictionModule(Module, PredictionDashboard):
                 self.settings['features_count'] = None
             extra_param = np.array([self.settings['tree_depth'], self.settings['samples'],
                                     self.settings['features_count']])
-            if self.settings['tree_depth'] and self.settings['samples'] and self.settings['features_count'] is not None:
-                extra_param = extra_param.astype(int)
-
             self.model = ModelManipulator(
                 x=self.df_X_train, y=self.df_Y_train, model_type='tree', extra_param=extra_param).create()
             self.model.fit()
@@ -303,6 +301,7 @@ class PredictionModule(Module, PredictionDashboard):
             settings['features'] = []
             settings['y'] = []
             settings['x'] = self.pp.df.columns.tolist()
+            settings['classes'] = dict_classes
 
             for metric in self.settings.keys():
                 if metric == 'model':

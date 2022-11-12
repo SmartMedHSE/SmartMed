@@ -40,8 +40,10 @@ class PreprocessingWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p>Для того, чтобы выполнить загрузку данных, кликните </p><p>на кнопку ниже. В открывшемся окне выберите файл</p><p>в формате &quot;xlsx&quot;, &quot;csv&quot;, &quot;tsv&quot;.</p><p><br/></p></body></html>"))
+        self.label_2.setText(_translate("MainWindow",
+                                        "<html><head/><body><p>Для того, чтобы выполнить загрузку данных, кликните </p><p>на кнопку ниже. В открывшемся окне выберите файл</p><p>в формате &quot;xlsx&quot;, &quot;csv&quot;, &quot;tsv&quot;.</p><p><br/></p></body></html>"))
         self.pushButtonBack.setText(_translate("MainWindow", "Назад"))
         self.pushButtonNext.setText(_translate("MainWindow", "Вперед"))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:18pt;\">Загрузите данные</span></p></body></html>"))
+        self.label.setText(_translate("MainWindow",
+                                      "<html><head/><body><p align=\"center\"><span style=\" font-size:18pt;\">Загрузите данные</span></p></body></html>"))
         self.pushButton.setText(_translate("MainWindow", "Загрузить"))

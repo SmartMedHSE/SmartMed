@@ -1,16 +1,13 @@
 import pickle
 import threading
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import (
-    QWidget, QToolTip, QPushButton, QApplication, QMessageBox)
+from PyQt5 import QtWidgets
+from PyQt5.QtCore import QTimer, QEventLoop
 
+from backend import ModuleManipulator
 from .GraphsWindowCross import GraphsWindowCross
 from ..WaitingSpinnerWidget import QtWaitingSpinner
-from PyQt5.QtCore import QTimer, QEventLoop
 from ..utils import remove_if_exists
-
-from SmartMedApp.backend import ModuleManipulator
 
 
 class WrappedGraphsWindowCross(GraphsWindowCross, QtWidgets.QMainWindow):
@@ -76,7 +73,7 @@ class WrappedGraphsWindowCross(GraphsWindowCross, QtWidgets.QMainWindow):
         self.spinner = QtWaitingSpinner(self)
         self.layout().addWidget(self.spinner)
         self.spinner.start()
-        #QTimer.singleShot(10000, self.spinner.stop)
+        # QTimer.singleShot(10000, self.spinner.stop)
         loop = QEventLoop()
         QTimer.singleShot(10000, loop.quit)
         loop.exec_()

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+    <title>SmartMed</title>
+</head>
+<body>
+<div id="root">
+    <div class="menu">
+        <div class="menu__title">
+            <h2>Выберете способ анализа</h2>
+        </div>
+        <form class="menu__items" novalidate>
+            <ul>
+                <li>
+                    <div class="menu__item">
+                        <button class="menu__button button button_size-xx button_color_grey">
+                            Описательный анализ
+                        </button>
+                            <div class="menu__item-helper">Получение обобщенной информации о данных, визуальный анализ</div>
+                    </div>
+                </li>
+                <li>
+                    <div class="menu__item">
+                        <button class="menu__button button button_size-xx button_color_grey">Биоэквивалентность</button>
+                        <div class="menu__item-helper">Исследование идентичности свойств биодоступности у исходного
+                            препарата и дженерика
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    <div class="menu__item">
+                        <button class="menu__button button button_size-xx button_color_grey">
+                            Описательный анализ
+                        </button>
+                        <div class="menu__item-helper">Построение статистических и предсказательных моделей,
+                            ROC-анализ
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </form>
+        <div class="menu__footer">
+            <button class="menu__button button button_size-x button_color_red">
+                Завершить
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
