@@ -1,0 +1,97 @@
+{
+  "name": "Smart-Medicina",
+  "version": "0.0.1",
+  "description": "Cross-platform version for SmartMed Desktop",
+  "main": "src/electron.js",
+  "author": "SmartMedicinaHSE",
+  "license": "MIT",
+  "keywords": [
+    "js",
+    "electron",
+    "python",
+    "ML",
+    "Медицина"
+  ],
+  "build": {
+    "extends": null,
+    "directories": {
+      "buildResources": "build",
+      "output": "release"
+    },
+    "extraFiles": [
+      "dist/js/*"
+    ],
+    "files": [
+      "src/electron.js",
+      "**/*",
+      "static/**/*",
+      "build/**/icon.*"
+    ],
+    "nsis": {
+      "runAfterFinish": false
+    },
+    "productName": "Smart-Медицина",
+    "appId": "test.SmartМедицина",
+    "mac": {
+      "icon": "build/images/icon.png"
+    },
+    "win": {
+      "icon": "build/images/icon.png"
+    },
+    "linux": {
+      "icon": "build/images/icon.png"
+    }
+  },
+  "scripts": {
+    "preinstall": "npx npm-force-resolutions",
+    "test": "echo 0",
+    "start-python": "python __main__.py",
+    "start-electron": "electron .",
+    "start-flask": "python request.py",
+    "build": "npx webpack --progress --mode=development",
+    "build:watch": "npx webpack --progress -w --mode=development",
+    "dev": "npm-run-all --parallel start-flask start-electron",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "classnames": "^2.2.6",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.12.9",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-private-methods": "^7.12.1",
+    "@babel/preset-env": "^7.12.7",
+    "@babel/preset-react": "^7.14.5",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
+    "autoprefixer": "^10.0.4",
+    "babel-loader": "^8.2.2",
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^6.3.2",
+    "css-loader": "^5.0.1",
+    "electron": "^17.1.2",
+    "electron-builder": "^22.14.5",
+    "eslint": "^7.14.0",
+    "html-webpack-plugin": "^4.5.2",
+    "mini-css-extract-plugin": "^1.3.1",
+    "npm-run-all": "^4.1.5",
+    "postcss-loader": "^4.1.0",
+    "sass": "^1.29.0",
+    "sass-loader": "^10.1.0",
+    "style-loader": "~1.2.1",
+    "stylelint": "^13.8.0",
+    "thread-loader": "^3.0.1",
+    "url-loader": "^4.1.1",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4"
+  },
+  "resolutions": {
+    "glob-parent": "^5.1.2"
+  }
+}

@@ -8,6 +8,7 @@ from .models import BioquivalenceMathsModel
 class BioequivalenceModule(Module, BioequivalenceDashboard):
 
     def _prepare_data(self):
+        print(self.settings)
         if self.settings['design'] == 'parallel':
             df_test = pd.read_excel(self.settings['path_test'], index_col=0)
             df_ref = pd.read_excel(self.settings['path_ref'], index_col=0)
@@ -60,12 +61,12 @@ class BioequivalenceModule(Module, BioequivalenceDashboard):
                 temp_list.append(table)
         if self.settings[0].plan == 'parallel':
             graph_to_method = {'linlog_all_in_group': [self._generate_concentration_time_linlog(True),
-                                                        self._generate_concentration_time_linlog(False)],
+                                                       self._generate_concentration_time_linlog(False)],
                                'linlog_each_in_group': self._generate_concentration_time_linlog_mean(),
-                               'all_in_group': [self._generate_concentration_time(True), 
-                               self._generate_concentration_time(False)],
-                               'log_all_in_group': [self._generate_concentration_time_log(True), 
-                               self._generate_concentration_time_log(False)],
+                               'all_in_group': [self._generate_concentration_time(True),
+                                                self._generate_concentration_time(False)],
+                               'log_all_in_group': [self._generate_concentration_time_log(True),
+                                                    self._generate_concentration_time_log(False)],
                                'each_in_group': self._generate_concentration_time_mean(),
                                'log_each_in_group': self._generate_concentration_time_log_mean(),
                                'criteria': self._generate_criteria(), 'features': self._generate_param(),
@@ -79,9 +80,9 @@ class BioequivalenceModule(Module, BioequivalenceDashboard):
             self.graphs_and_lists.append(self._generate_interval())
         else:
             graph_to_method = {'avg_concet': [self._generate_concentration_time_cross(True),
-                                                self._generate_concentration_time_cross(False)],
+                                              self._generate_concentration_time_cross(False)],
                                'indiv_concet': [self._generate_group_mean(True),
-                                              self._generate_group_mean(False)],
+                                                self._generate_group_mean(False)],
                                'gen_concet': self._generate_drug_mean(),
                                'avg_auc': [self._generate_log_auc(),
                                            self._generate_criteria()],

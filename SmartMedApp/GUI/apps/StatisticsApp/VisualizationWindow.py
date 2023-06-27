@@ -80,12 +80,14 @@ class VisualizationWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "Визуализация"))
         self.pushButtonDone.setText(_translate("MainWindow", "Завершить"))
         self.pushButton.setText(_translate("MainWindow", "Назад"))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" font-size:18pt;\">Выбор графиков для реализации</span></p></body></html>"))
+        self.label.setText(_translate("MainWindow",
+                                      "<html><head/><body><p><span style=\" font-size:18pt;\">Выбор графиков для реализации</span></p></body></html>"))
         self.checkBoxScatter.setText(_translate("MainWindow", "  Матрица корреляций (в виде диаграммы рассеяния)"))
         self.checkBoxHist.setText(_translate("MainWindow", "  Гистограмма / столбцовая диаграмма"))
         self.checkBoxCorr.setText(_translate("MainWindow", "  Матрица корреляций (в численном виде)"))
         self.checkBoxHeatmap.setText(_translate("MainWindow", "  Тепловая карта"))
-        self.checkBoxDot.setToolTip(_translate("MainWindow", "<html><head/><body><p align=\"center\">Это тул тип типочек молодой цыганенок я за тобой бегал месяц мразота</p></body></html>"))
+        self.checkBoxDot.setToolTip(_translate("MainWindow",
+                                               "<html><head/><body><p align=\"center\">Это тул тип типочек молодой цыганенок я за тобой бегал месяц мразота</p></body></html>"))
         self.checkBoxDot.setText(_translate("MainWindow", "  Точечная диаграмма "))
         self.checkBoxLinear.setText(_translate("MainWindow", "  График линейной зависимости"))
         self.checkBoxBox.setText(_translate("MainWindow", "  График ящик с усами (диаграмма размаха)"))

@@ -1,0 +1,22 @@
+.dataDownload {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  &__download_text {
+    width: 400px;
+  }
+
+  &__div {
+  }
+
+  &__download_btn_text {
+    text-align: center;
+  }
+
+  &__download_btn {
+    height: 30px;
+    width: 120px;
+  }
+}

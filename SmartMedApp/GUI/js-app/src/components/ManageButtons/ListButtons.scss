@@ -1,0 +1,18 @@
+.listButtons {
+    height: 150px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    align-content: flex-end;
+
+    &__btn {
+        background-color: white;
+        color: black;
+        border: 1px solid gray;
+        border-radius: 12px;
+        display: inline-block;
+        -webkit-transition-duration: 0.2s;
+        transition-duration: 0.2s;
+        cursor: pointer;
+    }
+}
